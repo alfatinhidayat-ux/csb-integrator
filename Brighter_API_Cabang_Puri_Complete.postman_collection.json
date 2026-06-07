@@ -1,0 +1,5163 @@
+{
+  "info": {
+    "_postman_id": "brighter-api-cabang-puri-complete",
+    "name": "Brighter API - Cabang Puri (Complete)",
+    "description": "Collection lengkap Brighter API - Cabang Puri (cabang_id=6). Base URL: https://brighter-api.koffiesoft.com\n\nSemua request menggunakan variable:\n- {{base_url}} = https://brighter-api.koffiesoft.com\n- {{token}} = Bearer JWT token dari response /login\n\nAlur penggunaan:\n1. Jalankan POST /login untuk mendapatkan token\n2. Copy token ke variable {{token}}\n3. Gunakan endpoint lainnya",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://brighter-api.koffiesoft.com",
+      "description": "Base URL API Brighter"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "description": "JWT Bearer token dari response /login. Isi setelah login."
+    },
+    {
+      "key": "cabang_id",
+      "value": "6",
+      "description": "ID cabang Puri"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "description": "Endpoint autentikasi: login, logout, info user",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "description": "Tipe grant OAuth2. Isi: password"
+                },
+                {
+                  "key": "username",
+                  "value": "user",
+                  "description": "Username akun"
+                },
+                {
+                  "key": "password",
+                  "value": "user",
+                  "description": "Password akun"
+                },
+                {
+                  "key": "client_id",
+                  "value": "string",
+                  "description": "Client ID OAuth2"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "string",
+                  "description": "Client secret OAuth2"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Login dan dapatkan JWT token. Simpan access_token ke variable {{token}}."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logout"
+              ]
+            },
+            "description": "Logout dan invalidate session. Kirim session_id dari response login."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "me"
+              ]
+            },
+            "description": "Ambil data user yang sedang login (berdasarkan token)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Env",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/env",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "env"
+              ]
+            },
+            "description": "Ambil konfigurasi environment aplikasi."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 Sistem - Users",
+      "description": "Manajemen user sistem",
+      "item": [
+        {
+          "name": "Get List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sistem/users/list?page=1&results_per_page=20&data_group_detail=true&user_karyawan_data=true&timestamp_data=true&user_cabang_id={{cabang_id}}&user_aktif=Aktif",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sistem",
+                "users",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman (mulai dari 1)"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "data_group_detail",
+                  "value": "true",
+                  "description": "true = sertakan detail grup user"
+                },
+                {
+                  "key": "user_karyawan_data",
+                  "value": "true",
+                  "description": "true = sertakan data karyawan terkait"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan created_at/updated_at"
+                },
+                {
+                  "key": "user_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "Filter berdasarkan ID cabang"
+                },
+                {
+                  "key": "user_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status: Aktif | Nonaktif | Semua"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sistem/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sistem",
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID user"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Cabang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sistem/users/:id/users_cabang?page=1&results_per_page=20&timestamp_data=true&uc_cabang_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sistem",
+                "users",
+                ":id",
+                "users_cabang"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "uc_cabang_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data cabang"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID user"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔑 Sistem - Permissions & Groups",
+      "description": "Manajemen grup dan permission user",
+      "item": [
+        {
+          "name": "Get User Groups",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sistem/usergroups?page=1&results_per_page=20&group_active=Aktif&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sistem",
+                "usergroups"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "group_active",
+                  "value": "Aktif",
+                  "description": "Filter status grup: Aktif | Nonaktif"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Permissions Menu",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sistem/permissions/menus/1?full_permissions_data=true&mobile_menu=true&hirarki_menu=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sistem",
+                "permissions",
+                "menus",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "full_permissions_data",
+                  "value": "true",
+                  "description": "true = tampilkan semua permission detail"
+                },
+                {
+                  "key": "mobile_menu",
+                  "value": "true",
+                  "description": "true = filter menu khusus mobile"
+                },
+                {
+                  "key": "hirarki_menu",
+                  "value": "true",
+                  "description": "true = tampilkan dalam struktur hirarki"
+                }
+              ]
+            },
+            "description": "Angka di path /menus/1 adalah ID group user."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Permission",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sistem/permissions/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sistem",
+                "permissions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "143",
+                  "description": "ID permission"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📦 Master - Produk",
+      "description": "Data master produk beserta satuan, foto, brand, dan group",
+      "item": [
+        {
+          "name": "Get List Produk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/produk?page=1&results_per_page=20&timestamp_data=true&produk_satuan_konversi_data=true&produk_foto_data=true&produk_brand_data=true&produk_group_data=true&produk_group_sub_data=true&produk_harga_beli_terakhir_data=false&produk_aktif=Aktif&produk_satuan_konversi_cabang_data=false",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "produk"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "produk_satuan_konversi_data",
+                  "value": "true",
+                  "description": "true = sertakan data satuan konversi produk"
+                },
+                {
+                  "key": "produk_foto_data",
+                  "value": "true",
+                  "description": "true = sertakan URL foto produk"
+                },
+                {
+                  "key": "produk_brand_data",
+                  "value": "true",
+                  "description": "true = sertakan data brand produk"
+                },
+                {
+                  "key": "produk_group_data",
+                  "value": "true",
+                  "description": "true = sertakan data group/kategori produk"
+                },
+                {
+                  "key": "produk_group_sub_data",
+                  "value": "true",
+                  "description": "true = sertakan data sub-group produk"
+                },
+                {
+                  "key": "produk_harga_beli_terakhir_data",
+                  "value": "false",
+                  "description": "true = sertakan harga beli terakhir"
+                },
+                {
+                  "key": "produk_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status: Aktif | Nonaktif | Semua"
+                },
+                {
+                  "key": "produk_satuan_konversi_cabang_data",
+                  "value": "false",
+                  "description": "true = sertakan satuan konversi spesifik cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Produk by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/produk/:produk_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "produk",
+                ":produk_id"
+              ],
+              "variable": [
+                {
+                  "key": "produk_id",
+                  "value": "12121",
+                  "description": "ID produk"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Produk (Partial)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"produk_edit_harga\": 1.0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/master/produk/:produk_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "produk",
+                ":produk_id"
+              ],
+              "variable": [
+                {
+                  "key": "produk_id",
+                  "value": "12121",
+                  "description": "ID produk"
+                }
+              ]
+            },
+            "description": "Update sebagian field produk. Kirim hanya field yang ingin diubah."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Satuan Konversi Produk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/produk/:produk_id/satuan_konversi?page=1&results_per_page=20&konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&stok_data_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "produk",
+                ":produk_id",
+                "satuan_konversi"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "konversi_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status: Aktif | Nonaktif"
+                },
+                {
+                  "key": "konversi_satuan_data",
+                  "value": "true",
+                  "description": "true = sertakan detail nama satuan"
+                },
+                {
+                  "key": "konversi_stok_data",
+                  "value": "true",
+                  "description": "true = sertakan data stok"
+                },
+                {
+                  "key": "stok_data_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang untuk filter stok"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "produk_id",
+                  "value": "12121",
+                  "description": "ID produk"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Satuan Konversi Cabang Produk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/produk/:produk_id/satuan_konversi_cabang",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "produk",
+                ":produk_id",
+                "satuan_konversi_cabang"
+              ],
+              "variable": [
+                {
+                  "key": "produk_id",
+                  "value": "12121",
+                  "description": "ID produk"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Foto Produk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/produk/:produk_id/pfoto",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "produk",
+                ":produk_id",
+                "pfoto"
+              ],
+              "variable": [
+                {
+                  "key": "produk_id",
+                  "value": "12121",
+                  "description": "ID produk"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Produk Brand",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/produk_brand?page=1&results_per_page=20&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "produk_brand"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Produk Group",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/produk_group?page=1&results_per_page=20&group_aktif=Aktif&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "produk_group"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "group_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status grup: Aktif | Nonaktif"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Produk Group Sub",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/produk_group_sub?page=1&results_per_page=20&group_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "produk_group_sub"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "group_data",
+                  "value": "true",
+                  "description": "true = sertakan data group induk"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏢 Master - Cabang & Supplier",
+      "description": "Data master cabang, supplier, dan customer",
+      "item": [
+        {
+          "name": "Get List Cabang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/cabang?page=1&results_per_page=20&timestamp_data=false&cabang_aktif=Aktif",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "cabang"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "false",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "cabang_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status cabang: Aktif | Nonaktif | Semua"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Supplier",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/supplier?page=1&results_per_page=20&supplier_aktif=Aktif&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "supplier"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "supplier_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status: Aktif | Nonaktif | Semua"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Customer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/customer?page=1&results_per_page=20&cust_aktif=Aktif&timestamp_data=true&cust_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "customer"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "cust_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status: Aktif | Nonaktif | Semua"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "cust_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "Filter customer berdasarkan ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/customer/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "customer",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "9435",
+                  "description": "ID customer"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cust_kategori_id\": 2,\n  \"cust_nama\": \"\",\n  \"cust_kelamin\": \"L\",\n  \"cust_tgllahir\": \"2026-01-01\",\n  \"cust_npwp\": \"\",\n  \"cust_aktif\": \"Aktif\",\n  \"cust_cabang_id\": \"{{cabang_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/master/customer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "customer"
+              ]
+            },
+            "description": "Body fields:\n- cust_kategori_id: ID kategori customer\n- cust_nama: Nama lengkap customer\n- cust_kelamin: L (Laki-laki) | P (Perempuan)\n- cust_tgllahir: Tanggal lahir format YYYY-MM-DD\n- cust_npwp: Nomor NPWP\n- cust_aktif: Aktif | Nonaktif\n- cust_cabang_id: ID cabang"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cust_kategori_id\": 2,\n  \"cust_nama\": \"\",\n  \"cust_kelamin\": \"L\",\n  \"cust_hp\": \"\",\n  \"cust_email\": \"\",\n  \"cust_alamat\": \"\",\n  \"cust_tgllahir\": \"2026-01-01\",\n  \"cust_npwp\": \"\",\n  \"cust_aktif\": \"Aktif\",\n  \"cust_cabang_id\": \"{{cabang_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/master/customer/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "customer",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "9435",
+                  "description": "ID customer"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Kategori Customer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/kategori_customer?page=1&results_per_page=20&ckat_aktif=Aktif",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "kategori_customer"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "ckat_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status: Aktif | Nonaktif"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Deposit Customer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/deposit?page=1&results_per_page=20&timestamp_data=true&deposit_customer_data=true&deposit_status_dokumen=Disetujui&deposit_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "deposit"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "deposit_customer_data",
+                  "value": "true",
+                  "description": "true = sertakan data customer"
+                },
+                {
+                  "key": "deposit_status_dokumen",
+                  "value": "Disetujui",
+                  "description": "Filter status: Disetujui | Menunggu | Ditolak | Semua"
+                },
+                {
+                  "key": "deposit_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "Filter berdasarkan ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Master - Karyawan",
+      "description": "Data master karyawan, departemen, jabatan",
+      "item": [
+        {
+          "name": "Get List Karyawan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/karyawan?page=1&results_per_page=20&karyawan_aktif=Aktif&karyawan_departemen_data=true&karyawan_jabatan_data=true&karyawan_cabang_id={{cabang_id}}&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "karyawan"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "karyawan_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status: Aktif | Nonaktif"
+                },
+                {
+                  "key": "karyawan_departemen_data",
+                  "value": "true",
+                  "description": "true = sertakan data departemen"
+                },
+                {
+                  "key": "karyawan_jabatan_data",
+                  "value": "true",
+                  "description": "true = sertakan data jabatan"
+                },
+                {
+                  "key": "karyawan_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "Filter berdasarkan ID cabang"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Karyawan by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/karyawan/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "karyawan",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "347",
+                  "description": "ID karyawan"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Karyawan Gaji",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/karyawan/:id/karyawan_gaji",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "karyawan",
+                ":id",
+                "karyawan_gaji"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "347",
+                  "description": "ID karyawan"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Karyawan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"karyawan_nama\": \"\",\n  \"karyawan_departemen_id\": null,\n  \"karyawan_jabatan_id\": null,\n  \"karyawan_username\": \"\",\n  \"karyawan_email\": \"\",\n  \"karyawan_notelp\": \"\",\n  \"karyawan_agama\": \"Islam\",\n  \"karyawan_kelamin\": \"L\",\n  \"karyawan_tgllahir\": \"2026-01-01\",\n  \"karyawan_ktp\": \"\",\n  \"karyawan_npwp\": \"\",\n  \"karyawan_aktif\": \"Aktif\",\n  \"karyawan_cabang_id\": \"{{cabang_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/master/karyawan/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "karyawan",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "347",
+                  "description": "ID karyawan"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Departemen",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/departement?page=1&results_per_page=20&timestamp_data=true&departemen_aktif=Aktif",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "departement"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "departemen_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status: Aktif | Nonaktif"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Jabatan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/jabatan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "jabatan"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💰 Master - Keuangan",
+      "description": "Data master akun, penerimaan, pengeluaran",
+      "item": [
+        {
+          "name": "Get List Akun",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/akun?page=1&results_per_page=20&timestamp_data=true&akun_aktif=Aktif&akun_group=Semua",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "akun"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "akun_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status: Aktif | Nonaktif"
+                },
+                {
+                  "key": "akun_group",
+                  "value": "Semua",
+                  "description": "Filter group akun: BS (Balance Sheet) | PL (Profit & Loss) | Semua"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Penerimaan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/keuangan/penerimaan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "keuangan",
+                "penerimaan"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Pengeluaran",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/keuangan/pengeluaran",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "keuangan",
+                "pengeluaran"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Akun CashBank",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/akun?page=1&results_per_page=20&timestamp_data=true&akun_aktif=Aktif&akun_group=CashBank",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "akun"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "akun_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status akun"
+                },
+                {
+                  "key": "akun_group",
+                  "value": "CashBank",
+                  "description": "Filter group: CashBank = hanya akun kas dan bank"
+                }
+              ]
+            },
+            "description": "Ambil daftar akun kas dan bank saja. Biasa dipakai sebagai pilihan akun di form kas masuk/keluar."
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Akun Pengeluaran Lain",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/akun?page=1&results_per_page=20&timestamp_data=true&akun_aktif=Aktif&akun_group=PengeluaranLain",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "akun"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "akun_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status akun"
+                },
+                {
+                  "key": "akun_group",
+                  "value": "PengeluaranLain",
+                  "description": "Filter group: PengeluaranLain = akun biaya operasional/pengeluaran lain"
+                }
+              ]
+            },
+            "description": "Ambil daftar akun pengeluaran lain. Dipakai sebagai pilihan akun di form kas keluar."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🚢 Master - Logistik (Kapal, Pelabuhan, Container)",
+      "description": "Data master logistik pengiriman laut",
+      "item": [
+        {
+          "name": "Get List Kapal",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/kapal",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "kapal"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Kapal by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/kapal/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "kapal",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2",
+                  "description": "ID kapal"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Pelabuhan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/pelabuhan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "pelabuhan"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Container",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/master/container",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "master",
+                "container"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📋 Persediaan - Surat Permintaan",
+      "description": "Dokumen permintaan barang antar cabang (mutasi masuk)",
+      "item": [
+        {
+          "name": "Get List Surat Permintaan (Semua)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/surat_permintaan?page=1&results_per_page=20&omutasi_status=Semua&omutasi_cabang_id={{cabang_id}}&omutasi_order_detail_produk_data=false&omutasi_stat_diambil=Semua&omutasi_order_detail_produk_data_diambil_mutasi=Semua&omutasi_pemohon_data=true&omutasi_cabang_data=true&omutasi_tujuan_cabang_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "surat_permintaan"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "omutasi_status",
+                  "value": "Semua",
+                  "description": "Filter status dokumen: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "omutasi_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang pemohon"
+                },
+                {
+                  "key": "omutasi_order_detail_produk_data",
+                  "value": "false",
+                  "description": "true = sertakan detail produk dalam order"
+                },
+                {
+                  "key": "omutasi_stat_diambil",
+                  "value": "Semua",
+                  "description": "Filter status pengambilan: Semua | Sudah | Belum"
+                },
+                {
+                  "key": "omutasi_order_detail_produk_data_diambil_mutasi",
+                  "value": "Semua",
+                  "description": "Filter produk yang sudah/belum dimutasi"
+                },
+                {
+                  "key": "omutasi_pemohon_data",
+                  "value": "true",
+                  "description": "true = sertakan data user pemohon"
+                },
+                {
+                  "key": "omutasi_cabang_data",
+                  "value": "true",
+                  "description": "true = sertakan data cabang asal"
+                },
+                {
+                  "key": "omutasi_tujuan_cabang_data",
+                  "value": "true",
+                  "description": "true = sertakan data cabang tujuan"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Surat Permintaan (Terbuka)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/surat_permintaan?page=1&results_per_page=20&omutasi_status=Terbuka&omutasi_cabang_id={{cabang_id}}&omutasi_order_detail_produk_data=false&omutasi_stat_diambil=Semua&omutasi_order_detail_produk_data_diambil_mutasi=Semua&omutasi_pemohon_data=true&omutasi_cabang_data=true&omutasi_tujuan_cabang_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "surat_permintaan"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "omutasi_status",
+                  "value": "Terbuka",
+                  "description": "Filter status: Terbuka = dokumen aktif belum selesai"
+                },
+                {
+                  "key": "omutasi_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang pemohon"
+                },
+                {
+                  "key": "omutasi_order_detail_produk_data",
+                  "value": "false",
+                  "description": "true = sertakan detail produk"
+                },
+                {
+                  "key": "omutasi_stat_diambil",
+                  "value": "Semua",
+                  "description": "Filter status pengambilan"
+                },
+                {
+                  "key": "omutasi_order_detail_produk_data_diambil_mutasi",
+                  "value": "Semua",
+                  "description": "Filter mutasi produk"
+                },
+                {
+                  "key": "omutasi_pemohon_data",
+                  "value": "true",
+                  "description": "true = sertakan data pemohon"
+                },
+                {
+                  "key": "omutasi_cabang_data",
+                  "value": "true",
+                  "description": "true = sertakan data cabang"
+                },
+                {
+                  "key": "omutasi_tujuan_cabang_data",
+                  "value": "true",
+                  "description": "true = sertakan data cabang tujuan"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Surat Permintaan (Tertutup)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/surat_permintaan?page=1&results_per_page=20&omutasi_status=Tertutup&omutasi_cabang_id={{cabang_id}}&omutasi_order_detail_produk_data=false&omutasi_stat_diambil=Semua&omutasi_order_detail_produk_data_diambil_mutasi=Semua&omutasi_pemohon_data=true&omutasi_cabang_data=true&omutasi_tujuan_cabang_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "surat_permintaan"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "omutasi_status",
+                  "value": "Tertutup",
+                  "description": "Filter status: Tertutup = dokumen sudah selesai/terpenuhi"
+                },
+                {
+                  "key": "omutasi_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang pemohon"
+                },
+                {
+                  "key": "omutasi_pemohon_data",
+                  "value": "true",
+                  "description": "true = sertakan data pemohon"
+                },
+                {
+                  "key": "omutasi_cabang_data",
+                  "value": "true",
+                  "description": "true = sertakan data cabang"
+                },
+                {
+                  "key": "omutasi_tujuan_cabang_data",
+                  "value": "true",
+                  "description": "true = sertakan data cabang tujuan"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Surat Permintaan (Batal)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/surat_permintaan?page=1&results_per_page=20&omutasi_status=Batal&omutasi_cabang_id={{cabang_id}}&omutasi_order_detail_produk_data=false&omutasi_stat_diambil=Semua&omutasi_order_detail_produk_data_diambil_mutasi=Semua&omutasi_pemohon_data=true&omutasi_cabang_data=true&omutasi_tujuan_cabang_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "surat_permintaan"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "omutasi_status",
+                  "value": "Batal",
+                  "description": "Filter status: Batal = dokumen dibatalkan"
+                },
+                {
+                  "key": "omutasi_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang pemohon"
+                },
+                {
+                  "key": "omutasi_pemohon_data",
+                  "value": "true",
+                  "description": "true = sertakan data pemohon"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🚛 Persediaan - Surat Jalan",
+      "description": "Dokumen surat jalan pengiriman barang",
+      "item": [
+        {
+          "name": "Get List Surat Jalan (Semua)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/surat_jalan?page=1&sj_status_dok=Semua&sj_kapal_data=true&sj_truck_data=true&timestamp_data=true&sj_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "surat_jalan"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "sj_status_dok",
+                  "value": "Semua",
+                  "description": "Filter status dokumen: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "sj_kapal_data",
+                  "value": "true",
+                  "description": "true = sertakan data kapal pengiriman"
+                },
+                {
+                  "key": "sj_truck_data",
+                  "value": "true",
+                  "description": "true = sertakan data truk pengiriman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "sj_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "Filter berdasarkan ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Surat Jalan (Tertutup)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/surat_jalan?page=1&sj_status_dok=Tertutup&sj_kapal_data=true&sj_truck_data=true&timestamp_data=true&sj_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "surat_jalan"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "sj_status_dok",
+                  "value": "Tertutup",
+                  "description": "Tertutup = surat jalan sudah selesai/diterima"
+                },
+                {
+                  "key": "sj_kapal_data",
+                  "value": "true",
+                  "description": "true = sertakan data kapal"
+                },
+                {
+                  "key": "sj_truck_data",
+                  "value": "true",
+                  "description": "true = sertakan data truk"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "sj_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Surat Jalan (Batal)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/surat_jalan?page=1&sj_status_dok=Batal&sj_kapal_data=true&sj_truck_data=true&timestamp_data=true&sj_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "surat_jalan"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "sj_status_dok",
+                  "value": "Batal",
+                  "description": "Batal = surat jalan dibatalkan"
+                },
+                {
+                  "key": "sj_kapal_data",
+                  "value": "true",
+                  "description": "true = sertakan data kapal"
+                },
+                {
+                  "key": "sj_truck_data",
+                  "value": "true",
+                  "description": "true = sertakan data truk"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "sj_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Surat Jalan Produk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/surat_jalan/:id/surat_jalan_produk?sjp_produk_data=true&sjp_satuan_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "surat_jalan",
+                ":id",
+                "surat_jalan_produk"
+              ],
+              "query": [
+                {
+                  "key": "sjp_produk_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data produk"
+                },
+                {
+                  "key": "sjp_satuan_data",
+                  "value": "true",
+                  "description": "true = sertakan data satuan produk"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "757",
+                  "description": "ID surat jalan"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Surat Jalan File",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/surat_jalan/:id/sj_file",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "surat_jalan",
+                ":id",
+                "sj_file"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "757",
+                  "description": "ID surat jalan"
+                }
+              ]
+            },
+            "description": "Ambil daftar file/foto terlampir pada surat jalan."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔄 Persediaan - Mutasi Barang",
+      "description": "Dokumen mutasi/transfer stok antar cabang",
+      "item": [
+        {
+          "name": "Get List Mutasi Barang (Keluar - Semua)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/mutasi_barang?page=1&results_per_page=20&mutasi_status=Semua&mutasi_cabang_barang_keluar={{cabang_id}}&mutasi_pemohon_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "mutasi_barang"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "mutasi_status",
+                  "value": "Semua",
+                  "description": "Filter status: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "mutasi_cabang_barang_keluar",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang asal (barang keluar dari cabang ini)"
+                },
+                {
+                  "key": "mutasi_pemohon_data",
+                  "value": "true",
+                  "description": "true = sertakan data user pemohon"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Mutasi Barang (Masuk - Tertutup)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/mutasi_barang?page=1&results_per_page=20&mutasi_status=Tertutup&mutasi_cabang_id={{cabang_id}}&mutasi_pemohon_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "mutasi_barang"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "mutasi_status",
+                  "value": "Tertutup",
+                  "description": "Filter status: Tertutup = mutasi sudah diterima"
+                },
+                {
+                  "key": "mutasi_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang tujuan (barang masuk ke cabang ini)"
+                },
+                {
+                  "key": "mutasi_pemohon_data",
+                  "value": "true",
+                  "description": "true = sertakan data pemohon"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mutasi Barang by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/mutasi_barang/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "mutasi_barang",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2318",
+                  "description": "ID mutasi barang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Mutasi Barang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/mutasi_barang/:id/detail_mutasi_barang?page=1&results_per_page=100&dmutasi_produk_data=true&dmutasi_satuan_data=true&dmutasi_produk_satuan_konversi=true&dmutasi_gudang_data=false&timestamp_data=false",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "mutasi_barang",
+                ":id",
+                "detail_mutasi_barang"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "100",
+                  "description": "Jumlah data per halaman (gunakan besar untuk ambil semua)"
+                },
+                {
+                  "key": "dmutasi_produk_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data produk"
+                },
+                {
+                  "key": "dmutasi_satuan_data",
+                  "value": "true",
+                  "description": "true = sertakan data satuan"
+                },
+                {
+                  "key": "dmutasi_produk_satuan_konversi",
+                  "value": "true",
+                  "description": "true = sertakan konversi satuan produk"
+                },
+                {
+                  "key": "dmutasi_gudang_data",
+                  "value": "false",
+                  "description": "true = sertakan data gudang asal/tujuan"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "false",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2318",
+                  "description": "ID mutasi barang"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🛒 Persediaan - Pembelian",
+      "description": "Dokumen pembelian dari supplier: order, penerimaan, retur",
+      "item": [
+        {
+          "name": "Get List Order Pembelian",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/order_pembelian?page=1&results_per_page=20&order_status=Semua&order_status_menyetujui=Semua&order_supplier_data=true&timestamp_data=true&order_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "order_pembelian"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "order_status",
+                  "value": "Semua",
+                  "description": "Filter status PO: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "order_status_menyetujui",
+                  "value": "Semua",
+                  "description": "Filter status persetujuan: Semua | Disetujui | Menunggu | Ditolak"
+                },
+                {
+                  "key": "order_supplier_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data supplier"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "order_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "Filter berdasarkan ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Pembelian (Belum Lunas by Supplier)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/pembelian?page=1&results_per_page=20&pembelian_status_dok=Tertutup&pembelian_status_lunas=Belum+Lunas&pembelian_supplier_data=true&pembelian_supplier_id=147&pembelian_cabang_id={{cabang_id}}&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "pembelian"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "pembelian_status_dok",
+                  "value": "Tertutup",
+                  "description": "Filter status dokumen: Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "pembelian_status_lunas",
+                  "value": "Belum+Lunas",
+                  "description": "Filter status pembayaran: Belum+Lunas | Lunas | Semua"
+                },
+                {
+                  "key": "pembelian_supplier_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data supplier"
+                },
+                {
+                  "key": "pembelian_supplier_id",
+                  "value": "147",
+                  "description": "Filter berdasarkan ID supplier tertentu"
+                },
+                {
+                  "key": "pembelian_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Supplier Punya Hutang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/pembelian/supplier/list_hutang?page=1&results_per_page=20&supplier_aktif=Aktif&timestamp_data=true&pembelian_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "pembelian",
+                "supplier",
+                "list_hutang"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "supplier_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status supplier: Aktif | Nonaktif"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "pembelian_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang untuk filter hutang"
+                }
+              ]
+            },
+            "description": "Ambil daftar supplier yang masih memiliki hutang (faktur belum lunas) di cabang ini."
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Permintaan Pembelian Detail (Diorder)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/permintaan_pembelian/detail_produk/diorder?page=1&results_per_page=50&permintaan_pembelian_cabang_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "permintaan_pembelian",
+                "detail_produk",
+                "diorder"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "50",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "permintaan_pembelian_cabang_data",
+                  "value": "true",
+                  "description": "true = sertakan data cabang permintaan"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            },
+            "description": "Ambil detail produk dari permintaan pembelian yang sudah dibuatkan PO (diorder)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Retur Pembelian",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/retur_pembelian?page=1&results_per_page=20&rpembelian_stat_dok=Semua&rpembelian_supplier_data=true&rpembelian_cabang_data=true&rpembelian_faktur_data=true&rpembelian_cabang_id={{cabang_id}}&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "retur_pembelian"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "rpembelian_stat_dok",
+                  "value": "Semua",
+                  "description": "Filter status: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "rpembelian_supplier_data",
+                  "value": "true",
+                  "description": "true = sertakan data supplier"
+                },
+                {
+                  "key": "rpembelian_cabang_data",
+                  "value": "true",
+                  "description": "true = sertakan data cabang"
+                },
+                {
+                  "key": "rpembelian_faktur_data",
+                  "value": "true",
+                  "description": "true = sertakan data faktur pembelian terkait"
+                },
+                {
+                  "key": "rpembelian_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Retur Pembelian by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/retur_pembelian/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "retur_pembelian",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "9",
+                  "description": "ID retur pembelian"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Retur Pembelian",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/retur_pembelian/:id/rpembelian_det?page=1&results_per_page=20&rpembelian_det_produk_data=true&rpembelian_det_satuan_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "retur_pembelian",
+                ":id",
+                "rpembelian_det"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "rpembelian_det_produk_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data produk"
+                },
+                {
+                  "key": "rpembelian_det_satuan_data",
+                  "value": "true",
+                  "description": "true = sertakan data satuan produk"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "9",
+                  "description": "ID retur pembelian"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Persediaan - Penyesuaian Stok",
+      "description": "Dokumen koreksi/penyesuaian stok barang",
+      "item": [
+        {
+          "name": "Get List Penyesuaian Stok (Terbuka)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/penyesuaian_stok?page=1&results_per_page=20&koreksi_status=Terbuka&timestamp_data=true&koreksi_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "penyesuaian_stok"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "koreksi_status",
+                  "value": "Terbuka",
+                  "description": "Filter status: Terbuka | Tertutup | Batal | Semua"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "koreksi_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Penyesuaian Stok by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/penyesuaian_stok/:id?timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "penyesuaian_stok",
+                ":id"
+              ],
+              "query": [
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "620",
+                  "description": "ID penyesuaian stok"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Penyesuaian Stok",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/penyesuaian_stok/:id/detail_penyesuaian_stok?page=1&results_per_page=20&dkoreksi_produk_data=true&dkoreksi_satuan_data=true&timestamp_data=false",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "penyesuaian_stok",
+                ":id",
+                "detail_penyesuaian_stok"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "dkoreksi_produk_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data produk"
+                },
+                {
+                  "key": "dkoreksi_satuan_data",
+                  "value": "true",
+                  "description": "true = sertakan data satuan produk"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "false",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "620",
+                  "description": "ID penyesuaian stok"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏪 Transaksi - Penjualan (Order & Kirim)",
+      "description": "Transaksi penjualan: order jual, surat kirim, retur, POS",
+      "item": [
+        {
+          "name": "Get List Order Jual",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/order_jual?page=1&results_per_page=20&ojual_stat_dok=Semua&ojual_gudang_data=true&ojual_cust_data=true&ojual_jual_produk_data=true&ojual_detail_file_data=true&ojual_cabang_id={{cabang_id}}&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "order_jual"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "ojual_stat_dok",
+                  "value": "Semua",
+                  "description": "Filter status: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "ojual_gudang_data",
+                  "value": "true",
+                  "description": "true = sertakan data gudang"
+                },
+                {
+                  "key": "ojual_cust_data",
+                  "value": "true",
+                  "description": "true = sertakan data customer"
+                },
+                {
+                  "key": "ojual_jual_produk_data",
+                  "value": "true",
+                  "description": "true = sertakan data produk dalam order"
+                },
+                {
+                  "key": "ojual_detail_file_data",
+                  "value": "true",
+                  "description": "true = sertakan file lampiran"
+                },
+                {
+                  "key": "ojual_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order Jual by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/order_jual/:id?ojual_stat_dok=Terbuka&timestamp_data=true&ojual_gudang_data=true&ojual_cust_data=true&ojual_jual_produk_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "order_jual",
+                ":id"
+              ],
+              "query": [
+                {
+                  "key": "ojual_stat_dok",
+                  "value": "Terbuka",
+                  "description": "Filter status untuk detail"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "ojual_gudang_data",
+                  "value": "true",
+                  "description": "true = sertakan data gudang"
+                },
+                {
+                  "key": "ojual_cust_data",
+                  "value": "true",
+                  "description": "true = sertakan data customer"
+                },
+                {
+                  "key": "ojual_jual_produk_data",
+                  "value": "true",
+                  "description": "true = sertakan data produk"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "4",
+                  "description": "ID order jual"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Produk Order Jual",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/order_jual/:id/detail_ojual_produk?dojual_produk_produk_data=true&dojual_produk_satuan_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "order_jual",
+                ":id",
+                "detail_ojual_produk"
+              ],
+              "query": [
+                {
+                  "key": "dojual_produk_produk_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data produk"
+                },
+                {
+                  "key": "dojual_produk_satuan_data",
+                  "value": "true",
+                  "description": "true = sertakan data satuan produk"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "4",
+                  "description": "ID order jual"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Surat Kirim Jual Produk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/surat_kirim_jual_produk?page=1&results_per_page=20&sk_jproduk_stat_dok=Semua&sk_jproduk_cabang_id={{cabang_id}}&sk_jproduk_jual_cust_data=true&sk_jproduk_supir_data=true&sk_jproduk_kendaraan_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "surat_kirim_jual_produk"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "sk_jproduk_stat_dok",
+                  "value": "Semua",
+                  "description": "Filter status: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "sk_jproduk_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "sk_jproduk_jual_cust_data",
+                  "value": "true",
+                  "description": "true = sertakan data customer"
+                },
+                {
+                  "key": "sk_jproduk_supir_data",
+                  "value": "true",
+                  "description": "true = sertakan data supir pengantar"
+                },
+                {
+                  "key": "sk_jproduk_kendaraan_data",
+                  "value": "true",
+                  "description": "true = sertakan data kendaraan pengiriman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Surat Kirim Jual by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/surat_kirim_jual_produk/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "surat_kirim_jual_produk",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID surat kirim jual"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Produk Surat Kirim Jual",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/surat_kirim_jual_produk/:id/detail_surat_kirim_produk?page=1&results_per_page=20&dsk_produk_produk_data=true&dsk_produk_satuan_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "surat_kirim_jual_produk",
+                ":id",
+                "detail_surat_kirim_produk"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "dsk_produk_produk_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data produk"
+                },
+                {
+                  "key": "dsk_produk_satuan_data",
+                  "value": "true",
+                  "description": "true = sertakan data satuan"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID surat kirim jual"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get File Surat Kirim Jual",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/surat_kirim_jual_produk/:id/dsk_file?page=1&results_per_page=20&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "surat_kirim_jual_produk",
+                ":id",
+                "dsk_file"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID surat kirim jual"
+                }
+              ]
+            },
+            "description": "Ambil file/foto bukti pengiriman terlampir."
+          },
+          "response": []
+        },
+        {
+          "name": "Get List POS (Penjualan Langsung)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/pos?jproduk_stat_dok=Semua&results_per_page=20&jproduk_cust_data=true&jproduk_cabang_id={{cabang_id}}&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "pos"
+              ],
+              "query": [
+                {
+                  "key": "jproduk_stat_dok",
+                  "value": "Semua",
+                  "description": "Filter status: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "jproduk_cust_data",
+                  "value": "true",
+                  "description": "true = sertakan data customer"
+                },
+                {
+                  "key": "jproduk_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Retur Penjualan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/retur_penjualan?page=1&results_per_page=20&rjproduk_stat_dok=Semua&rjproduk_cust_data=true&timestamp_data=true&rjproduk_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "retur_penjualan"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "rjproduk_stat_dok",
+                  "value": "Semua",
+                  "description": "Filter status: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "rjproduk_cust_data",
+                  "value": "true",
+                  "description": "true = sertakan data customer"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "rjproduk_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Retur Penjualan by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/retur_penjualan/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "retur_penjualan",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "130",
+                  "description": "ID retur penjualan"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Retur Penjualan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/retur_penjualan/:id/rjproduk_det?page=1&results_per_page=20&rjproduk_det_produk_data=true&rjproduk_det_satuan_data=true&timestamp_data=false",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "retur_penjualan",
+                ":id",
+                "rjproduk_det"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "rjproduk_det_produk_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data produk"
+                },
+                {
+                  "key": "rjproduk_det_satuan_data",
+                  "value": "true",
+                  "description": "true = sertakan data satuan"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "false",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "130",
+                  "description": "ID retur penjualan"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💳 Transaksi - Keuangan (Hutang & Piutang)",
+      "description": "Pelunasan hutang ke supplier dan piutang dari customer",
+      "item": [
+        {
+          "name": "Get List Pelunasan Hutang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/pelunasan_hutang?page=1&results_per_page=20&fhutang_stat_dok=Semua&fhutang_supp_data=true&timestamp_data=true&fhutang_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "pelunasan_hutang"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "fhutang_stat_dok",
+                  "value": "Semua",
+                  "description": "Filter status: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "fhutang_supp_data",
+                  "value": "true",
+                  "description": "true = sertakan data supplier"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "fhutang_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Foto Pelunasan Hutang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/pelunasan_hutang/:id/dfhutang_foto",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "pelunasan_hutang",
+                ":id",
+                "dfhutang_foto"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "104",
+                  "description": "ID pelunasan hutang"
+                }
+              ]
+            },
+            "description": "Ambil foto bukti pembayaran hutang."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Pelunasan Hutang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/pelunasan_hutang/:id/detail_pelunasan_hutang?page=1&results_per_page=20&dhutang_master_hutang_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "pelunasan_hutang",
+                ":id",
+                "detail_pelunasan_hutang"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "dhutang_master_hutang_data",
+                  "value": "true",
+                  "description": "true = sertakan data faktur hutang terkait"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "104",
+                  "description": "ID pelunasan hutang"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Pelunasan Piutang",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/pelunasan_piutang?page=1&results_per_page=20&fpiutang_stat_dok=Semua&fpiutang_cust_data=true&fpiutang_cabang_id={{cabang_id}}&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "pelunasan_piutang"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "fpiutang_stat_dok",
+                  "value": "Semua",
+                  "description": "Filter status: Semua | Terbuka | Tertutup | Batal"
+                },
+                {
+                  "key": "fpiutang_cust_data",
+                  "value": "true",
+                  "description": "true = sertakan data customer"
+                },
+                {
+                  "key": "fpiutang_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Piutang Customer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/piutang_penjualan/customer/list_piutang/:cust_id/detail?page=1&results_per_page=100&lpiutang_stat_dok=Tertutup&lpiutang_cust={{cabang_id}}&lpiutang_cust_data=true&lpiutang_cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "piutang_penjualan",
+                "customer",
+                "list_piutang",
+                ":cust_id",
+                "detail"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "100",
+                  "description": "Jumlah data per halaman (besar untuk ambil semua)"
+                },
+                {
+                  "key": "lpiutang_stat_dok",
+                  "value": "Tertutup",
+                  "description": "Filter status: Tertutup | Terbuka | Semua"
+                },
+                {
+                  "key": "lpiutang_cust",
+                  "value": "9432",
+                  "description": "ID customer (sama dengan :cust_id di path)"
+                },
+                {
+                  "key": "lpiutang_cust_data",
+                  "value": "true",
+                  "description": "true = sertakan data customer"
+                },
+                {
+                  "key": "lpiutang_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "cust_id",
+                  "value": "9432",
+                  "description": "ID customer"
+                }
+              ]
+            },
+            "description": "Ambil detail faktur-faktur piutang milik customer tertentu."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏦 Transaksi - Kas Harian",
+      "description": "Rekap dan penerimaan kas harian per cabang",
+      "item": [
+        {
+          "name": "Get Rekap Kas Harian per Tanggal",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/kas_harian/rekap_tanggal?page=1&kh_cabang_id={{cabang_id}}&results_per_page=100&timestamp_data=true&kh_user_data=true&penerimaan_harian_data=true&group_by_user=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "kas_harian",
+                "rekap_tanggal"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "kh_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "100",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "kh_user_data",
+                  "value": "true",
+                  "description": "true = sertakan data user kasir"
+                },
+                {
+                  "key": "penerimaan_harian_data",
+                  "value": "true",
+                  "description": "true = sertakan detail penerimaan harian"
+                },
+                {
+                  "key": "group_by_user",
+                  "value": "true",
+                  "description": "true = kelompokkan berdasarkan user/kasir"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Rekap Penerimaan Kas (Range Tanggal)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/kas_harian/penerimaan/rekap?tanggal_awal=2026-06-07&tanggal_akhir=2026-06-07&cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "kas_harian",
+                "penerimaan",
+                "rekap"
+              ],
+              "query": [
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-06-07",
+                  "description": "Tanggal mulai filter format YYYY-MM-DD"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir filter format YYYY-MM-DD"
+                },
+                {
+                  "key": "cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🚢 Persediaan - Konosemen & Barang Titipan",
+      "description": "Dokumen konosemen dan barang titipan internal/eksternal",
+      "item": [
+        {
+          "name": "Get List Konosemen",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/konosemen",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "konosemen"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Barang Titipan Internal",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/barang_titipan_internal",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "barang_titipan_internal"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Barang Titipan Internal",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/barang_titipan_internal/:id/detail_barang_titipan_internal",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "barang_titipan_internal",
+                ":id",
+                "detail_barang_titipan_internal"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "709",
+                  "description": "ID barang titipan internal"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Barang Titipan Eksternal",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/persediaan/barang_titipan_eksternal",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "persediaan",
+                "barang_titipan_eksternal"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🗒️ Administrasi",
+      "description": "Modul administrasi: tugas",
+      "item": [
+        {
+          "name": "Get List Tugas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/administrasi/tugas?page=1&results_per_page=20&cust_aktif=Aktif&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "administrasi",
+                "tugas"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "cust_aktif",
+                  "value": "Aktif",
+                  "description": "Filter status tugas: Aktif | Nonaktif"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👷 Personalia",
+      "description": "Modul personalia: pinjaman karyawan",
+      "item": [
+        {
+          "name": "Get List Pengajuan Pinjaman Karyawan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/personalia/pengajuan_pinjaman_karyawan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personalia",
+                "pengajuan_pinjaman_karyawan"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pengajuan Pinjaman by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/personalia/pengajuan_pinjaman_karyawan/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personalia",
+                "pengajuan_pinjaman_karyawan",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "275",
+                  "description": "ID pengajuan pinjaman"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Pengajuan Pinjaman",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ppinjaman_karyawan_id\": 0,\n  \"ppinjaman_tanggal\": \"2026-01-01\",\n  \"ppinjaman_jenis\": \"Pinjaman\",\n  \"ppinjaman_status\": \"Terbuka\",\n  \"ppinjaman_aktif\": \"Aktif\",\n  \"ppinjaman_nilai\": 0.0,\n  \"ppinjaman_pelunasan\": 0,\n  \"ppinjaman_sisa\": 0.0,\n  \"ppinjaman_keterangan\": \"\",\n  \"ppinjaman_cabang_id\": \"{{cabang_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/personalia/pengajuan_pinjaman_karyawan/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "personalia",
+                "pengajuan_pinjaman_karyawan",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "275",
+                  "description": "ID pengajuan pinjaman"
+                }
+              ]
+            },
+            "description": "Body fields:\n- ppinjaman_karyawan_id: ID karyawan\n- ppinjaman_tanggal: Tanggal pengajuan YYYY-MM-DD\n- ppinjaman_jenis: Pinjaman | Kasbon\n- ppinjaman_status: Terbuka | Tertutup | Batal\n- ppinjaman_aktif: Aktif | Nonaktif\n- ppinjaman_nilai: Nominal pinjaman\n- ppinjaman_pelunasan: Jumlah cicilan\n- ppinjaman_sisa: Sisa hutang\n- ppinjaman_keterangan: Keterangan tambahan\n- ppinjaman_cabang_id: ID cabang"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📈 Laporan - Print (PDF)",
+      "description": "Endpoint cetak laporan. Response berupa URL file PDF yang bisa didownload dari /static/...",
+      "item": [
+        {
+          "name": "Print Laporan Penjualan Rekap",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/laporan/lap_penjualan/rekap/print?tanggal_awal=2026-06-07&tanggal_akhir=2026-06-07&cabang_id={{cabang_id}}&group_by=tanggal",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "lap_penjualan",
+                "rekap",
+                "print"
+              ],
+              "query": [
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-06-07",
+                  "description": "Tanggal mulai format YYYY-MM-DD"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir format YYYY-MM-DD"
+                },
+                {
+                  "key": "cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "group_by",
+                  "value": "tanggal",
+                  "description": "Kelompokkan berdasarkan: tanggal | customer | produk | user"
+                }
+              ]
+            },
+            "description": "Generate dan dapatkan URL PDF laporan rekap penjualan. Response berisi path file PDF di /static/penjualan/..."
+          },
+          "response": []
+        },
+        {
+          "name": "Print Laporan Hutang Pembelian",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/laporan/lap_hutang_pembelian/print?tanggal_awal=2026-06-07&tanggal_akhir=2026-06-07&cabang_id={{cabang_id}}&opsi_lunas=lunas&opsi_cetak=rekap",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "lap_hutang_pembelian",
+                "print"
+              ],
+              "query": [
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-06-07",
+                  "description": "Tanggal mulai format YYYY-MM-DD"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir format YYYY-MM-DD"
+                },
+                {
+                  "key": "cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "opsi_lunas",
+                  "value": "lunas",
+                  "description": "Filter status bayar: lunas | belum_lunas | semua"
+                },
+                {
+                  "key": "opsi_cetak",
+                  "value": "rekap",
+                  "description": "Tipe cetak: rekap | detail"
+                }
+              ]
+            },
+            "description": "Generate PDF laporan hutang pembelian ke supplier."
+          },
+          "response": []
+        },
+        {
+          "name": "Print Laporan Pinjaman Karyawan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/laporan/lap_pinjaman_karyawan/print?tanggal_awal=2026-06-07&tanggal_akhir=2026-06-07&opsi_cetak=rekap&cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "lap_pinjaman_karyawan",
+                "print"
+              ],
+              "query": [
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-06-07",
+                  "description": "Tanggal mulai format YYYY-MM-DD"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir format YYYY-MM-DD"
+                },
+                {
+                  "key": "opsi_cetak",
+                  "value": "rekap",
+                  "description": "Tipe cetak: rekap | detail"
+                },
+                {
+                  "key": "cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ]
+            },
+            "description": "Generate PDF laporan pinjaman/kasbon karyawan."
+          },
+          "response": []
+        },
+        {
+          "name": "Print Laporan Bukti Transfer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/laporan/lap_bukti_transfer/print?tanggal_awal=2026-06-07&tanggal_akhir=2026-06-07&cabang_id={{cabang_id}}&menu=penjualan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "lap_bukti_transfer",
+                "print"
+              ],
+              "query": [
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-06-07",
+                  "description": "Tanggal mulai format YYYY-MM-DD"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir format YYYY-MM-DD"
+                },
+                {
+                  "key": "cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "menu",
+                  "value": "penjualan",
+                  "description": "Konteks menu: penjualan | pembelian"
+                }
+              ]
+            },
+            "description": "Generate PDF bukti transfer pembayaran."
+          },
+          "response": []
+        },
+        {
+          "name": "Print Laporan Kas/Bank Masuk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/laporan/lap_kasbank_masuk/print?tanggal_awal=2026-06-07&tanggal_akhir=2026-06-07&cabang_id={{cabang_id}}&opsi_cetak=rekap",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "lap_kasbank_masuk",
+                "print"
+              ],
+              "query": [
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-06-07",
+                  "description": "Tanggal mulai format YYYY-MM-DD"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir format YYYY-MM-DD"
+                },
+                {
+                  "key": "cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "opsi_cetak",
+                  "value": "rekap",
+                  "description": "Tipe cetak: rekap | detail"
+                }
+              ]
+            },
+            "description": "Generate PDF laporan penerimaan kas/bank masuk."
+          },
+          "response": []
+        },
+        {
+          "name": "Print Laporan Kas/Bank Keluar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/laporan/lap_kasbank_keluar/print?tanggal_awal=2026-06-07&tanggal_akhir=2026-06-07&cabang_id={{cabang_id}}&opsi_cetak=rekap",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "lap_kasbank_keluar",
+                "print"
+              ],
+              "query": [
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-06-07",
+                  "description": "Tanggal mulai format YYYY-MM-DD"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir format YYYY-MM-DD"
+                },
+                {
+                  "key": "cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "opsi_cetak",
+                  "value": "rekap",
+                  "description": "Tipe cetak: rekap | detail"
+                }
+              ]
+            },
+            "description": "Generate PDF laporan pengeluaran kas/bank keluar."
+          },
+          "response": []
+        },
+        {
+          "name": "Download File PDF Static",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/static/:modul/:bulan/:nama_file",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "static",
+                ":modul",
+                ":bulan",
+                ":nama_file"
+              ],
+              "variable": [
+                {
+                  "key": "modul",
+                  "value": "penjualan",
+                  "description": "Nama modul: penjualan | hutang_pembelian | dll"
+                },
+                {
+                  "key": "bulan",
+                  "value": "2026-06",
+                  "description": "Folder bulan format YYYY-MM"
+                },
+                {
+                  "key": "nama_file",
+                  "value": "penjualan_20260607024206.pdf",
+                  "description": "Nama file PDF dari response endpoint print"
+                }
+              ]
+            },
+            "description": "Download file PDF yang sudah digenerate. URL lengkap didapat dari response endpoint /laporan/.../print. Tidak perlu Authorization header."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Laporan - Dashboard",
+      "description": "Endpoint data dashboard: rekap dan penerimaan per user",
+      "item": [
+        {
+          "name": "Get Rekap Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/laporan/dashboard/rekap_dashboard?tanggal_awal=2026-06-07&tanggal_akhir=2026-06-07&cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "dashboard",
+                "rekap_dashboard"
+              ],
+              "query": [
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-06-07",
+                  "description": "Tanggal mulai format YYYY-MM-DD"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir format YYYY-MM-DD"
+                },
+                {
+                  "key": "cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ]
+            },
+            "description": "Ambil data ringkasan dashboard: total penjualan, pembelian, kas masuk/keluar, dll."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Penerimaan Per User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/laporan/dashboard/penerimaan_per_user?tanggal_awal=2026-06-07&tanggal_akhir=2026-06-07&cabang_id={{cabang_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "dashboard",
+                "penerimaan_per_user"
+              ],
+              "query": [
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-06-07",
+                  "description": "Tanggal mulai format YYYY-MM-DD"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir format YYYY-MM-DD"
+                },
+                {
+                  "key": "cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                }
+              ]
+            },
+            "description": "Ambil data total penerimaan kas dikelompokkan per user/kasir."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Rekapitulasi Saldo Kas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaksi/kas_harian/rekapitulasi/saldo?kh_cabang_id={{cabang_id}}&tanggal_awal=2026-05-08&tanggal_akhir=2026-06-07",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transaksi",
+                "kas_harian",
+                "rekapitulasi",
+                "saldo"
+              ],
+              "query": [
+                {
+                  "key": "kh_cabang_id",
+                  "value": "{{cabang_id}}",
+                  "description": "ID cabang"
+                },
+                {
+                  "key": "tanggal_awal",
+                  "value": "2026-05-08",
+                  "description": "Tanggal mulai format YYYY-MM-DD (bisa range 30 hari ke belakang)"
+                },
+                {
+                  "key": "tanggal_akhir",
+                  "value": "2026-06-07",
+                  "description": "Tanggal akhir format YYYY-MM-DD"
+                }
+              ]
+            },
+            "description": "Ambil rekapitulasi saldo kas harian dalam rentang tanggal tertentu."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧾 Akuntansi - Kas/Bank Masuk",
+      "description": "Transaksi kas/bank masuk: detail, penerimaan lain, piutang karyawan, bukti pelunasan",
+      "item": [
+        {
+          "name": "Get Kas/Bank Masuk by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/akuntansi/kasbank_masuk/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "akuntansi",
+                "kasbank_masuk",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1508",
+                  "description": "ID transaksi kas/bank masuk"
+                }
+              ]
+            },
+            "description": "Ambil header/detail utama transaksi kas masuk."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Kas/Bank Masuk (Jurnal Akun)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/akuntansi/kasbank_masuk/:id/detail_kasbank_masuk?dkasbank_akun_data=true&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "akuntansi",
+                "kasbank_masuk",
+                ":id",
+                "detail_kasbank_masuk"
+              ],
+              "query": [
+                {
+                  "key": "dkasbank_akun_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data akun jurnal"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1508",
+                  "description": "ID kas/bank masuk"
+                }
+              ]
+            },
+            "description": "Ambil detail jurnal akun dari transaksi kas masuk (debet/kredit)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Penerimaan Lain",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/akuntansi/kasbank_masuk/:id/detail_penerimaan_lain?page=1&results_per_page=20&timestamp_data=false&dkasbank_penerimaan_akun_data=true&dkasbank_penerimaan_penerimaan_data=true&dkasbank_penerimaan_karyawan_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "akuntansi",
+                "kasbank_masuk",
+                ":id",
+                "detail_penerimaan_lain"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "false",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "dkasbank_penerimaan_akun_data",
+                  "value": "true",
+                  "description": "true = sertakan data akun penerimaan"
+                },
+                {
+                  "key": "dkasbank_penerimaan_penerimaan_data",
+                  "value": "true",
+                  "description": "true = sertakan detail jenis penerimaan"
+                },
+                {
+                  "key": "dkasbank_penerimaan_karyawan_data",
+                  "value": "true",
+                  "description": "true = sertakan data karyawan terkait"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1508",
+                  "description": "ID kas/bank masuk"
+                }
+              ]
+            },
+            "description": "Ambil detail penerimaan non-piutang (penerimaan lain-lain) dari transaksi kas masuk."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Piutang Karyawan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/akuntansi/kasbank_masuk/:id/detail_piutang_karyawan?timestamp_data=true&kdpk_ppinjaman_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "akuntansi",
+                "kasbank_masuk",
+                ":id",
+                "detail_piutang_karyawan"
+              ],
+              "query": [
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp"
+                },
+                {
+                  "key": "kdpk_ppinjaman_data",
+                  "value": "true",
+                  "description": "true = sertakan data pengajuan pinjaman terkait"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1508",
+                  "description": "ID kas/bank masuk"
+                }
+              ]
+            },
+            "description": "Ambil detail cicilan/pelunasan piutang karyawan (pinjaman/kasbon) yang dikaitkan ke kas masuk ini."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Bukti Pelunasan Kas Masuk",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/akuntansi/kasbank_masuk/:id/bukti_pelunasan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "akuntansi",
+                "kasbank_masuk",
+                ":id",
+                "bukti_pelunasan"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1508",
+                  "description": "ID kas/bank masuk"
+                }
+              ]
+            },
+            "description": "Ambil foto/file bukti pembayaran yang diupload pada transaksi kas masuk."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧾 Akuntansi - Kas/Bank Keluar",
+      "description": "Transaksi kas/bank keluar: detail, pengeluaran lain, jurnal",
+      "item": [
+        {
+          "name": "Get Detail Kas/Bank Keluar (Jurnal Akun)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/akuntansi/kasbank_keluar/:id/detail_kasbank_keluar?results_per_page=20&dkasbank_akun_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "akuntansi",
+                "kasbank_keluar",
+                ":id",
+                "detail_kasbank_keluar"
+              ],
+              "query": [
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "dkasbank_akun_data",
+                  "value": "true",
+                  "description": "true = sertakan detail data akun jurnal"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1505",
+                  "description": "ID transaksi kas/bank keluar"
+                }
+              ]
+            },
+            "description": "Ambil detail jurnal akun dari transaksi kas keluar."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Detail Pengeluaran Lain",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/akuntansi/kasbank_keluar/:id/detail_pengeluaran_lain?results_per_page=20&dkasbank_pengeluaran_akun_data=true&dkasbank_pengeluaran_pengeluaran_data=true&dkasbank_pengeluaran_karyawan_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "akuntansi",
+                "kasbank_keluar",
+                ":id",
+                "detail_pengeluaran_lain"
+              ],
+              "query": [
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "dkasbank_pengeluaran_akun_data",
+                  "value": "true",
+                  "description": "true = sertakan data akun pengeluaran"
+                },
+                {
+                  "key": "dkasbank_pengeluaran_pengeluaran_data",
+                  "value": "true",
+                  "description": "true = sertakan detail jenis pengeluaran"
+                },
+                {
+                  "key": "dkasbank_pengeluaran_karyawan_data",
+                  "value": "true",
+                  "description": "true = sertakan data karyawan terkait"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1505",
+                  "description": "ID kas/bank keluar"
+                }
+              ]
+            },
+            "description": "Ambil detail pengeluaran lain-lain (non-hutang) dari transaksi kas keluar."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📒 Akuntansi - Jurnal Umum",
+      "description": "Data jurnal umum akuntansi",
+      "item": [
+        {
+          "name": "Get List Jurnal Umum",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/akuntansi/jurnal_umum?page=1&results_per_page=20&timestamp_data=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "akuntansi",
+                "jurnal_umum"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "results_per_page",
+                  "value": "20",
+                  "description": "Jumlah data per halaman"
+                },
+                {
+                  "key": "timestamp_data",
+                  "value": "true",
+                  "description": "true = sertakan timestamp created_at/updated_at"
+                }
+              ]
+            },
+            "description": "Ambil daftar jurnal umum akuntansi."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}

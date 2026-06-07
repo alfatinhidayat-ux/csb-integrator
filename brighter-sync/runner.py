@@ -1,0 +1,121 @@
+import logging
+import time
+from datetime import datetime
+from typing import Optional
+
+import httpx
+
+from auth import AuthManager
+from config import Config
+from db import DatabaseManager
+from endpoints import ENDPOINTS, Strategy
+from sync.base import SyncError
+from sync.delta import DeltaSyncer
+from sync.full import FullSyncer
+
+logger = logging.getLogger("brighter-sync")
+
+
+class SyncRunner:
+    def __init__(self, config: Config):
+        self.config = config
+        self.auth = AuthManager(config)
+        self.db = DatabaseManager(config)
+        self.stats: dict = {"cabang": 0, "endpoint": 0, "records": 0, "errors": 0, "skipped": 0}
+
+    def discover_cabangs(self) -> list[dict]:
+        logger.info("Discovering cabangs from API...")
+        cabangs = []
+        page = 1
+        while True:
+            resp = httpx.get(
+                f"{self.config.base_url}/master/cabang",
+                params={"page": str(page), "results_per_page": "100", "cabang_aktif": "Aktif"},
+                timeout=self.config.request_timeout,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            batch = data.get("data", [])
+            if not batch:
+                break
+            cabangs.extend(batch)
+            total = data.get("total", 0)
+            if page * 100 >= total:
+                break
+            page += 1
+        logger.info("Found %d active cabangs", len(cabangs))
+        return cabangs
+
+    def get_cabang_ids(self) -> list[int]:
+        if self.config.cabang_ids:
+            return self.config.cabang_ids
+        cabangs = self.discover_cabangs()
+        return [c["id"] for c in cabangs]
+
+    def run_endpoint(self, ep, cabang_id: int) -> int:
+        self.auth.ensure_token()
+        if ep.strategy == Strategy.DELTA:
+            syncer = DeltaSyncer(self.config, self.auth, self.db, ep, cabang_id)
+        else:
+            syncer = FullSyncer(self.config, self.auth, self.db, ep, cabang_id)
+        try:
+            count = syncer.sync()
+            return count
+        finally:
+            syncer.close()
+
+    def run_all(self):
+        self.db.connect()
+        self.db.ensure_sync_meta()
+        logger.info("Starting sync at %s", datetime.now().isoformat())
+
+        cabang_ids = self.get_cabang_ids()
+        self.stats["cabang"] = len(cabang_ids)
+        logger.info("Will sync %d cabang(s): %s", len(cabang_ids), cabang_ids)
+
+        for cabang_id in cabang_ids:
+            logger.info("=== Cabang %d ===", cabang_id)
+            for ep in ENDPOINTS:
+                if ep.skip:
+                    logger.debug("  SKIP %s (%s)", ep.name, ep.path)
+                    self.stats["skipped"] += 1
+                    continue
+                if not self._should_sync(ep, cabang_id):
+                    logger.debug("  SKIP %s (path param)", ep.name)
+                    self.stats["skipped"] += 1
+                    continue
+                logger.info("  SYNC %-30s %-10s %s", ep.name, f"[{ep.strategy.value}]", ep.path)
+                try:
+                    count = self.run_endpoint(ep, cabang_id)
+                    logger.info("    -> %d records upserted", count)
+                    self.stats["endpoint"] += 1
+                    self.stats["records"] += count
+                except SyncError as e:
+                    logger.error("    ERROR: %s", e)
+                    self.stats["errors"] += 1
+                except Exception as e:
+                    logger.exception("    UNEXPECTED ERROR: %s", e)
+                    self.stats["errors"] += 1
+
+        self.db.close()
+        self._log_summary()
+
+    def _has_path_param(self, path: str) -> bool:
+        return ":id" in path or ":produk_id" in path or ":cust_id" in path
+
+    def _should_sync(self, ep, cabang_id: int) -> bool:
+        if ep.path == "/master/cabang":
+            return cabang_id == 1
+        if self._has_path_param(ep.path):
+            return False
+        return True
+
+    def _log_summary(self):
+        logger.info("=" * 50)
+        logger.info("SYNC COMPLETE")
+        logger.info("  Cabangs synced:   %d", self.stats["cabang"])
+        logger.info("  Endpoints synced: %d", self.stats["endpoint"])
+        logger.info("  Records upserted: %d", self.stats["records"])
+        logger.info("  Errors:           %d", self.stats["errors"])
+        logger.info("  Skipped:          %d", self.stats["skipped"])
+        logger.info("=" * 50)
