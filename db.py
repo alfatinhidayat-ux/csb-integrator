@@ -92,7 +92,10 @@ class DatabaseManager:
             cols = []
             for k, v in sample.items():
                 if k in ("id",):
-                    cols.append(f"{_safe_col(k)} {_mysql_type(v)} NOT NULL")
+                    if isinstance(v, str):
+                        cols.append(f"{_safe_col(k)} VARCHAR(255) NOT NULL")
+                    else:
+                        cols.append(f"{_safe_col(k)} {_mysql_type(v)} NOT NULL")
                 else:
                     cols.append(f"{_safe_col(k)} {_mysql_type(v)} NULL")
             cols.append("cabang_id INT NOT NULL")

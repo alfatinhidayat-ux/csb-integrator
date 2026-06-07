@@ -108,6 +108,8 @@ class SyncRunner:
             return cabang_id == 1
         if self._has_path_param(ep.path):
             return False
+        if not ep.cabang_param:
+            return cabang_id == 1
         return True
 
     def _log_summary(self):
