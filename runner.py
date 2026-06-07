@@ -44,6 +44,9 @@ class SyncRunner:
                 break
             page += 1
         logger.info("Found %d active cabangs", len(cabangs))
+        if cabangs:
+            self.db.ensure_table("master_cabang", cabangs[0])
+            self.db.upsert_records("master_cabang", cabangs, cabangs[0]["cabang_id"])
         return cabangs
 
     def get_cabang_ids(self) -> list[int]:

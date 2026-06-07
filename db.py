@@ -124,13 +124,14 @@ class DatabaseManager:
         if not records:
             return
         first = records[0]
-        cols = list(first.keys()) + ["cabang_id"]
+        has_cabang_id = "cabang_id" in first
+        cols = list(first.keys()) + ([] if has_cabang_id else ["cabang_id"])
         placeholders = ", ".join(["%s"] * len(cols))
         col_names = ", ".join(_safe_col(c) for c in cols)
         updates = ", ".join(
             f"{_safe_col(c)} = VALUES({_safe_col(c)})"
             for c in first.keys()
-            if c != "id"
+            if c not in ("id", "cabang_id")
         )
         sql = (
             f"INSERT INTO {_safe_col(table)} ({col_names}) VALUES ({placeholders})"
@@ -142,7 +143,9 @@ class DatabaseManager:
             row = [
                 json.dumps(rec.get(k), ensure_ascii=False) if isinstance(rec.get(k), (dict, list)) else rec.get(k)
                 for k in first.keys()
-            ] + [cabang_id]
+            ]
+            if not has_cabang_id:
+                row.append(cabang_id)
             batch.append(row)
         cur = self.conn.cursor()
         cur.executemany(sql, batch)
