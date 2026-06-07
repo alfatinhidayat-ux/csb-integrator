@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from typing import Any, Optional
 
@@ -136,7 +137,10 @@ class DatabaseManager:
             sql += f" ON DUPLICATE KEY UPDATE {updates}"
         batch = []
         for rec in records:
-            row = [rec.get(k) for k in first.keys()] + [cabang_id]
+            row = [
+                json.dumps(rec.get(k), ensure_ascii=False) if isinstance(rec.get(k), (dict, list)) else rec.get(k)
+                for k in first.keys()
+            ] + [cabang_id]
             batch.append(row)
         cur = self.conn.cursor()
         cur.executemany(sql, batch)
