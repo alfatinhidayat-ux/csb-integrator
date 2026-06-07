@@ -98,8 +98,10 @@ class DatabaseManager:
                         cols.append(f"{_safe_col(k)} {_mysql_type(v)} NOT NULL")
                 else:
                     cols.append(f"{_safe_col(k)} {_mysql_type(v)} NULL")
-            cols.append("cabang_id INT NOT NULL")
-            cols.append("synced_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP")
+            if "cabang_id" not in sample:
+                cols.append("cabang_id INT NOT NULL")
+            if "synced_at" not in sample:
+                cols.append("synced_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP")
             pk = ", PRIMARY KEY (`id`, `cabang_id`)" if "id" in sample else ""
             sql = f"CREATE TABLE {_safe_col(table)} ({', '.join(cols)}{pk}) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
             self._execute(sql)
