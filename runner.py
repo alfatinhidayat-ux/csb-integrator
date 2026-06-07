@@ -9,9 +9,9 @@ from auth import AuthManager
 from config import Config
 from db import DatabaseManager
 from endpoints import ENDPOINTS, Strategy
-from sync.base import SyncError
-from sync.delta import DeltaSyncer
-from sync.full import FullSyncer
+from base import SyncError
+from delta import DeltaSyncer
+from full import FullSyncer
 
 logger = logging.getLogger("brighter-sync")
 

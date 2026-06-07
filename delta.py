@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from endpoints import Endpoint
-from sync.base import BaseSyncer
+from base import BaseSyncer
 
 
 class DeltaSyncer(BaseSyncer):

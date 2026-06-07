@@ -18,7 +18,7 @@ def setup_logging(verbose: bool):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Brighter API → MySQL data integrator"
+        description="Brighter API \u2192 MySQL data integrator"
     )
     parser.add_argument(
         "-e", "--env",

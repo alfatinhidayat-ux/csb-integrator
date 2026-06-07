@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from endpoints import Strategy
-from sync.base import BaseSyncer
+from base import BaseSyncer
 
 
 class FullSyncer(BaseSyncer):
