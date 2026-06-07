@@ -146,6 +146,10 @@ class DatabaseManager:
         cur.executemany(sql, batch)
         self.conn.commit()
 
+    def truncate_table(self, table: str):
+        self._execute(f"TRUNCATE TABLE {_safe_col(table)}")
+        self.conn.commit()
+
     def delete_cabang_data(self, table: str, cabang_id: int):
         self._execute(
             f"DELETE FROM {_safe_col(table)} WHERE cabang_id = %s", (cabang_id,)

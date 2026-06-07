@@ -27,7 +27,7 @@ class FullSyncer(BaseSyncer):
         self.db.ensure_table(self.endpoint.table, sample)
 
         if self.endpoint.strategy == Strategy.FULL_PAGING:
-            self.db.delete_cabang_data(self.endpoint.table, self.cabang_id)
+            self.db.truncate_table(self.endpoint.table)
 
         self.db.upsert_records(self.endpoint.table, records, self.cabang_id)
 
