@@ -82,7 +82,7 @@ class DatabaseManager:
         try:
             cur = self._execute(f"SHOW COLUMNS FROM {_safe_col(table)}")
             return {row["Field"] for row in cur.fetchall()}
-        except pymysql.err.OperationalError:
+        except (pymysql.err.OperationalError, pymysql.err.ProgrammingError):
             return set()
 
     def ensure_table(self, table: str, sample: dict) -> set[str]:
@@ -112,7 +112,7 @@ class DatabaseManager:
                     self._execute(
                         f"ALTER TABLE {_safe_col(table)} ADD COLUMN {_safe_col(col)} TEXT NULL"
                     )
-                except pymysql.err.OperationalError:
+                except (pymysql.err.OperationalError, pymysql.err.ProgrammingError):
                     pass
                 needed.add(col)
         return existing | needed
