@@ -8,7 +8,6 @@ class FullSyncer(BaseSyncer):
     def sync(self) -> int:
         records = []
         page = 1
-        newest_timestamp: datetime | None = None
 
         while True:
             params = self._build_params(page=page)

@@ -1,17 +1,13 @@
 from datetime import datetime
 from typing import Optional
 
-from endpoints import Endpoint
 from base import BaseSyncer
 
 
 class DeltaSyncer(BaseSyncer):
-    def __init__(
-        self, *args, **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.last_synced: Optional[datetime] = None
-        self.newest_timestamp: Optional[datetime] = None
 
     def _build_params(self, page: int = 1, timestamp: Optional[datetime] = None) -> dict:
         params = super()._build_params(page=page, timestamp=timestamp)
