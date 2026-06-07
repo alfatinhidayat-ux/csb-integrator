@@ -50,7 +50,7 @@ class SyncRunner:
         if self.config.cabang_ids:
             return self.config.cabang_ids
         cabangs = self.discover_cabangs()
-        return [c["id"] for c in cabangs]
+        return [c["cabang_id"] for c in cabangs]
 
     def run_endpoint(self, ep, cabang_id: int) -> int:
         self.auth.ensure_token()
