@@ -4,9 +4,61 @@ Brighter API → MySQL data integrator. Menarik semua data dari 101 endpoint Bri
 
 ## Prasyarat
 
-- **Python** 3.10+
-- **MySQL** / **MariaDB** (database `brighter_mirror` harus dibuat manual)
-- **pip** (Python package manager)
+- **Python** 3.10+ (opsional — bisa pakai Docker)
+- **Docker** + **Docker Compose** (cara termudah)
+- **MySQL** / **MariaDB** (kalo tanpa Docker)
+
+---
+
+## Cara 1 — Docker (termudah) 🐳
+
+MySQL dan app jalan otomatis dalam container. Data MySQL persist di volume `mysql_data`.
+
+### 1. Set credential
+
+Buat file `.env` di root project:
+
+```ini
+BRIGHTER_USERNAME=username_anda
+BRIGHTER_PASSWORD=password_anda
+BRIGHTER_CLIENT_ID=client_id_anda
+BRIGHTER_CLIENT_SECRET=client_secret_anda
+MYSQL_ROOT_PASSWORD=rootpass123
+```
+
+### 2. Jalankan
+
+```powershell
+docker compose up
+```
+
+Proses:
+- Container `db` (MySQL 8.0) mulai, healthcheck tiap 5 detik
+- Container `app` build & jalan setelah `db` siap
+- App login ke API, sync semua data ke `brighter_mirror`, lalu exit
+
+### 3. Cek hasil
+
+```powershell
+docker exec -it brighter-mirror-db mysql -uroot -prootpass123 brighter_mirror -e "SHOW TABLES;"
+docker exec -it brighter-mirror-db mysql -uroot -prootpass123 brighter_mirror -e "SELECT COUNT(*) FROM master_cabang;"
+```
+
+> ⚠️ Ganti `rootpass123` dengan `MYSQL_ROOT_PASSWORD` yang kamu set di `.env`.
+
+### Env vars tambahan (opsional)
+
+Bisa ditambahkan di `.env`:
+
+```ini
+BRIGHTER_CABANG_IDS=1,2,3
+BRIGHTER_RESULTS_PER_PAGE=100
+BRIGHTER_REQUEST_DELAY=0.1
+```
+
+---
+
+## Cara 2 — Manual (Python langsung)
 
 ## Setup
 
@@ -25,7 +77,7 @@ mysql -u root -p -e "CREATE DATABASE brighter_mirror CHARACTER SET utf8mb4 COLLA
 
 ### Opsi A — Environment variables ( `--env` )
 
-Buat file `.env` (jangan di-commit) atau set langsung:
+Set environment variable atau buat `.env`:
 
 ```powershell
 $env:BRIGHTER_USERNAME = "username_anda"
@@ -65,13 +117,7 @@ python main.py --username "user" --password "pass" --client-id "id" --client-sec
 | `--request-delay` | 0.1 | Jeda antar request (detik) |
 | `--verbose` / `-v` | — | Tampilkan log lebih detail |
 
-## Menjalankan
-
-```powershell
-python main.py -v --username "user" --password "pass" --client-id "id" --client-secret "secret"
-```
-
-Proses akan:
+## Alur sync
 
 1. Login ke Brighter API → dapat token JWT
 2. Deteksi daftar cabang aktif dari API

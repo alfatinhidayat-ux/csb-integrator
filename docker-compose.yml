@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: brighter-mirror-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass123}
+      MYSQL_DATABASE: brighter_mirror
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    container_name: brighter-sync
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      BRIGHTER_USERNAME: ${BRIGHTER_USERNAME:?err}
+      BRIGHTER_PASSWORD: ${BRIGHTER_PASSWORD:?err}
+      BRIGHTER_CLIENT_ID: ${BRIGHTER_CLIENT_ID:?err}
+      BRIGHTER_CLIENT_SECRET: ${BRIGHTER_CLIENT_SECRET:?err}
+      BRIGHTER_DB_HOST: db
+      BRIGHTER_DB_USER: root
+      BRIGHTER_DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass123}
+      BRIGHTER_DB_NAME: brighter_mirror
+    restart: "no"
+
+volumes:
+  mysql_data:
