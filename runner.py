@@ -106,6 +106,8 @@ class SyncRunner:
         self._log_summary()
 
     def run_child_endpoints(self):
+        import concurrent.futures
+
         for ep in ENDPOINTS:
             if not ep.parent_table or not ep.parent_key:
                 continue
@@ -117,30 +119,44 @@ class SyncRunner:
                 continue
             all_records = []
             errors = 0
-            for pid in parent_ids:
+
+            def fetch_pfoto(pid):
                 path = ep.path.replace(f":{ep.parent_key}", str(pid))
                 params = dict(ep.params)
                 params["page"] = "1"
                 params["results_per_page"] = "100"
-                self.auth.ensure_token()
-                try:
-                    resp = httpx.get(
-                        f"{self.config.base_url}{path}",
-                        params=params,
-                        headers=self.auth.get_headers(),
-                        timeout=self.config.request_timeout,
-                    )
-                    resp.raise_for_status()
-                    data = resp.json()
-                    batch = data.get(ep.response_root, [])
-                    if isinstance(batch, dict):
-                        batch = [batch]
-                    if not isinstance(batch, list):
-                        batch = []
-                    all_records.extend(batch)
-                except Exception as e:
-                    errors += 1
-                    continue
+                for attempt in range(self.config.max_retries):
+                    try:
+                        self.auth.ensure_token()
+                        resp = httpx.get(
+                            f"{self.config.base_url}{path}",
+                            params=params,
+                            headers=self.auth.get_headers(),
+                            timeout=self.config.request_timeout,
+                        )
+                        resp.raise_for_status()
+                        data = resp.json()
+                        batch = data.get(ep.response_root, [])
+                        if isinstance(batch, dict):
+                            batch = [batch]
+                        if not isinstance(batch, list):
+                            batch = []
+                        return batch
+                    except Exception:
+                        if attempt < self.config.max_retries - 1:
+                            time.sleep(2 ** attempt)
+                            continue
+                        return None
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+                futures = {pool.submit(fetch_pfoto, pid): pid for pid in parent_ids}
+                for future in concurrent.futures.as_completed(futures):
+                    result = future.result()
+                    if result is not None:
+                        all_records.extend(result)
+                    else:
+                        errors += 1
+
             if all_records:
                 self.db.ensure_table(ep.table, all_records[0])
                 if ep.strategy == Strategy.FULL_PAGING:
