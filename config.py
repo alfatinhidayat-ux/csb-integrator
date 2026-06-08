@@ -10,7 +10,7 @@ load_dotenv()
 
 @dataclass
 class Config:
-    base_url: str = "https://brighter-api.koffiesoft.com"
+    base_url: str = "https://brighter-kairatu-api.koffiesoft.com"
 
     username: str = ""
     password: str = ""
@@ -32,7 +32,7 @@ class Config:
     @classmethod
     def from_env(cls) -> "Config":
         return cls(
-            base_url=os.getenv("BRIGHTER_BASE_URL", "https://brighter-api.koffiesoft.com"),
+            base_url=os.getenv("BRIGHTER_BASE_URL", "https://brighter-kairatu-api.koffiesoft.com"),
             username=os.getenv("BRIGHTER_USERNAME", ""),
             password=os.getenv("BRIGHTER_PASSWORD", ""),
             client_id=os.getenv("BRIGHTER_CLIENT_ID", ""),
