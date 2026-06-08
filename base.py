@@ -91,7 +91,12 @@ class BaseSyncer:
         return []
 
     def _has_more_pages(self, data: dict, page: int) -> bool:
-        total = data.get("total", 0) if isinstance(data, dict) else 0
+        if not isinstance(data, dict):
+            return False
+        paging = data.get("paging")
+        if paging:
+            return page < paging.get("total_pages", 0)
+        total = data.get("total", 0)
         rpp = self.config.results_per_page
         total_pages = (total + rpp - 1) // rpp if total else 0
         return page < total_pages if total_pages else (len(self._extract_records(data)) >= rpp)

@@ -70,16 +70,6 @@ ENDPOINTS: list[Endpoint] = [
         "/master/produk",
         "master_produk",
         Strategy.DELTA,
-        params={
-            "produk_aktif": "Aktif",
-            "produk_satuan_konversi_data": "true",
-            "produk_foto_data": "true",
-            "produk_brand_data": "true",
-            "produk_group_data": "true",
-            "produk_group_sub_data": "true",
-            "produk_harga_beli_terakhir_data": "false",
-            "produk_satuan_konversi_cabang_data": "false",
-        },
     ),
     Endpoint(
         "Produk by ID",
