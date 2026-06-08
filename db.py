@@ -164,3 +164,9 @@ class DatabaseManager:
     def get_cabang_list(self) -> list[dict]:
         cur = self._execute("SELECT DISTINCT id, nama_cabang FROM master_cabang ORDER BY id")
         return cur.fetchall()
+
+    def get_distinct(self, table: str, column: str) -> list:
+        cur = self._execute(
+            f"SELECT DISTINCT {_safe_col(column)} FROM {_safe_col(table)}"
+        )
+        return [row[column] for row in cur.fetchall()]

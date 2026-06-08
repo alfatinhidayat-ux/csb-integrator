@@ -100,8 +100,55 @@ class SyncRunner:
                     logger.exception("    UNEXPECTED ERROR: %s", e)
                     self.stats["errors"] += 1
 
+        self.run_child_endpoints()
+
         self.db.close()
         self._log_summary()
+
+    def run_child_endpoints(self):
+        for ep in ENDPOINTS:
+            if not ep.parent_table or not ep.parent_key:
+                continue
+            logger.info("=== Child Endpoint: %s ===", ep.name)
+            try:
+                parent_ids = self.db.get_distinct(ep.parent_table, ep.parent_key)
+            except Exception:
+                logger.warning("  SKIP %s: table %s or column %s not found", ep.name, ep.parent_table, ep.parent_key)
+                continue
+            all_records = []
+            errors = 0
+            for pid in parent_ids:
+                path = ep.path.replace(f":{ep.parent_key}", str(pid))
+                params = dict(ep.params)
+                params["page"] = "1"
+                params["results_per_page"] = "100"
+                self.auth.ensure_token()
+                try:
+                    resp = httpx.get(
+                        f"{self.config.base_url}{path}",
+                        params=params,
+                        headers=self.auth.get_headers(),
+                        timeout=self.config.request_timeout,
+                    )
+                    resp.raise_for_status()
+                    data = resp.json()
+                    batch = data.get(ep.response_root, [])
+                    if isinstance(batch, dict):
+                        batch = [batch]
+                    if not isinstance(batch, list):
+                        batch = []
+                    all_records.extend(batch)
+                except Exception as e:
+                    errors += 1
+                    continue
+            if all_records:
+                self.db.ensure_table(ep.table, all_records[0])
+                if ep.strategy == Strategy.FULL_PAGING:
+                    self.db.truncate_table(ep.table)
+                self.db.upsert_records(ep.table, all_records, 1)
+            logger.info("  -> %d records upserted (%d skipped)", len(all_records), errors)
+            self.stats["endpoint"] += 1
+            self.stats["records"] += len(all_records)
 
     def _has_path_param(self, path: str) -> bool:
         return ":id" in path or ":produk_id" in path or ":cust_id" in path

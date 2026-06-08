@@ -20,6 +20,8 @@ class Endpoint:
     id_field: str = "id"
     response_root: str = "data"
     skip: bool = False
+    parent_table: Optional[str] = None
+    parent_key: Optional[str] = None
 
 
 ENDPOINTS: list[Endpoint] = [
@@ -99,6 +101,8 @@ ENDPOINTS: list[Endpoint] = [
         "/master/produk/:produk_id/pfoto",
         "master_produk_foto",
         Strategy.FULL_REPLACE,
+        parent_table="master_produk",
+        parent_key="produk_id",
     ),
     Endpoint(
         "Produk Brand",
