@@ -1,0 +1,12 @@
+15:06:09 [INFO]     -> 849 records upserted
+15:06:09 [INFO]   SYNC Jurnal Umum                    [delta]    /akuntansi/jurnal_umum
+15:06:10 [INFO] HTTP Request: GET https://brighter-api.koffiesoft.com/akuntansi/jurnal_umum?page=1&results_per_page=100&timestamp_data=true "HTTP/1.1 404 Not Found"
+15:06:10 [ERROR]     ERROR: HTTP 404 for /akuntansi/jurnal_umum: {"status":{"code":404,"message":"Data Tidak Ditemukan."},"data":null,"error":null,"request":{"url":"http://brighter-api.koffiesoft.com/akuntansi/jurnal_umum?page=1&results_per_page=100&timestamp_data=
+15:06:10 [INFO] ==================================================
+15:06:10 [INFO] SYNC COMPLETE
+15:06:10 [INFO]   Cabangs synced:   7
+15:06:10 [INFO]   Endpoints synced: 107
+15:06:10 [INFO]   Records upserted: 42851
+15:06:10 [INFO]   Errors:           55
+15:06:10 [INFO]   Skipped:          538
+15:06:10 [INFO] ==================================================
