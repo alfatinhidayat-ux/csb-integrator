@@ -65,6 +65,10 @@ def main():
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="Verbose logging"
     )
+    parser.add_argument(
+        "--child-only", action="store_true",
+        help="Skip main sync, only run child endpoints (resume after crash)",
+    )
     args = parser.parse_args()
 
     setup_logging(args.verbose)
@@ -95,7 +99,10 @@ def main():
         sys.exit(1)
 
     runner = SyncRunner(config)
-    runner.run_all()
+    if args.child_only:
+        runner.run_child_endpoints()
+    else:
+        runner.run_all()
 
 
 if __name__ == "__main__":

@@ -45,6 +45,13 @@ class DatabaseManager:
         if self.conn:
             self.conn.close()
 
+    def reconnect(self):
+        try:
+            self.conn.ping(reconnect=True)
+        except Exception:
+            self.close()
+            self.connect()
+
     def _execute(self, sql: str, params: tuple = ()):
         cur = self.conn.cursor()
         cur.execute(sql, params)
@@ -90,6 +97,7 @@ class DatabaseManager:
         existing = self.get_table_columns(table)
         if not existing:
             cols = []
+            has_id = "id" in sample
             for k, v in sample.items():
                 if k in ("id",):
                     if isinstance(v, str):
@@ -102,7 +110,11 @@ class DatabaseManager:
                 cols.append("cabang_id INT NOT NULL")
             if "synced_at" not in sample:
                 cols.append("synced_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP")
-            pk = ", PRIMARY KEY (`id`, `cabang_id`)" if "id" in sample else ""
+            if has_id:
+                pk = ", PRIMARY KEY (`id`, `cabang_id`)"
+            else:
+                cols.insert(0, "id INT AUTO_INCREMENT")
+                pk = ", PRIMARY KEY (`id`)"
             sql = f"CREATE TABLE {_safe_col(table)} ({', '.join(cols)}{pk}) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
             self._execute(sql)
             self.conn.commit()
@@ -124,20 +136,22 @@ class DatabaseManager:
         if not records:
             return
         first = records[0]
+        has_id = "id" in first
         has_cabang_id = "cabang_id" in first
         cols = list(first.keys()) + ([] if has_cabang_id else ["cabang_id"])
         placeholders = ", ".join(["%s"] * len(cols))
         col_names = ", ".join(_safe_col(c) for c in cols)
-        updates = ", ".join(
-            f"{_safe_col(c)} = VALUES({_safe_col(c)})"
-            for c in first.keys()
-            if c not in ("id", "cabang_id")
-        )
         sql = (
             f"INSERT INTO {_safe_col(table)} ({col_names}) VALUES ({placeholders})"
         )
-        if updates:
-            sql += f" ON DUPLICATE KEY UPDATE {updates}"
+        if has_id:
+            updates = ", ".join(
+                f"{_safe_col(c)} = VALUES({_safe_col(c)})"
+                for c in first.keys()
+                if c not in ("id", "cabang_id")
+            )
+            if updates:
+                sql += f" ON DUPLICATE KEY UPDATE {updates}"
         batch = []
         for rec in records:
             row = [
@@ -170,3 +184,14 @@ class DatabaseManager:
             f"SELECT DISTINCT {_safe_col(column)} FROM {_safe_col(table)}"
         )
         return [row[column] for row in cur.fetchall()]
+
+    def get_distinct_with_cabang(self, table: str, column: str) -> list[tuple]:
+        try:
+            cur = self._execute(
+                f"SELECT DISTINCT {_safe_col(column)}, cabang_id FROM {_safe_col(table)}"
+            )
+            return [(row[column], row["cabang_id"]) for row in cur.fetchall()]
+        except Exception as e:
+            import logging
+            logging.getLogger("brighter-sync").debug("get_distinct_with_cabang fallback for %s.%s: %s", table, column, e)
+            return [(pid, 1) for pid in self.get_distinct(table, column)]

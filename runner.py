@@ -67,9 +67,24 @@ class SyncRunner:
         finally:
             syncer.close()
 
+    def clean_start(self):
+        tables = set()
+        for ep in ENDPOINTS:
+            if ep.table and not ep.skip:
+                tables.add(ep.table)
+        for table in sorted(tables):
+            try:
+                self.db.truncate_table(table)
+            except Exception:
+                pass
+        self.db._execute("UPDATE sync_meta SET last_synced_at = NULL")
+        self.db.conn.commit()
+        logger.info("All tables truncated, sync meta reset")
+
     def run_all(self):
         self.db.connect()
         self.db.ensure_sync_meta()
+        self.clean_start()
         logger.info("Starting sync at %s", datetime.now().isoformat())
 
         cabang_ids = self.get_cabang_ids()
@@ -108,19 +123,26 @@ class SyncRunner:
     def run_child_endpoints(self):
         import concurrent.futures
 
+        self.db.connect()
+        self.db.ensure_sync_meta()
+        self.auth.login()
+        logger.info("=== Running child endpoints only (resume mode) ===")
         for ep in ENDPOINTS:
             if not ep.parent_table or not ep.parent_key:
                 continue
             logger.info("=== Child Endpoint: %s ===", ep.name)
+            self.db.reconnect()
+            col = ep.parent_column or ep.parent_key
             try:
-                parent_ids = self.db.get_distinct(ep.parent_table, ep.parent_key)
+                parent_tuples = self.db.get_distinct_with_cabang(ep.parent_table, col)
             except Exception:
-                logger.warning("  SKIP %s: table %s or column %s not found", ep.name, ep.parent_table, ep.parent_key)
+                logger.warning("  SKIP %s: table %s or column %s not found", ep.name, ep.parent_table, col)
                 continue
-            all_records = []
+            parent_ids = [p[0] for p in parent_tuples]
+            pid_to_cabang = {p[0]: p[1] for p in parent_tuples}
             errors = 0
 
-            def fetch_pfoto(pid):
+            def fetch_child(pid):
                 path = ep.path.replace(f":{ep.parent_key}", str(pid))
                 params = dict(ep.params)
                 params["page"] = "1"
@@ -141,6 +163,12 @@ class SyncRunner:
                             batch = [batch]
                         if not isinstance(batch, list):
                             batch = []
+                        cabang_id = pid_to_cabang.get(pid, 1)
+                        for rec in batch:
+                            if ep.parent_key not in rec:
+                                rec[ep.parent_key] = pid
+                            if "cabang_id" not in rec:
+                                rec["cabang_id"] = cabang_id
                         return batch
                     except Exception:
                         if attempt < self.config.max_retries - 1:
@@ -149,7 +177,8 @@ class SyncRunner:
                         return None
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
-                futures = {pool.submit(fetch_pfoto, pid): pid for pid in parent_ids}
+                futures = {pool.submit(fetch_child, pid): pid for pid in parent_ids}
+                all_records = []
                 for future in concurrent.futures.as_completed(futures):
                     result = future.result()
                     if result is not None:
@@ -158,13 +187,15 @@ class SyncRunner:
                         errors += 1
 
             if all_records:
+                self.db.reconnect()
                 self.db.ensure_table(ep.table, all_records[0])
-                if ep.strategy == Strategy.FULL_PAGING:
-                    self.db.truncate_table(ep.table)
-                self.db.upsert_records(ep.table, all_records, 1)
+                cabang_id = pid_to_cabang.get(parent_ids[0], 1) if parent_ids else 1
+                self.db.upsert_records(ep.table, all_records, cabang_id)
             logger.info("  -> %d records upserted (%d skipped)", len(all_records), errors)
             self.stats["endpoint"] += 1
             self.stats["records"] += len(all_records)
+        self.db.close()
+        self._log_summary()
 
     def _has_path_param(self, path: str) -> bool:
         return ":id" in path or ":produk_id" in path or ":cust_id" in path

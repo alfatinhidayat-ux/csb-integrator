@@ -22,6 +22,7 @@ class Endpoint:
     skip: bool = False
     parent_table: Optional[str] = None
     parent_key: Optional[str] = None
+    parent_column: Optional[str] = None
 
 
 ENDPOINTS: list[Endpoint] = [
@@ -50,6 +51,8 @@ ENDPOINTS: list[Endpoint] = [
         "sistem_users_cabang",
         Strategy.DELTA,
         params={"uc_cabang_data": "true"},
+        parent_table="sistem_users",
+        parent_key="id",
     ),
     # ── Sistem - Permissions & Groups ─────────────────────────────
     Endpoint(
@@ -72,6 +75,7 @@ ENDPOINTS: list[Endpoint] = [
         "/master/produk",
         "master_produk",
         Strategy.DELTA,
+        params={"produk_aktif": "Aktif", "produk_brand_data": "true"},
     ),
     Endpoint(
         "Produk by ID",
@@ -89,12 +93,16 @@ ENDPOINTS: list[Endpoint] = [
             "konversi_satuan_data": "true",
             "konversi_stok_data": "true",
         },
+        parent_table="master_produk",
+        parent_key="produk_id",
     ),
     Endpoint(
         "Satuan Konversi Cabang Produk",
         "/master/produk/:produk_id/satuan_konversi_cabang",
         "master_produk_satuan_konversi_cabang",
         Strategy.FULL_REPLACE,
+        parent_table="master_produk",
+        parent_key="produk_id",
     ),
     Endpoint(
         "Foto Produk",
@@ -192,6 +200,9 @@ ENDPOINTS: list[Endpoint] = [
         "/master/karyawan/:id/karyawan_gaji",
         "master_karyawan_gaji",
         Strategy.FULL_REPLACE,
+        parent_table="master_karyawan",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Departemen",
@@ -299,12 +310,18 @@ ENDPOINTS: list[Endpoint] = [
         "persediaan_surat_jalan_produk",
         Strategy.DELTA,
         params={"sjp_produk_data": "true", "sjp_satuan_data": "true"},
+        parent_table="persediaan_surat_jalan",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Surat Jalan File",
         "/persediaan/surat_jalan/:id/sj_file",
         "persediaan_surat_jalan_file",
         Strategy.FULL_REPLACE,
+        parent_table="persediaan_surat_jalan",
+        parent_key="id",
+    
     ),
     # ── Persediaan - Mutasi Barang ────────────────────────────────
     Endpoint(
@@ -331,6 +348,9 @@ ENDPOINTS: list[Endpoint] = [
             "dmutasi_satuan_data": "true",
             "dmutasi_produk_satuan_konversi": "true",
         },
+        parent_table="persediaan_mutasi_barang",
+        parent_key="id",
+    
     ),
     # ── Persediaan - Pembelian ────────────────────────────────────
     Endpoint(
@@ -397,6 +417,9 @@ ENDPOINTS: list[Endpoint] = [
         "persediaan_retur_pembelian_item",
         Strategy.DELTA,
         params={"rpembelian_det_produk_data": "true", "rpembelian_det_satuan_data": "true"},
+        parent_table="persediaan_retur_pembelian",
+        parent_key="id",
+    
     ),
     # ── Persediaan - Penyesuaian Stok ─────────────────────────────
     Endpoint(
@@ -419,6 +442,9 @@ ENDPOINTS: list[Endpoint] = [
         "persediaan_penyesuaian_stok_item",
         Strategy.FULL_PAGING,
         params={"dkoreksi_produk_data": "true", "dkoreksi_satuan_data": "true"},
+        parent_table="persediaan_penyesuaian_stok",
+        parent_key="id",
+    
     ),
     # ── Transaksi - Penjualan ─────────────────────────────────────
     Endpoint(
@@ -452,6 +478,9 @@ ENDPOINTS: list[Endpoint] = [
         "transaksi_order_jual_produk",
         Strategy.FULL_REPLACE,
         params={"dojual_produk_produk_data": "true", "dojual_produk_satuan_data": "true"},
+        parent_table="transaksi_order_jual",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Surat Kirim Jual",
@@ -477,12 +506,18 @@ ENDPOINTS: list[Endpoint] = [
         "transaksi_surat_kirim_jual_produk",
         Strategy.DELTA,
         params={"dskj_produk_data": "true", "dskj_satuan_data": "true"},
+        parent_table="transaksi_surat_kirim_jual",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Surat Kirim Jual File",
         "/transaksi/surat_kirim_jual/:id/skj_file",
         "transaksi_surat_kirim_jual_file",
         Strategy.FULL_REPLACE,
+        parent_table="transaksi_surat_kirim_jual",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Retur Penjualan",
@@ -510,6 +545,9 @@ ENDPOINTS: list[Endpoint] = [
         "transaksi_retur_penjualan_produk",
         Strategy.FULL_PAGING,
         params={"rjproduk_produk_data": "true", "rjproduk_satuan_data": "true"},
+        parent_table="transaksi_retur_penjualan",
+        parent_key="id",
+    
     ),
     # ── Transaksi - Keuangan (Hutang & Piutang) ───────────────────
     Endpoint(
@@ -533,6 +571,9 @@ ENDPOINTS: list[Endpoint] = [
         "/transaksi/piutang_penjualan/customer/list_piutang/:cust_id/detail",
         "transaksi_piutang_penjualan_riwayat",
         Strategy.FULL_PAGING,
+        parent_table="master_customer",
+        parent_key="cust_id",
+    
     ),
     Endpoint(
         "Pelunasan Hutang",
@@ -554,12 +595,18 @@ ENDPOINTS: list[Endpoint] = [
         "transaksi_pelunasan_hutang_item",
         Strategy.DELTA,
         params={"dfhutang_produk_data": "true"},
+        parent_table="transaksi_pelunasan_hutang",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Foto Bukti Pelunasan",
         "/transaksi/pelunasan_hutang/:id/dfhutang_foto",
         "transaksi_pelunasan_hutang_foto",
         Strategy.FULL_REPLACE,
+        parent_table="transaksi_pelunasan_hutang",
+        parent_key="id",
+    
     ),
     # ── Transaksi - Kas Harian ────────────────────────────────────
     Endpoint(
@@ -600,6 +647,9 @@ ENDPOINTS: list[Endpoint] = [
         "/persediaan/barang_titipan_internal/:id/detail_barang_titipan_internal",
         "persediaan_barang_titipan_internal_item",
         Strategy.FULL_REPLACE,
+        parent_table="persediaan_barang_titipan_internal",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Barang Titipan Eksternal",
@@ -665,24 +715,36 @@ ENDPOINTS: list[Endpoint] = [
         "/akuntansi/kasbank_masuk/:id/detail_kasbank_masuk",
         "akuntansi_kasbank_masuk_item",
         Strategy.DELTA,
+        parent_table="akuntansi_kasbank_masuk",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Detail Penerimaan Lain",
         "/akuntansi/kasbank_masuk/:id/detail_penerimaan_lain",
         "akuntansi_kasbank_masuk_penerimaan_lain",
         Strategy.FULL_PAGING,
+        parent_table="akuntansi_kasbank_masuk",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Detail Piutang Karyawan",
         "/akuntansi/kasbank_masuk/:id/detail_piutang_karyawan",
         "akuntansi_kasbank_masuk_piutang_karyawan",
         Strategy.DELTA,
+        parent_table="akuntansi_kasbank_masuk",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Bukti Pelunasan",
         "/akuntansi/kasbank_masuk/:id/bukti_pelunasan",
         "akuntansi_kasbank_masuk_bukti_pelunasan",
         Strategy.FULL_REPLACE,
+        parent_table="akuntansi_kasbank_masuk",
+        parent_key="id",
+    
     ),
     # ── Akuntansi - Kas/Bank Keluar ───────────────────────────────
     Endpoint(
@@ -703,12 +765,18 @@ ENDPOINTS: list[Endpoint] = [
         "/akuntansi/kasbank_keluar/:id/detail_kasbank_keluar",
         "akuntansi_kasbank_keluar_item",
         Strategy.FULL_PAGING,
+        parent_table="akuntansi_kasbank_keluar",
+        parent_key="id",
+    
     ),
     Endpoint(
         "Detail Pengeluaran Lain",
         "/akuntansi/kasbank_keluar/:id/detail_pengeluaran_lain",
         "akuntansi_kasbank_keluar_pengeluaran_lain",
         Strategy.FULL_PAGING,
+        parent_table="akuntansi_kasbank_keluar",
+        parent_key="id",
+    
     ),
     # ── Akuntansi - Jurnal Umum ───────────────────────────────────
     Endpoint(
