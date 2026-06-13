@@ -69,6 +69,10 @@ def main():
         "--child-only", action="store_true",
         help="Skip main sync, only run child endpoints (resume after crash)",
     )
+    parser.add_argument(
+        "--resume-from", type=str, default=None,
+        help="Resume child endpoints from this endpoint name (e.g. 'Satuan Konversi Cabang Produk')",
+    )
     args = parser.parse_args()
 
     setup_logging(args.verbose)
@@ -100,7 +104,7 @@ def main():
 
     runner = SyncRunner(config)
     if args.child_only:
-        runner.run_child_endpoints()
+        runner.run_child_endpoints(resume_from=args.resume_from)
     else:
         runner.run_all()
 

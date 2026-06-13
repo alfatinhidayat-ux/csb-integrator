@@ -1,42 +1,17 @@
-11:36:47 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/29/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:47 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/28/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:47 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/27/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:47 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/31/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:47 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/26/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:47 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/25/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:48 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/24/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&r11:36:48 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/23/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:48 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/22/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:48 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/21/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:48 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/20/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:49 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/19/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:49 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/18/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:49 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/17/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:49 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/16/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:49 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/15/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:50 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/13/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:50 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/12/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:50 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/11/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:50 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/10/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:50 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/9/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:50 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/8/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
-11:36:51 [INFO] HTTP Request: GET https://brighter-kairatu-api.koffiesoft.com/master/produk/7/satuan_konversi?konversi_aktif=Aktif&konversi_satuan_data=true&konversi_stok_data=true&page=1&results_per_page=100 "HTTP/1.1 200 OK"
 Traceback (most recent call last):
-  File "D:\CSB Project\csb-integrator\main.py", line 102, in <module>
+  File "D:\CSB Project\csb-integrator\main.py", line 113, in <module>
     main()
     ~~~~^^
-  File "D:\CSB Project\csb-integrator\main.py", line 98, in main
-    runner.run_all()
-    ~~~~~~~~~~~~~~^^
-  File "D:\CSB Project\csb-integrator\runner.py", line 118, in run_all
-    self.run_child_endpoints()
-    ~~~~~~~~~~~~~~~~~~~~~~~~^^
-  File "D:\CSB Project\csb-integrator\runner.py", line 185, in run_child_endpoints
+  File "D:\CSB Project\csb-integrator\main.py", line 107, in main
+    runner.run_child_endpoints(resume_from=args.resume_from)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\CSB Project\csb-integrator\runner.py", line 213, in run_child_endpoints
     self.db.ensure_table(ep.table, all_records[0])
     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "D:\CSB Project\csb-integrator\db.py", line 112, in ensure_table
+  File "D:\CSB Project\csb-integrator\db.py", line 121, in ensure_table
     self._execute(sql)
     ~~~~~~~~~~~~~^^^^^
-  File "D:\CSB Project\csb-integrator\db.py", line 50, in _execute
+  File "D:\CSB Project\csb-integrator\db.py", line 57, in _execute
     cur.execute(sql, params)
     ~~~~~~~~~~~^^^^^^^^^^^^^
   File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 159, in execute
@@ -44,11 +19,21 @@ Traceback (most recent call last):
   File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 330, in _query
     conn.query(q)
     ~~~~~~~~~~^^^
-  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 581, in query
-    self._execute_command(COMMAND.COM_QUERY, sql)
-    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 865, in _execute_command
-    raise err.InterfaceError(0, "")
-pymysql.err.InterfaceError: (0, '')
-PS D:\CSB Project\csb-integrator> code .
-PS D:\CSB Project\csb-integrator>
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 847, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+pymysql.err.DataError: (1171, 'All parts of a PRIMARY KEY must be NOT NULL; if you need NULL in a key, use UNIQUE instead')
+PS D:\CSB Project\csb-integrator> 0

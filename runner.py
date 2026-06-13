@@ -120,16 +120,26 @@ class SyncRunner:
         self.db.close()
         self._log_summary()
 
-    def run_child_endpoints(self):
+    def run_child_endpoints(self, resume_from: str = None):
         import concurrent.futures
 
         self.db.connect()
         self.db.ensure_sync_meta()
         self.auth.login()
-        logger.info("=== Running child endpoints only (resume mode) ===")
+        if resume_from:
+            logger.info("=== Resuming child endpoints from '%s' ===", resume_from)
+        else:
+            logger.info("=== Running all child endpoints ===")
+        skipping = bool(resume_from)
         for ep in ENDPOINTS:
             if not ep.parent_table or not ep.parent_key:
                 continue
+            if skipping:
+                if ep.name == resume_from:
+                    skipping = False
+                else:
+                    logger.debug("  SKIP %s (before resume point)", ep.name)
+                    continue
             logger.info("=== Child Endpoint: %s ===", ep.name)
             self.db.reconnect()
             col = ep.parent_column or ep.parent_key
@@ -138,45 +148,59 @@ class SyncRunner:
             except Exception:
                 logger.warning("  SKIP %s: table %s or column %s not found", ep.name, ep.parent_table, col)
                 continue
-            parent_ids = [p[0] for p in parent_tuples]
-            pid_to_cabang = {p[0]: p[1] for p in parent_tuples}
+            seen = {}
+            for pid, cid in parent_tuples:
+                if pid not in seen:
+                    seen[pid] = cid
+            parent_ids = list(seen.keys())
+            pid_to_cabang = seen
             errors = 0
 
             def fetch_child(pid):
                 path = ep.path.replace(f":{ep.parent_key}", str(pid))
-                params = dict(ep.params)
-                params["page"] = "1"
-                params["results_per_page"] = "100"
-                for attempt in range(self.config.max_retries):
-                    try:
-                        self.auth.ensure_token()
-                        resp = httpx.get(
-                            f"{self.config.base_url}{path}",
-                            params=params,
-                            headers=self.auth.get_headers(),
-                            timeout=self.config.request_timeout,
-                        )
-                        resp.raise_for_status()
-                        data = resp.json()
-                        batch = data.get(ep.response_root, [])
-                        if isinstance(batch, dict):
-                            batch = [batch]
-                        if not isinstance(batch, list):
-                            batch = []
-                        cabang_id = pid_to_cabang.get(pid, 1)
-                        for rec in batch:
-                            if ep.parent_key not in rec:
-                                rec[ep.parent_key] = pid
-                            if "cabang_id" not in rec:
-                                rec["cabang_id"] = cabang_id
-                        return batch
-                    except Exception:
-                        if attempt < self.config.max_retries - 1:
-                            time.sleep(2 ** attempt)
-                            continue
-                        return None
+                cabang_id = pid_to_cabang.get(pid, 1)
+                all_batches = []
+                page = 1
+                while True:
+                    params = dict(ep.params)
+                    params["page"] = str(page)
+                    params["results_per_page"] = str(self.config.results_per_page)
+                    for attempt in range(self.config.max_retries):
+                        try:
+                            self.auth.ensure_token()
+                            resp = httpx.get(
+                                f"{self.config.base_url}{path}",
+                                params=params,
+                                headers=self.auth.get_headers(),
+                                timeout=self.config.request_timeout,
+                            )
+                            resp.raise_for_status()
+                            data = resp.json()
+                            batch = data.get(ep.response_root, [])
+                            if isinstance(batch, dict):
+                                batch = [batch]
+                            if not isinstance(batch, list):
+                                batch = []
+                            for rec in batch:
+                                if "id" in rec and rec["id"] is None:
+                                    continue
+                                if ep.parent_key not in rec:
+                                    rec[ep.parent_key] = pid
+                                if "cabang_id" not in rec:
+                                    rec["cabang_id"] = cabang_id
+                            all_batches.extend(batch)
+                            break
+                        except Exception:
+                            if attempt < self.config.max_retries - 1:
+                                time.sleep(2 ** attempt)
+                                continue
+                            return None
+                    if not batch or not self._has_more(data, page, ep.response_root):
+                        break
+                    page += 1
+                return all_batches
 
-            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
                 futures = {pool.submit(fetch_child, pid): pid for pid in parent_ids}
                 all_records = []
                 for future in concurrent.futures.as_completed(futures):
@@ -196,6 +220,22 @@ class SyncRunner:
             self.stats["records"] += len(all_records)
         self.db.close()
         self._log_summary()
+
+    def _has_more(self, data: dict, page: int, response_root: str = "data") -> bool:
+        if not isinstance(data, dict):
+            return False
+        paging = data.get("paging")
+        if paging:
+            return page < paging.get("total_pages", 0)
+        total = data.get("total", 0)
+        rpp = self.config.results_per_page
+        total_pages = (total + rpp - 1) // rpp if total else 0
+        if total_pages:
+            return page < total_pages
+        records = data.get(response_root, [])
+        if isinstance(records, list):
+            return len(records) >= rpp
+        return False
 
     def _has_path_param(self, path: str) -> bool:
         return ":id" in path or ":produk_id" in path or ":cust_id" in path

@@ -100,10 +100,12 @@ class DatabaseManager:
             has_id = "id" in sample
             for k, v in sample.items():
                 if k in ("id",):
-                    if isinstance(v, str):
+                    if isinstance(v, str) or v is None:
                         cols.append(f"{_safe_col(k)} VARCHAR(255) NOT NULL")
                     else:
                         cols.append(f"{_safe_col(k)} {_mysql_type(v)} NOT NULL")
+                elif k == "cabang_id":
+                    cols.append("cabang_id INT NOT NULL")
                 else:
                     cols.append(f"{_safe_col(k)} {_mysql_type(v)} NULL")
             if "cabang_id" not in sample:
