@@ -35,17 +35,18 @@ except ImportError:  # pymysql baru dibutuhkan saat benar-benar konek ke DB
 
 from dotenv import load_dotenv
 
-load_dotenv()
+env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(env_path)
 
 # ============================================================
 # KONFIGURASI
 # ============================================================
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "localhost"),
-    "port": int(os.getenv("DB_PORT", "3306")),
-    "user": os.getenv("DB_USER"),
-    "password": os.getenv("DB_PASSWORD"),
-    "database": os.getenv("DB_NAME"),
+    "host": os.getenv("BRIGHTER_DB_HOST", "localhost"),
+    "port": int(os.getenv("BRIGHTER_DB_PORT", "3306")),
+    "user": os.getenv("BRIGHTER_DB_USER"),
+    "password": os.getenv("BRIGHTER_DB_PASSWORD"),
+    "database": os.getenv("BRIGHTER_DB_NAME", "brighter_mirror"),
     "charset": "utf8mb4",
 }
 if pymysql is not None:
@@ -166,7 +167,7 @@ def fmt_date(value) -> str:
     if isinstance(value, (datetime, date)):
         return value.strftime("%Y-%m-%d")
     s = str(value).strip()
-    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d", "%m/%d/%Y"):
+    for fmt in ("%Y-%m-%d", "%m/%d/%Y", "%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d"):
         try:
             return datetime.strptime(s, fmt).strftime("%Y-%m-%d")
         except ValueError:
@@ -223,17 +224,17 @@ def validate_invoice(header: dict, items: list, baris, strict=True):
 
     if buyer_doc_type == "TIN":
         if len(buyer_tin) != 16 or not buyer_tin.isdigit():
-            problems.append(f"[Baris {baris}] NPWP/NIK Pembeli (TIN) harus 16 digit, ditemukan: {buyer_tin!r}")
+            problems.append(f"[Baris {baris}] NPWP Pembeli (TIN) harus 16 digit, ditemukan: {buyer_tin!r}")
         if len(buyer_idtku) != 22 or not buyer_idtku.isdigit():
             problems.append(f"[Baris {baris}] ID TKU Pembeli (TIN) harus 22 digit, ditemukan: {buyer_idtku!r}")
-        if buyer_docnum != "-":
-            problems.append(f"[Baris {baris}] Nomor Dokumen Pembeli untuk Jenis ID TIN seharusnya '-', ditemukan: {buyer_docnum!r}")
+        if buyer_docnum and buyer_docnum != "-":
+            problems.append(f"[Baris {baris}] Nomor Dokumen Pembeli untuk Jenis ID TIN seharusnya kosong atau '-', ditemukan: {buyer_docnum!r}")
     else:
         if buyer_tin != "0" * 16:
             problems.append(f"[Baris {baris}] NPWP/NIK Pembeli untuk non-TIN seharusnya 16 digit nol, ditemukan: {buyer_tin!r}")
         if buyer_idtku != "0" * 6:
             problems.append(f"[Baris {baris}] ID TKU Pembeli untuk non-TIN seharusnya '000000', ditemukan: {buyer_idtku!r}")
-        if not buyer_docnum or buyer_docnum == "-":
+        if buyer_doc_type != "Other ID" and (not buyer_docnum or buyer_docnum == "-"):
             problems.append(f"[Baris {baris}] Nomor Dokumen Pembeli (NIK/Paspor) wajib diisi untuk Jenis ID {buyer_doc_type!r}")
 
     trx_code = header.get("TrxCode", "")
@@ -322,20 +323,42 @@ def build_invoices(faktur_rows, detail_rows):
                 header[xml_tag] = fmt_date(raw)
             elif xml_tag == "TaxInvoiceOpt":
                 header[xml_tag] = fmt_text(raw, default="Normal") or "Normal"
+            elif xml_tag == "TrxCode":
+                header[xml_tag] = str(raw).strip().zfill(2) if raw else "04"
             else:
                 header[xml_tag] = fmt_text(raw)
 
         # ---- Normalisasi data pembeli sesuai aturan DJP ----
-        if header.get("BuyerDocument") == "TIN":
-            header["BuyerDocumentNumber"] = "-"
-            if not header.get("BuyerTin") or len(header["BuyerTin"]) != 16:
-                header["BuyerTin"] = "0" * 16
-            if not header.get("BuyerIDTKU") or len(header["BuyerIDTKU"]) != 22:
-                header["BuyerIDTKU"] = "0" * 22
-        else:
-            # non-TIN (NIK / Paspor): TIN diisi nol, IDTKU diisi 000000
+        buyer_doc = str(header.get("BuyerDocument", "")).strip()
+        buyer_tin = str(header.get("BuyerTin", "")).strip()
+
+        # Excel sering memotong leading zero. Jika TIN 15 digit, tambahkan 0 di depan
+        if len(buyer_tin) == 15 and buyer_tin.isdigit():
+            buyer_tin = "0" + buyer_tin
+            header["BuyerTin"] = buyer_tin
+
+        if buyer_doc == "TIN" and len(buyer_tin) == 16 and buyer_tin != "0"*16:
+            # NPWP valid
+            header["BuyerDocument"] = "TIN"
+            header["BuyerDocumentNumber"] = None  # DJP sample uses empty tag
+            header["BuyerCountry"] = "IND"
+            # Jika NITKU tidak 22 digit, set default 22 digit (NPWP + 6 nol)
+            if not header.get("BuyerIDTKU") or len(str(header["BuyerIDTKU"])) != 22:
+                header["BuyerIDTKU"] = buyer_tin + "000000"
+        elif buyer_doc == "National ID" and len(buyer_tin) == 16:
+            # Valid NIK (KTP)
+            header["BuyerDocument"] = "National ID"
+            header["BuyerDocumentNumber"] = buyer_tin
             header["BuyerTin"] = "0" * 16
             header["BuyerIDTKU"] = "0" * 6
+            header["BuyerCountry"] = "IND"
+        else:
+            # Pelanggan umum / tanpa NPWP/NIK valid:
+            header["BuyerDocument"] = "Other ID"
+            header["BuyerTin"] = "0" * 16
+            header["BuyerIDTKU"] = "0" * 6
+            header["BuyerDocumentNumber"] = "-"
+            header["BuyerCountry"] = "IND" # DJP sample uses IND
 
         # ---- Items (GoodService) ----
         items = []
@@ -345,6 +368,8 @@ def build_invoices(faktur_rows, detail_rows):
                 raw = detail_resolver.get(d, excel_col)
                 if xml_tag in NUMERIC_TAGS:
                     item[xml_tag] = fmt_number(raw)
+                elif xml_tag == "Code":
+                    item[xml_tag] = str(raw).strip().zfill(6) if raw is not None else "000000"
                 else:
                     item[xml_tag] = fmt_text(raw)
             items.append(item)
@@ -438,21 +463,38 @@ def main():
         log.error("atau jalankan dengan --no-validate untuk tetap generate XML (TIDAK disarankan).")
         sys.exit(1)
 
-    xml_content = build_xml(invoices)
+    # Pisahkan NPWP (TIN) dan Non-NPWP (Other ID, NIK, dll)
+    invoices_npwp = []
+    invoices_non_npwp = []
+    for inv in invoices:
+        if inv["header"].get("BuyerDocument") == "TIN":
+            invoices_npwp.append(inv)
+        else:
+            invoices_non_npwp.append(inv)
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    if args.output:
-        filename = args.output
-    else:
-        filename = f"FakturKeluaran_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xml"
-    out_path = os.path.join(OUTPUT_DIR, filename)
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    with open(out_path, "w", encoding="utf-8") as f:
-        f.write(xml_content)
-
-    log.info("Selesai! File XML tersimpan di: %s", out_path)
-    log.info("Jumlah faktur: %d | Total item: %d",
-             len(invoices), sum(len(i["items"]) for i in invoices))
+    if invoices_npwp:
+        xml_content_npwp = build_xml(invoices_npwp)
+        filename_npwp = args.output if args.output else f"FakturKeluaran_NPWP_{timestamp}.xml"
+        out_path_npwp = os.path.join(OUTPUT_DIR, filename_npwp)
+        with open(out_path_npwp, "w", encoding="utf-8") as f:
+            f.write(xml_content_npwp)
+        log.info("Selesai! File XML (NPWP) tersimpan di: %s", out_path_npwp)
+        log.info("Jumlah faktur NPWP: %d | Total item: %d",
+                 len(invoices_npwp), sum(len(i["items"]) for i in invoices_npwp))
+    
+    if invoices_non_npwp:
+        xml_content_non_npwp = build_xml(invoices_non_npwp)
+        # Jika custom output name diberikan, tambahkan suffix agar tidak tertimpa
+        filename_non_npwp = f"{args.output.replace('.xml', '')}_NonNPWP.xml" if args.output else f"FakturKeluaran_NonNPWP_{timestamp}.xml"
+        out_path_non_npwp = os.path.join(OUTPUT_DIR, filename_non_npwp)
+        with open(out_path_non_npwp, "w", encoding="utf-8") as f:
+            f.write(xml_content_non_npwp)
+        log.info("Selesai! File XML (Non-NPWP) tersimpan di: %s", out_path_non_npwp)
+        log.info("Jumlah faktur Non-NPWP: %d | Total item: %d",
+                 len(invoices_non_npwp), sum(len(i["items"]) for i in invoices_non_npwp))
 
 
 if __name__ == "__main__":

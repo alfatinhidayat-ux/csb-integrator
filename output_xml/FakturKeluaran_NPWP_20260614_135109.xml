@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaxInvoiceBulk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="TaxInvoice.xsd">
+	<TIN>0201247236941000</TIN>
+	<ListOfTaxInvoice>
+		<TaxInvoice>
+			<TaxInvoiceDate>2026-05-13</TaxInvoiceDate>
+			<TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+			<TrxCode>04</TrxCode>
+			<AddInfo/>
+			<CustomDoc/>
+			<CustomDocMonthYear/>
+			<RefDesc>SB/V2/2605-0495</RefDesc>
+			<FacilityStamp/>
+			<SellerIDTKU>0201247236941000000000</SellerIDTKU>
+			<BuyerTin>8101060207740002</BuyerTin>
+			<BuyerDocument>TIN</BuyerDocument>
+			<BuyerCountry>IND</BuyerCountry>
+			<BuyerDocumentNumber/>
+			<BuyerName>MUHAMMAD KAISUKU</BuyerName>
+			<BuyerAdress>WAHAI RT 016, RT 000, RW 000, WAHAI, SERAM UTARA, KAB. MALUKU TENGAH, MALUKU 97557</BuyerAdress>
+			<BuyerEmail/>
+			<BuyerIDTKU>8101060207740002000000</BuyerIDTKU>
+			<ListOfGoodService>
+				<GoodService>
+					<Opt>A</Opt>
+					<Code>000000</Code>
+					<Name>SEMEN CONCH</Name>
+					<Unit>UM.0021</Unit>
+					<Price>68750</Price>
+					<Qty>5</Qty>
+					<TotalDiscount>0</TotalDiscount>
+					<TaxBase>343750</TaxBase>
+					<OtherTaxBase>343750</OtherTaxBase>
+					<VATRate>12</VATRate>
+					<VAT>41250</VAT>
+					<STLGRate>0</STLGRate>
+					<STLG>0</STLG>
+				</GoodService>
+			</ListOfGoodService>
+		</TaxInvoice>
+	</ListOfTaxInvoice>
+</TaxInvoiceBulk>

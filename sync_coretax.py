@@ -102,11 +102,11 @@ def sync_url(url, kategori):
         excel_content = download_excel(excel_url)
         
         print("Parsing 'Faktur' sheet...")
-        df_faktur = pd.read_excel(excel_content, sheet_name="Faktur", header=2)
+        df_faktur = pd.read_excel(excel_content, sheet_name="Faktur", header=2, dtype=str)
         
         excel_content.seek(0)
         print("Parsing 'DetailFaktur' sheet...")
-        df_detail = pd.read_excel(excel_content, sheet_name="DetailFaktur", header=0)
+        df_detail = pd.read_excel(excel_content, sheet_name="DetailFaktur", header=0, dtype=str)
         
         conn = get_db_connection()
         try:
@@ -124,8 +124,6 @@ if __name__ == "__main__":
         exit(1)
         
     urls = {
-        "npwp": os.getenv("BRIGHTER_TAX_URL_NPWP"),
-        "non_npwp": os.getenv("BRIGHTER_TAX_URL_NON_NPWP"),
         "semua": os.getenv("BRIGHTER_TAX_URL_SEMUA"),
     }
     
@@ -140,6 +138,6 @@ if __name__ == "__main__":
     
     for kategori, url in urls.items():
         if url:
-            print(f"--- Starting Sync for {kategori.upper()} ---")
+            print(f"\n--- Syncing {kategori.upper()} ---")
             sync_url(url, kategori=kategori)
             print("-" * 40)

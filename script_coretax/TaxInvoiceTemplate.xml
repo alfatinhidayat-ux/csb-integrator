@@ -1,0 +1,40 @@
+<TaxInvoiceBulk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="TaxInvoice.xsd">
+  <TIN>0201247236941000</TIN>
+  <ListOfTaxInvoice>
+    <TaxInvoice>
+      <TaxInvoiceDate>2026-06-14</TaxInvoiceDate>
+      <TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+      <TrxCode>01</TrxCode>
+      <AddInfo />
+      <CustomDoc />
+      <RefDesc />
+      <FacilityStamp />
+      <SellerIDTKU>0201247236941000</SellerIDTKU>
+      <BuyerTin>0201247236941000</BuyerTin>
+      <BuyerDocument>TIN</BuyerDocument>
+      <BuyerCountry>IND</BuyerCountry>
+      <BuyerDocumentNumber />
+      <BuyerName />
+      <BuyerAdress />
+      <BuyerEmail>someemail@gmail.com</BuyerEmail>
+      <BuyerIDTKU>0201247236941000</BuyerIDTKU>
+      <ListOfGoodService>
+        <GoodService>
+          <Opt>A</Opt>
+          <Code>000000</Code>
+          <Name>Barang</Name>
+          <Unit>UM.0001</Unit>
+          <Price>15000</Price>
+          <Qty>200</Qty>
+          <TotalDiscount>100000</TotalDiscount>
+          <TaxBase>2900000</TaxBase>
+          <OtherTaxBase>2900000</OtherTaxBase>
+          <VATRate>11</VATRate>
+          <VAT>319000</VAT>
+          <STLGRate>20</STLGRate>
+          <STLG>580000</STLG>
+        </GoodService>
+      </ListOfGoodService>
+    </TaxInvoice>
+  </ListOfTaxInvoice>
+</TaxInvoiceBulk>
