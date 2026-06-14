@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TaxInvoiceBulk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="TaxInvoice.xsd">
+	<TIN>0201247236941000</TIN>
+	<ListOfTaxInvoice>
+		<TaxInvoice>
+			<TaxInvoiceDate>2026-05-22</TaxInvoiceDate>
+			<TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+			<TrxCode>04</TrxCode>
+			<AddInfo/>
+			<CustomDoc/>
+			<CustomDocMonthYear/>
+			<RefDesc>PRU/K3/2605-0458</RefDesc>
+			<FacilityStamp/>
+			<SellerIDTKU>0201247236941000000000</SellerIDTKU>
+			<BuyerTin>0724532452411000</BuyerTin>
+			<BuyerDocument>TIN</BuyerDocument>
+			<BuyerCountry>IND</BuyerCountry>
+			<BuyerDocumentNumber/>
+			<BuyerName>TJANDRA WINATA KARYA</BuyerName>
+			<BuyerAdress>BSD ANGGREK LOKA SEKTOR 113, AX, 2, RAWABUNTU, SERPONG, KOTA TANGERANG SELATAN, BANTEN, 15318</BuyerAdress>
+			<BuyerEmail/>
+			<BuyerIDTKU>0724532452411000000000</BuyerIDTKU>
+			<ListOfGoodService>
+				<GoodService>
+					<Opt>A</Opt>
+					<Code>000000</Code>
+					<Name>BESI PIPA 3&quot; MEDIUM B</Name>
+					<Unit>UM.0021</Unit>
+					<Price>549107.14</Price>
+					<Qty>2</Qty>
+					<TotalDiscount>0</TotalDiscount>
+					<TaxBase>1098214.29</TaxBase>
+					<OtherTaxBase>1098214.29</OtherTaxBase>
+					<VATRate>12</VATRate>
+					<VAT>131785.71</VAT>
+					<STLGRate>0</STLGRate>
+					<STLG>0</STLG>
+				</GoodService>
+			</ListOfGoodService>
+		</TaxInvoice>
+		<TaxInvoice>
+			<TaxInvoiceDate>2026-05-23</TaxInvoiceDate>
+			<TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+			<TrxCode>04</TrxCode>
+			<AddInfo/>
+			<CustomDoc/>
+			<CustomDocMonthYear/>
+			<RefDesc>PRU/K3/2605-0524</RefDesc>
+			<FacilityStamp/>
+			<SellerIDTKU>0201247236941000000000</SellerIDTKU>
+			<BuyerTin>0002667558941000</BuyerTin>
+			<BuyerDocument>TIN</BuyerDocument>
+			<BuyerCountry>IND</BuyerCountry>
+			<BuyerDocumentNumber/>
+			<BuyerName>DINAS PENDIDIKAN DAN KEBUDAYAAN KABUPATEN SERAM BAGIAN BARAT</BuyerName>
+			<BuyerAdress>JLN.J.F. PUTTILEIHALAT - PIRU MOREKAU SERAM BARAT</BuyerAdress>
+			<BuyerEmail/>
+			<BuyerIDTKU>0002667558941000000000</BuyerIDTKU>
+			<ListOfGoodService>
+				<GoodService>
+					<Opt>A</Opt>
+					<Code>000000</Code>
+					<Name>SEMEN CONCH</Name>
+					<Unit>UM.0021</Unit>
+					<Price>67857.14</Price>
+					<Qty>150</Qty>
+					<TotalDiscount>267857.14</TotalDiscount>
+					<TaxBase>9910714.29</TaxBase>
+					<OtherTaxBase>9910714.29</OtherTaxBase>
+					<VATRate>12</VATRate>
+					<VAT>1189285.71</VAT>
+					<STLGRate>0</STLGRate>
+					<STLG>0</STLG>
+				</GoodService>
+			</ListOfGoodService>
+		</TaxInvoice>
+		<TaxInvoice>
+			<TaxInvoiceDate>2026-05-31</TaxInvoiceDate>
+			<TaxInvoiceOpt>Normal</TaxInvoiceOpt>
+			<TrxCode>04</TrxCode>
+			<AddInfo/>
+			<CustomDoc/>
+			<CustomDocMonthYear/>
+			<RefDesc>PRU/K3/2605-0753</RefDesc>
+			<FacilityStamp/>
+			<SellerIDTKU>0201247236941000000000</SellerIDTKU>
+			<BuyerTin>0002667558941000</BuyerTin>
+			<BuyerDocument>TIN</BuyerDocument>
+			<BuyerCountry>IND</BuyerCountry>
+			<BuyerDocumentNumber/>
+			<BuyerName>DINAS PENDIDIKAN DAN KEBUDAYAAN KABUPATEN SERAM BAGIAN BARAT</BuyerName>
+			<BuyerAdress>JLN.J.F. PUTTILEIHALAT - PIRU MOREKAU SERAM BARAT</BuyerAdress>
+			<BuyerEmail/>
+			<BuyerIDTKU>0002667558941000000000</BuyerIDTKU>
+			<ListOfGoodService>
+				<GoodService>
+					<Opt>A</Opt>
+					<Code>000000</Code>
+					<Name>PLAMIR GIANT MORTAR</Name>
+					<Unit>UM.0033</Unit>
+					<Price>178571.43</Price>
+					<Qty>10</Qty>
+					<TotalDiscount>0</TotalDiscount>
+					<TaxBase>1785714.29</TaxBase>
+					<OtherTaxBase>1785714.29</OtherTaxBase>
+					<VATRate>12</VATRate>
+					<VAT>214285.71</VAT>
+					<STLGRate>0</STLGRate>
+					<STLG>0</STLG>
+				</GoodService>
+			</ListOfGoodService>
+		</TaxInvoice>
+	</ListOfTaxInvoice>
+</TaxInvoiceBulk>

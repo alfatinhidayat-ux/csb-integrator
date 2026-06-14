@@ -374,7 +374,12 @@ def build_invoices(faktur_rows, detail_rows):
                     item[xml_tag] = fmt_text(raw)
             items.append(item)
 
-        invoices.append({"baris": baris_val, "header": header, "items": items})
+        invoices.append({
+            "baris": baris_val,
+            "cabang_id": header_resolver.get(f, "cabang_id") or 1,
+            "header": header,
+            "items": items
+        })
 
     return invoices
 
@@ -463,38 +468,60 @@ def main():
         log.error("atau jalankan dengan --no-validate untuk tetap generate XML (TIDAK disarankan).")
         sys.exit(1)
 
-    # Pisahkan NPWP (TIN) dan Non-NPWP (Other ID, NIK, dll)
-    invoices_npwp = []
-    invoices_non_npwp = []
+    # Pisahkan per cabang_id, lalu NPWP dan Non-NPWP
+    from collections import defaultdict
+    invoices_by_cabang = defaultdict(lambda: {"npwp": [], "non_npwp": []})
+    
     for inv in invoices:
+        cid = inv.get("cabang_id", 1)
         if inv["header"].get("BuyerDocument") == "TIN":
-            invoices_npwp.append(inv)
+            invoices_by_cabang[cid]["npwp"].append(inv)
         else:
-            invoices_non_npwp.append(inv)
+            invoices_by_cabang[cid]["non_npwp"].append(inv)
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    if invoices_npwp:
-        xml_content_npwp = build_xml(invoices_npwp)
-        filename_npwp = args.output if args.output else f"FakturKeluaran_NPWP_{timestamp}.xml"
-        out_path_npwp = os.path.join(OUTPUT_DIR, filename_npwp)
-        with open(out_path_npwp, "w", encoding="utf-8") as f:
-            f.write(xml_content_npwp)
-        log.info("Selesai! File XML (NPWP) tersimpan di: %s", out_path_npwp)
-        log.info("Jumlah faktur NPWP: %d | Total item: %d",
-                 len(invoices_npwp), sum(len(i["items"]) for i in invoices_npwp))
-    
-    if invoices_non_npwp:
-        xml_content_non_npwp = build_xml(invoices_non_npwp)
-        # Jika custom output name diberikan, tambahkan suffix agar tidak tertimpa
-        filename_non_npwp = f"{args.output.replace('.xml', '')}_NonNPWP.xml" if args.output else f"FakturKeluaran_NonNPWP_{timestamp}.xml"
-        out_path_non_npwp = os.path.join(OUTPUT_DIR, filename_non_npwp)
-        with open(out_path_non_npwp, "w", encoding="utf-8") as f:
-            f.write(xml_content_non_npwp)
-        log.info("Selesai! File XML (Non-NPWP) tersimpan di: %s", out_path_non_npwp)
-        log.info("Jumlah faktur Non-NPWP: %d | Total item: %d",
-                 len(invoices_non_npwp), sum(len(i["items"]) for i in invoices_non_npwp))
+    # Load mapping cabang
+    import json
+    import re
+    cabang_map = {}
+    cabang_path = os.path.join(os.path.dirname(__file__), "..", "cabang.json")
+    if os.path.exists(cabang_path):
+        with open(cabang_path, "r", encoding="utf-8") as f:
+            cdata = json.load(f)
+            for c in cdata.get("data", []):
+                safe_name = re.sub(r'[^a-zA-Z0-9]', '_', c.get("cabang_nama", ""))
+                safe_name = re.sub(r'_+', '_', safe_name).strip('_')
+                cabang_map[c.get("cabang_id")] = safe_name
+
+    for cid, groups in invoices_by_cabang.items():
+        invoices_npwp = groups["npwp"]
+        invoices_non_npwp = groups["non_npwp"]
+        
+        cname = cabang_map.get(cid, f"Cabang{cid}")
+        
+        if invoices_npwp:
+            xml_content_npwp = build_xml(invoices_npwp)
+            filename_npwp = f"FakturKeluaran_{cname}_NPWP_{timestamp}.xml"
+            out_path_npwp = os.path.join(OUTPUT_DIR, filename_npwp)
+            with open(out_path_npwp, "w", encoding="utf-8") as f:
+                f.write(xml_content_npwp)
+            log.info("Selesai! File XML (%s, NPWP) tersimpan di: %s", cname, out_path_npwp)
+            log.info("Jumlah faktur %s NPWP: %d | Total item: %d",
+                     cname, len(invoices_npwp), sum(len(i["items"]) for i in invoices_npwp))
+        
+        if invoices_non_npwp:
+            # User request: "yang lain nya abaikan hilangkan" - only focus on NPWP/KTP
+            log.info("Mengabaikan %d faktur Non-NPWP untuk %s sesuai permintaan.", len(invoices_non_npwp), cname)
+            # xml_content_non_npwp = build_xml(invoices_non_npwp)
+            # filename_non_npwp = f"FakturKeluaran_{cname}_NonNPWP_{timestamp}.xml"
+            # out_path_non_npwp = os.path.join(OUTPUT_DIR, filename_non_npwp)
+            # with open(out_path_non_npwp, "w", encoding="utf-8") as f:
+            #     f.write(xml_content_non_npwp)
+            # log.info("Selesai! File XML (%s, Non-NPWP) tersimpan di: %s", cname, out_path_non_npwp)
+            # log.info("Jumlah faktur %s Non-NPWP: %d | Total item: %d",
+            #          cname, len(invoices_non_npwp), sum(len(i["items"]) for i in invoices_non_npwp))
 
 
 if __name__ == "__main__":

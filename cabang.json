@@ -1,0 +1,104 @@
+{
+    "status": {
+        "code": 200,
+        "message": "Data Berhasil Ditampilkan."
+    },
+    "data": [
+        {
+            "cabang_id": 7,
+            "cabang_kode": "PRU",
+            "cabang_nama": "CSB - Piru",
+            "cabang_aktif": "Aktif",
+            "cabang_alamat": "Jl. Trans Seram - Piru Kel. Eti Kab. Seram Bagian Barat",
+            "cabang_keterangan": "",
+            "cabang_url_api": "https://brighter-kairatu-api.koffiesoft.com/",
+            "cabang_npwp": "20.124.723.6-941.000",
+            "cabang_telp": "+62 813-9597-455",
+            "cabang_hp": "+62 813-9597-455",
+            "cabang_qris_url": "static/qris/qris-csb-piru.jpeg"
+        },
+        {
+            "cabang_id": 6,
+            "cabang_kode": "KS",
+            "cabang_nama": "DEV - Koffiesoft",
+            "cabang_aktif": "Aktif",
+            "cabang_alamat": "Surabaya - Klampis Harapan",
+            "cabang_keterangan": null,
+            "cabang_url_api": "https://brighter-api.koffiesoft.com/",
+            "cabang_npwp": "0000.0000.0.00.0",
+            "cabang_telp": "+62 816-504-390",
+            "cabang_hp": "+62 816-504-390",
+            "cabang_qris_url": "static/qris/qris-csb-default.jpeg"
+        },
+        {
+            "cabang_id": 5,
+            "cabang_kode": "KRT",
+            "cabang_nama": "CSB - Kairatu",
+            "cabang_aktif": "Aktif",
+            "cabang_alamat": "Jln. Henaupui No. 31, Kairatu, Kec. Kairatu, Kabupaten Seram Bagian Barat, Maluku",
+            "cabang_keterangan": null,
+            "cabang_url_api": "https://brighter-kairatu-api.koffiesoft.com/",
+            "cabang_npwp": "20.124.723.6-941.000",
+            "cabang_telp": "+62 813-1224-6288",
+            "cabang_hp": "+62 813-1224-6288",
+            "cabang_qris_url": "static/qris/qris-csb-kairatu.jpeg"
+        },
+        {
+            "cabang_id": 4,
+            "cabang_kode": "MDR",
+            "cabang_nama": "CSB - Mandiri",
+            "cabang_aktif": "Aktif",
+            "cabang_alamat": "Jln. Lintas Seram, Mandiri-Kobi, Maluku Tengah",
+            "cabang_keterangan": "",
+            "cabang_url_api": "https://brighter-kairatu-api.koffiesoft.com/",
+            "cabang_npwp": "20.124.723.6-941.000",
+            "cabang_telp": "+62 822-3001-0024",
+            "cabang_hp": "+62 822-3001-0024",
+            "cabang_qris_url": "static/qris/qris-csb-mandiri.jpeg"
+        },
+        {
+            "cabang_id": 2,
+            "cabang_kode": "CSB",
+            "cabang_nama": "CSB - Bula",
+            "cabang_aktif": "Aktif",
+            "cabang_alamat": "Maluku, Seram Bagian Timur, Seram Timur",
+            "cabang_keterangan": "",
+            "cabang_url_api": "https://brighter-kairatu-api.koffiesoft.com/",
+            "cabang_npwp": "20.124.723.6-941.000",
+            "cabang_telp": "+62 852-9503-9933",
+            "cabang_hp": "+62 852-9503-9933",
+            "cabang_qris_url": "static/qris/qris-csb-bula.jpeg"
+        },
+        {
+            "cabang_id": 1,
+            "cabang_kode": "SB",
+            "cabang_nama": "CSB - Kobisonta",
+            "cabang_aktif": "Aktif",
+            "cabang_alamat": "Spc Wailoping, Jalan Lintas Seram, Maluku Tengah",
+            "cabang_keterangan": "",
+            "cabang_url_api": "https://brighter-kairatu-api.koffiesoft.com/",
+            "cabang_npwp": "20.124.723.6-941.000",
+            "cabang_telp": "+62 852-2446-3650",
+            "cabang_hp": "+62 852-2446-3650",
+            "cabang_qris_url": "static/qris/qris-csb-kobisonta.jpeg"
+        }
+    ],
+    "paging": {
+        "page": 1,
+        "total_pages": 1,
+        "records_per_page": 10,
+        "total_records": 6
+    },
+    "error": null,
+    "request": {
+        "url": "http://brighter-kairatu-api.koffiesoft.com/master/cabang?cabang_aktif=Aktif&page=1&results_per_page=10&keywords=",
+        "method": "GET",
+        "parameters": {
+            "cabang_aktif": "Aktif",
+            "page": "1",
+            "results_per_page": "10",
+            "keywords": ""
+        },
+        "body": {}
+    }
+}

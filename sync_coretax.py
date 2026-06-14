@@ -51,7 +51,7 @@ def download_excel(excel_url):
 def clean_column_name(col):
     return str(col).strip().replace('/', '_').replace(' ', '_').lower()
 
-def insert_dataframe(df, table_name, connection, batch_id, kategori):
+def insert_dataframe(df, table_name, connection, batch_id, kategori, cabang_id=1):
     if df.empty:
         return
         
@@ -82,18 +82,18 @@ def insert_dataframe(df, table_name, connection, batch_id, kategori):
     with connection.cursor() as cursor:
         cursor.execute(create_sql)
         
-        # Tambahkan nilai batch_id dan kategori ke setiap baris
-        placeholders = ", ".join(["%s"] * (len(columns) + 2))
-        cols_sql = "`batch_id`, `kategori_tarikan`, " + ", ".join([f"`{c}`" for c in columns_clean])
+        # Tambahkan nilai batch_id, kategori, dan cabang_id ke setiap baris
+        placeholders = ", ".join(["%s"] * (len(columns) + 3))
+        cols_sql = "`batch_id`, `kategori_tarikan`, `cabang_id`, " + ", ".join([f"`{c}`" for c in columns_clean])
         insert_sql = f"INSERT INTO `{table_name}` ({cols_sql}) VALUES ({placeholders})"
         
-        data_to_insert = [(batch_id, kategori) + tuple(row) for row in df.itertuples(index=False, name=None)]
-        cursor.executemany(insert_sql, data_to_insert)
+        data_to_insert = [(batch_id, kategori, cabang_id) + tuple(row) for row in df.itertuples(index=False, name=None)]
         
+        cursor.executemany(insert_sql, data_to_insert)
     connection.commit()
     print(f"Inserted {len(data_to_insert)} rows into `{table_name}`.")
 
-def sync_url(url, kategori):
+def sync_url(url, kategori, cabang_id=1):
     try:
         # Generate ID unik untuk satu kali tarikan ini
         batch_id = str(uuid.uuid4())
@@ -110,8 +110,8 @@ def sync_url(url, kategori):
         
         conn = get_db_connection()
         try:
-            insert_dataframe(df_faktur, "coretax_faktur", conn, batch_id, kategori)
-            insert_dataframe(df_detail, "coretax_detail_faktur", conn, batch_id, kategori)
+            insert_dataframe(df_faktur, "coretax_faktur", conn, batch_id, kategori, cabang_id)
+            insert_dataframe(df_detail, "coretax_detail_faktur", conn, batch_id, kategori, cabang_id)
         finally:
             conn.close()
             
@@ -119,13 +119,35 @@ def sync_url(url, kategori):
         print(f"Error syncing {url}: {e}")
 
 if __name__ == "__main__":
+    import argparse
+    import json
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--cabang-ids", default="", help="Comma-separated list of cabang IDs to sync. Defaults to all active from cabang.json")
+    args = parser.parse_args()
+    
+    cabang_ids = []
+    if args.cabang_ids:
+        cabang_ids = [c.strip() for c in args.cabang_ids.split(",") if c.strip()]
+    else:
+        # Load from cabang.json
+        cabang_path = os.path.join(os.path.dirname(__file__), "cabang.json")
+        if os.path.exists(cabang_path):
+            with open(cabang_path, "r", encoding="utf-8") as f:
+                cdata = json.load(f)
+                cabang_ids = [str(c["cabang_id"]) for c in cdata.get("data", []) if c.get("cabang_aktif") == "Aktif"]
+        
+        if not cabang_ids:
+            cabang_ids = ["1"] # Fallback
+
     if not BEARER_TOKEN:
         print("BRIGHTER_TAX_TOKEN is not set in .env")
         exit(1)
         
-    urls = {
-        "semua": os.getenv("BRIGHTER_TAX_URL_SEMUA"),
-    }
+    base_url = os.getenv("BRIGHTER_TAX_URL_NPWP")
+    if not base_url:
+        print("BRIGHTER_TAX_URL_NPWP is not set in .env")
+        exit(1)
     
     # Hapus tabel lama setiap kali run agar data tidak menumpuk (seperti main.py clean_start)
     print("Membersihkan tabel lama...")
@@ -136,8 +158,18 @@ if __name__ == "__main__":
     conn.commit()
     conn.close()
     
-    for kategori, url in urls.items():
-        if url:
-            print(f"\n--- Syncing {kategori.upper()} ---")
-            sync_url(url, kategori=kategori)
-            print("-" * 40)
+    from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+
+    for cid in cabang_ids:
+        print(f"\n=== Syncing Cabang ID {cid} ===")
+        # Parse URL and replace cabang_id parameter
+        parsed_url = urlparse(base_url)
+        query_params = parse_qs(parsed_url.query)
+        query_params["cabang_id"] = [cid]
+        new_query = urlencode(query_params, doseq=True)
+        new_url = urlunparse(parsed_url._replace(query=new_query))
+        
+        print(f"--- Syncing SEMUA untuk Cabang {cid} ---")
+        sync_url(new_url, kategori="semua", cabang_id=int(cid))
+        print("-" * 40)
+
