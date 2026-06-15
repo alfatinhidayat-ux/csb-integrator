@@ -26,13 +26,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>60</Qty>
-					<TotalDiscount>107142.86</TotalDiscount>
-					<TaxBase>4017857.14</TaxBase>
-					<OtherTaxBase>4017857.14</OtherTaxBase>
+					<TotalDiscount>98214.29</TotalDiscount>
+					<TaxBase>3683035.71</TaxBase>
+					<OtherTaxBase>3683035.71</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>482142.86</VAT>
+					<VAT>441964.29</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -62,13 +62,13 @@
 					<Code>000000</Code>
 					<Name>PAKU 10CM</Name>
 					<Unit>UM.0033</Unit>
-					<Price>428571.43</Price>
+					<Price>392857.14</Price>
 					<Qty>3</Qty>
-					<TotalDiscount>160714.29</TotalDiscount>
-					<TaxBase>1125000</TaxBase>
-					<OtherTaxBase>1125000</OtherTaxBase>
+					<TotalDiscount>147321.43</TotalDiscount>
+					<TaxBase>1031250</TaxBase>
+					<OtherTaxBase>1031250</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>135000</VAT>
+					<VAT>123750</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -98,13 +98,13 @@
 					<Code>000000</Code>
 					<Name>BESI 10 STD</Name>
 					<Unit>UM.0033</Unit>
-					<Price>63392.86</Price>
+					<Price>58110.12</Price>
 					<Qty>100</Qty>
-					<TotalDiscount>535714.29</TotalDiscount>
-					<TaxBase>5803571.43</TaxBase>
-					<OtherTaxBase>5803571.43</OtherTaxBase>
+					<TotalDiscount>491071.43</TotalDiscount>
+					<TaxBase>5319940.73</TaxBase>
+					<OtherTaxBase>5319940.73</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>696428.57</VAT>
+					<VAT>638392.89</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -134,13 +134,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>35</Qty>
-					<TotalDiscount>187500</TotalDiscount>
-					<TaxBase>2218750</TaxBase>
-					<OtherTaxBase>2218750</OtherTaxBase>
+					<TotalDiscount>171875</TotalDiscount>
+					<TaxBase>2033854.17</TaxBase>
+					<OtherTaxBase>2033854.17</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>266250</VAT>
+					<VAT>244062.5</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -170,13 +170,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>40</Qty>
-					<TotalDiscount>71428.57</TotalDiscount>
-					<TaxBase>2678571.43</TaxBase>
-					<OtherTaxBase>2678571.43</OtherTaxBase>
+					<TotalDiscount>65476.19</TotalDiscount>
+					<TaxBase>2455357.14</TaxBase>
+					<OtherTaxBase>2455357.14</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>321428.57</VAT>
+					<VAT>294642.86</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -206,13 +206,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>50</Qty>
-					<TotalDiscount>223214.29</TotalDiscount>
-					<TaxBase>3214285.71</TaxBase>
-					<OtherTaxBase>3214285.71</OtherTaxBase>
+					<TotalDiscount>204613.1</TotalDiscount>
+					<TaxBase>2946428.57</TaxBase>
+					<OtherTaxBase>2946428.57</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>385714.29</VAT>
+					<VAT>353571.43</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -242,13 +242,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>10</Qty>
-					<TotalDiscount>53571.43</TotalDiscount>
-					<TaxBase>633928.57</TaxBase>
-					<OtherTaxBase>633928.57</OtherTaxBase>
+					<TotalDiscount>49107.14</TotalDiscount>
+					<TaxBase>581101.19</TaxBase>
+					<OtherTaxBase>581101.19</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>76071.43</VAT>
+					<VAT>69732.14</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -278,13 +278,13 @@
 					<Code>000000</Code>
 					<Name>GRC BOARD 3.5MM</Name>
 					<Unit>UM.0021</Unit>
-					<Price>66964.29</Price>
+					<Price>61383.93</Price>
 					<Qty>6</Qty>
-					<TotalDiscount>26785.71</TotalDiscount>
-					<TaxBase>375000</TaxBase>
-					<OtherTaxBase>375000</OtherTaxBase>
+					<TotalDiscount>24553.57</TotalDiscount>
+					<TaxBase>343750.03</TaxBase>
+					<OtherTaxBase>343750.03</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>45000</VAT>
+					<VAT>41250</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -314,13 +314,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>30</Qty>
-					<TotalDiscount>160714.29</TotalDiscount>
-					<TaxBase>1901785.71</TaxBase>
-					<OtherTaxBase>1901785.71</OtherTaxBase>
+					<TotalDiscount>147321.43</TotalDiscount>
+					<TaxBase>1743303.57</TaxBase>
+					<OtherTaxBase>1743303.57</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>228214.29</VAT>
+					<VAT>209196.43</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -350,13 +350,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>30</Qty>
-					<TotalDiscount>133928.57</TotalDiscount>
-					<TaxBase>1928571.43</TaxBase>
-					<OtherTaxBase>1928571.43</OtherTaxBase>
+					<TotalDiscount>122767.86</TotalDiscount>
+					<TaxBase>1767857.14</TaxBase>
+					<OtherTaxBase>1767857.14</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>231428.57</VAT>
+					<VAT>212142.86</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -386,13 +386,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>25</Qty>
-					<TotalDiscount>111607.14</TotalDiscount>
-					<TaxBase>1607142.86</TaxBase>
-					<OtherTaxBase>1607142.86</OtherTaxBase>
+					<TotalDiscount>102306.54</TotalDiscount>
+					<TaxBase>1473214.29</TaxBase>
+					<OtherTaxBase>1473214.29</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>192857.14</VAT>
+					<VAT>176785.71</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -422,13 +422,13 @@
 					<Code>000000</Code>
 					<Name>SENG GELOMBANG BIRU 030</Name>
 					<Unit>UM.0021</Unit>
-					<Price>53571.43</Price>
+					<Price>49107.14</Price>
 					<Qty>12</Qty>
-					<TotalDiscount>32142.86</TotalDiscount>
-					<TaxBase>610714.29</TaxBase>
-					<OtherTaxBase>610714.29</OtherTaxBase>
+					<TotalDiscount>29464.29</TotalDiscount>
+					<TaxBase>559821.44</TaxBase>
+					<OtherTaxBase>559821.44</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>73285.71</VAT>
+					<VAT>67178.57</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -458,13 +458,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>5</Qty>
-					<TotalDiscount>22321.43</TotalDiscount>
-					<TaxBase>321428.57</TaxBase>
-					<OtherTaxBase>321428.57</OtherTaxBase>
+					<TotalDiscount>20461.31</TotalDiscount>
+					<TaxBase>294642.86</TaxBase>
+					<OtherTaxBase>294642.86</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>38571.43</VAT>
+					<VAT>35357.14</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -494,13 +494,13 @@
 					<Code>000000</Code>
 					<Name>PAKU SENG KOREI 0,7 KG</Name>
 					<Unit>UM.0033</Unit>
-					<Price>17857.14</Price>
+					<Price>16369.04</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
-					<TaxBase>17857.14</TaxBase>
-					<OtherTaxBase>17857.14</OtherTaxBase>
+					<TaxBase>16369.04</TaxBase>
+					<OtherTaxBase>16369.04</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>2142.86</VAT>
+					<VAT>1964.29</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -530,13 +530,13 @@
 					<Code>000000</Code>
 					<Name>PAKU 7CM</Name>
 					<Unit>UM.0003</Unit>
-					<Price>17857.14</Price>
+					<Price>16369.04</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
-					<TaxBase>17857.14</TaxBase>
-					<OtherTaxBase>17857.14</OtherTaxBase>
+					<TaxBase>16369.04</TaxBase>
+					<OtherTaxBase>16369.04</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>2142.86</VAT>
+					<VAT>1964.29</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -566,13 +566,13 @@
 					<Code>000000</Code>
 					<Name>PAKU 10CM</Name>
 					<Unit>UM.0003</Unit>
-					<Price>17857.14</Price>
+					<Price>16369.04</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
-					<TaxBase>17857.14</TaxBase>
-					<OtherTaxBase>17857.14</OtherTaxBase>
+					<TaxBase>16369.04</TaxBase>
+					<OtherTaxBase>16369.04</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>2142.86</VAT>
+					<VAT>1964.29</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -602,13 +602,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>30</Qty>
-					<TotalDiscount>133928.57</TotalDiscount>
-					<TaxBase>1928571.43</TaxBase>
-					<OtherTaxBase>1928571.43</OtherTaxBase>
+					<TotalDiscount>122767.86</TotalDiscount>
+					<TaxBase>1767857.14</TaxBase>
+					<OtherTaxBase>1767857.14</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>231428.57</VAT>
+					<VAT>212142.86</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -638,13 +638,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>20</Qty>
-					<TotalDiscount>89285.71</TotalDiscount>
-					<TaxBase>1285714.29</TaxBase>
-					<OtherTaxBase>1285714.29</OtherTaxBase>
+					<TotalDiscount>81845.23</TotalDiscount>
+					<TaxBase>1178571.43</TaxBase>
+					<OtherTaxBase>1178571.43</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>154285.71</VAT>
+					<VAT>141428.57</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -674,13 +674,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>10</Qty>
-					<TotalDiscount>44642.86</TotalDiscount>
-					<TaxBase>642857.14</TaxBase>
-					<OtherTaxBase>642857.14</OtherTaxBase>
+					<TotalDiscount>40922.62</TotalDiscount>
+					<TaxBase>589285.71</TaxBase>
+					<OtherTaxBase>589285.71</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>77142.86</VAT>
+					<VAT>70714.29</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -710,13 +710,13 @@
 					<Code>000000</Code>
 					<Name>BESI 10 STD</Name>
 					<Unit>UM.0033</Unit>
-					<Price>63392.86</Price>
+					<Price>58110.12</Price>
 					<Qty>40</Qty>
-					<TotalDiscount>214285.71</TotalDiscount>
-					<TaxBase>2321428.57</TaxBase>
-					<OtherTaxBase>2321428.57</OtherTaxBase>
+					<TotalDiscount>196428.57</TotalDiscount>
+					<TaxBase>2127976.3</TaxBase>
+					<OtherTaxBase>2127976.3</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>278571.43</VAT>
+					<VAT>255357.16</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -746,13 +746,13 @@
 					<Code>000000</Code>
 					<Name>BESI 6 STD</Name>
 					<Unit>UM.0033</Unit>
-					<Price>31250</Price>
+					<Price>28645.83</Price>
 					<Qty>50</Qty>
-					<TotalDiscount>223214.29</TotalDiscount>
-					<TaxBase>1339285.71</TaxBase>
-					<OtherTaxBase>1339285.71</OtherTaxBase>
+					<TotalDiscount>204613.1</TotalDiscount>
+					<TaxBase>1227678.57</TaxBase>
+					<OtherTaxBase>1227678.57</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>160714.29</VAT>
+					<VAT>147321.43</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -782,13 +782,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>68750</Price>
+					<Price>63020.83</Price>
 					<Qty>125</Qty>
-					<TotalDiscount>446428.57</TotalDiscount>
-					<TaxBase>8147321.43</TaxBase>
-					<OtherTaxBase>8147321.43</OtherTaxBase>
+					<TotalDiscount>409226.19</TotalDiscount>
+					<TaxBase>7468377.98</TaxBase>
+					<OtherTaxBase>7468377.98</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>977678.57</VAT>
+					<VAT>896205.36</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>

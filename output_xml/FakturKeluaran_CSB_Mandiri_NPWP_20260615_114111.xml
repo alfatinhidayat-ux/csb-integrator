@@ -26,13 +26,13 @@
 					<Code>000000</Code>
 					<Name>SENG MULTIROOF BIRU</Name>
 					<Unit>UM.0021</Unit>
-					<Price>24107.14</Price>
+					<Price>22098.21</Price>
 					<Qty>500</Qty>
-					<TotalDiscount>1339285.71</TotalDiscount>
-					<TaxBase>10714285.71</TaxBase>
-					<OtherTaxBase>10714285.71</OtherTaxBase>
+					<TotalDiscount>1227678.57</TotalDiscount>
+					<TaxBase>9821427.27</TaxBase>
+					<OtherTaxBase>9821427.27</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>1285714.29</VAT>
+					<VAT>1178571.27</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>

@@ -364,9 +364,48 @@ def build_invoices(faktur_rows, detail_rows):
         items = []
         for d in detail_index.get((batch_val, str(baris_val).strip()), []):
             item = {}
+            
+            # 1. Parse raw numerics for calculations
+            raw_price = detail_resolver.get(d, "Harga Satuan")
+            raw_qty = detail_resolver.get(d, "Jumlah Barang Jasa")
+            raw_disc = detail_resolver.get(d, "Total Diskon")
+            
+            def to_dec(val):
+                if val in (None, ""): return Decimal("0")
+                try: return Decimal(str(val))
+                except InvalidOperation: return Decimal("0")
+                
+            orig_price = to_dec(raw_price)
+            qty = to_dec(raw_qty)
+            orig_disc = to_dec(raw_disc)
+            
+            # Option B: Harga Jual = (Harga Satuan * Qty) - Diskon
+            harga_jual = (orig_price * qty) - orig_disc
+            
+            # Hitung berdasarkan rumus.md
+            # DPP = (Harga Jual * 11) / 12
+            new_dpp = (harga_jual * Decimal("11")) / Decimal("12")
+            # PPN = DPP * 12%
+            new_ppn = new_dpp * Decimal("0.12")
+            
+            # Agar validasi Coretax lolos, Price dan Discount juga disesuaikan dengan proporsi yang sama
+            new_price = (orig_price * Decimal("11")) / Decimal("12")
+            new_disc = (orig_disc * Decimal("11")) / Decimal("12")
+            
             for excel_col, xml_tag in DETAIL_FIELD_MAP.items():
                 raw = detail_resolver.get(d, excel_col)
-                if xml_tag in NUMERIC_TAGS:
+                
+                if xml_tag == "Price":
+                    item[xml_tag] = fmt_number(new_price)
+                elif xml_tag == "TotalDiscount":
+                    item[xml_tag] = fmt_number(new_disc)
+                elif xml_tag in ("TaxBase", "OtherTaxBase"):
+                    item[xml_tag] = fmt_number(new_dpp)
+                elif xml_tag == "VAT":
+                    item[xml_tag] = fmt_number(new_ppn)
+                elif xml_tag == "VATRate":
+                    item[xml_tag] = "12"
+                elif xml_tag in NUMERIC_TAGS:
                     item[xml_tag] = fmt_number(raw)
                 elif xml_tag == "Code":
                     item[xml_tag] = str(raw).strip().zfill(6) if raw is not None else "000000"

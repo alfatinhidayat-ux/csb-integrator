@@ -26,13 +26,13 @@
 					<Code>000000</Code>
 					<Name>BESI PIPA 3&quot; MEDIUM B</Name>
 					<Unit>UM.0021</Unit>
-					<Price>549107.14</Price>
+					<Price>503348.21</Price>
 					<Qty>2</Qty>
 					<TotalDiscount>0</TotalDiscount>
-					<TaxBase>1098214.29</TaxBase>
-					<OtherTaxBase>1098214.29</OtherTaxBase>
+					<TaxBase>1006696.42</TaxBase>
+					<OtherTaxBase>1006696.42</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>131785.71</VAT>
+					<VAT>120803.57</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -62,13 +62,13 @@
 					<Code>000000</Code>
 					<Name>SEMEN CONCH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>67857.14</Price>
+					<Price>62202.38</Price>
 					<Qty>150</Qty>
-					<TotalDiscount>267857.14</TotalDiscount>
-					<TaxBase>9910714.29</TaxBase>
-					<OtherTaxBase>9910714.29</OtherTaxBase>
+					<TotalDiscount>245535.71</TotalDiscount>
+					<TaxBase>9084821.04</TaxBase>
+					<OtherTaxBase>9084821.04</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>1189285.71</VAT>
+					<VAT>1090178.52</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
@@ -98,13 +98,13 @@
 					<Code>000000</Code>
 					<Name>PLAMIR GIANT MORTAR</Name>
 					<Unit>UM.0033</Unit>
-					<Price>178571.43</Price>
+					<Price>163690.48</Price>
 					<Qty>10</Qty>
 					<TotalDiscount>0</TotalDiscount>
-					<TaxBase>1785714.29</TaxBase>
-					<OtherTaxBase>1785714.29</OtherTaxBase>
+					<TaxBase>1636904.78</TaxBase>
+					<OtherTaxBase>1636904.78</OtherTaxBase>
 					<VATRate>12</VATRate>
-					<VAT>214285.71</VAT>
+					<VAT>196428.57</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>
