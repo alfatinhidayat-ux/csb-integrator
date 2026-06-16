@@ -365,44 +365,55 @@ def build_invoices(faktur_rows, detail_rows):
         for d in detail_index.get((batch_val, str(baris_val).strip()), []):
             item = {}
             
-            # 1. Parse raw numerics for calculations
+            # 1. Parse raw numerics dari DB
             raw_price = detail_resolver.get(d, "Harga Satuan")
-            raw_qty = detail_resolver.get(d, "Jumlah Barang Jasa")
-            raw_disc = detail_resolver.get(d, "Total Diskon")
-            
+            raw_qty   = detail_resolver.get(d, "Jumlah Barang Jasa")
+            raw_disc  = detail_resolver.get(d, "Total Diskon")
+            raw_dpp   = detail_resolver.get(d, "DPP")
+            raw_ppn   = detail_resolver.get(d, "PPN")
+
             def to_dec(val):
                 if val in (None, ""): return Decimal("0")
                 try: return Decimal(str(val))
                 except InvalidOperation: return Decimal("0")
-                
+
             orig_price = to_dec(raw_price)
-            qty = to_dec(raw_qty)
-            orig_disc = to_dec(raw_disc)
-            
-            # Option B: Harga Jual = (Harga Satuan * Qty) - Diskon
-            harga_jual = (orig_price * qty) - orig_disc
-            
-            # Hitung berdasarkan rumus.md
-            # DPP = (Harga Jual * 11) / 12
-            new_dpp = (harga_jual * Decimal("11")) / Decimal("12")
-            # PPN = DPP * 12%
+            qty        = to_dec(raw_qty)
+            orig_disc  = to_dec(raw_disc)
+            db_dpp     = to_dec(raw_dpp)
+            db_ppn     = to_dec(raw_ppn)
+
+            # Harga Jual = DPP_DB + PPN_DB (harga final yang dibayar konsumen, include PPN)
+            harga_jual = db_dpp + db_ppn
+
+            # Rumus CoReTax:
+            # A = Harga Jual / 1.11 (strip PPN 11% lama)
+            A = harga_jual / Decimal("1.11")
+
+            # Harga satuan (Price per unit) = A / qty
+            price_per_unit = (A / qty) if qty != 0 else A
+
+            # B = DPP = A * 11 / 12
+            new_dpp = (A * Decimal("11")) / Decimal("12")
+            # C = PPN = DPP * 12%
             new_ppn = new_dpp * Decimal("0.12")
-            
-            # Agar validasi Coretax lolos, Price dan Discount juga disesuaikan dengan proporsi yang sama
-            new_price = (orig_price * Decimal("11")) / Decimal("12")
-            new_disc = (orig_disc * Decimal("11")) / Decimal("12")
-            
+
+            # Diskon ikut proporsi: diskon per unit × qty
+            # (gunakan nilai diskon asli dari DB)
+
             for excel_col, xml_tag in DETAIL_FIELD_MAP.items():
                 raw = detail_resolver.get(d, excel_col)
-                
+
                 if xml_tag == "Price":
-                    item[xml_tag] = fmt_number(new_price)
+                    item[xml_tag] = fmt_number(price_per_unit)   # Harga satuan = A / qty
                 elif xml_tag == "TotalDiscount":
-                    item[xml_tag] = fmt_number(new_disc)
-                elif xml_tag in ("TaxBase", "OtherTaxBase"):
-                    item[xml_tag] = fmt_number(new_dpp)
+                    item[xml_tag] = fmt_number(orig_disc)         # Diskon asli dari DB
+                elif xml_tag == "TaxBase":
+                    item[xml_tag] = fmt_number(new_dpp)           # DPP = A * 11/12
+                elif xml_tag == "OtherTaxBase":
+                    item[xml_tag] = "0"                           # DPP Nilai Lain = 0
                 elif xml_tag == "VAT":
-                    item[xml_tag] = fmt_number(new_ppn)
+                    item[xml_tag] = fmt_number(new_ppn)           # PPN = DPP * 12%
                 elif xml_tag == "VATRate":
                     item[xml_tag] = "12"
                 elif xml_tag in NUMERIC_TAGS:

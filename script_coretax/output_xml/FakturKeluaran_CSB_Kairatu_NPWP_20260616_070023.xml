@@ -26,9 +26,9 @@
 					<Code>000000</Code>
 					<Name>TRIPLEX 3MM SANGON</Name>
 					<Unit>UM.0021</Unit>
-					<Price>49107.14</Price>
+					<Price>53571.43</Price>
 					<Qty>35</Qty>
-					<TotalDiscount>143229.17</TotalDiscount>
+					<TotalDiscount>156250</TotalDiscount>
 					<TaxBase>1575520.88</TaxBase>
 					<OtherTaxBase>1575520.88</OtherTaxBase>
 					<VATRate>12</VATRate>
@@ -62,9 +62,9 @@
 					<Code>000000</Code>
 					<Name>PAKU 7CM</Name>
 					<Unit>UM.0033</Unit>
-					<Price>392857.14</Price>
+					<Price>428571.43</Price>
 					<Qty>1</Qty>
-					<TotalDiscount>45014.88</TotalDiscount>
+					<TotalDiscount>49107.14</TotalDiscount>
 					<TaxBase>347842.27</TaxBase>
 					<OtherTaxBase>347842.27</OtherTaxBase>
 					<VATRate>12</VATRate>
@@ -98,9 +98,9 @@
 					<Code>000000</Code>
 					<Name>PAKU 5CM</Name>
 					<Unit>UM.0033</Unit>
-					<Price>392857.14</Price>
+					<Price>428571.43</Price>
 					<Qty>1</Qty>
-					<TotalDiscount>45014.88</TotalDiscount>
+					<TotalDiscount>49107.14</TotalDiscount>
 					<TaxBase>347842.27</TaxBase>
 					<OtherTaxBase>347842.27</OtherTaxBase>
 					<VATRate>12</VATRate>
@@ -134,7 +134,7 @@
 					<Code>000000</Code>
 					<Name>TERPAL 6X8 A3</Name>
 					<Unit>UM.0021</Unit>
-					<Price>188244.04</Price>
+					<Price>205357.14</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>188244.04</TaxBase>
@@ -170,7 +170,7 @@
 					<Code>000000</Code>
 					<Name>TERPAL 4X6 A3</Name>
 					<Unit>UM.0021</Unit>
-					<Price>98214.29</Price>
+					<Price>107142.86</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>98214.29</TaxBase>
@@ -206,9 +206,9 @@
 					<Code>000000</Code>
 					<Name>TRIPLEX 12MM SANGON</Name>
 					<Unit>UM.0021</Unit>
-					<Price>151413.69</Price>
+					<Price>165178.57</Price>
 					<Qty>80</Qty>
-					<TotalDiscount>327380.96</TotalDiscount>
+					<TotalDiscount>357142.86</TotalDiscount>
 					<TaxBase>11785714.18</TaxBase>
 					<OtherTaxBase>11785714.18</OtherTaxBase>
 					<VATRate>12</VATRate>
@@ -242,7 +242,7 @@
 					<Code>000000</Code>
 					<Name>IN LITE BULB INB007 12W PUTIH</Name>
 					<Unit>UM.0021</Unit>
-					<Price>31101.19</Price>
+					<Price>33928.57</Price>
 					<Qty>12</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>373214.27</TaxBase>
@@ -278,7 +278,7 @@
 					<Code>000000</Code>
 					<Name>ROLLER NP 9 INCH 1000-BASIC</Name>
 					<Unit>UM.0021</Unit>
-					<Price>20461.31</Price>
+					<Price>22321.43</Price>
 					<Qty>12</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>245535.73</TaxBase>
@@ -314,7 +314,7 @@
 					<Code>000000</Code>
 					<Name>MATEX PASTEL BASE 20KG</Name>
 					<Unit>UM.0021</Unit>
-					<Price>486160.71</Price>
+					<Price>530357.14</Price>
 					<Qty>3</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>1458482.14</TaxBase>
@@ -350,7 +350,7 @@
 					<Code>000000</Code>
 					<Name>MATEX READY MIX 4.5L</Name>
 					<Unit>UM.0021</Unit>
-					<Price>117857.14</Price>
+					<Price>128571.43</Price>
 					<Qty>3</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>353571.43</TaxBase>
@@ -386,7 +386,7 @@
 					<Code>000000</Code>
 					<Name>SAPU SABUT SERCOCO</Name>
 					<Unit>UM.0021</Unit>
-					<Price>30282.73</Price>
+					<Price>33035.71</Price>
 					<Qty>7</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>211979.14</TaxBase>
@@ -422,7 +422,7 @@
 					<Code>000000</Code>
 					<Name>KABEL NYM ELEC 2x1.5 100M FULL</Name>
 					<Unit>UM.0033</Unit>
-					<Price>409226.19</Price>
+					<Price>446428.57</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>409226.19</TaxBase>
@@ -458,7 +458,7 @@
 					<Code>000000</Code>
 					<Name>SIKAT WC+BOX KB 2215</Name>
 					<Unit>UM.0021</Unit>
-					<Price>11458.33</Price>
+					<Price>12500</Price>
 					<Qty>2</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>22916.67</TaxBase>
@@ -494,7 +494,7 @@
 					<Code>000000</Code>
 					<Name>KENZO DUSTBIN SQUARE WITH PEDAL 32</Name>
 					<Unit>UM.0021</Unit>
-					<Price>160416.67</Price>
+					<Price>175000</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>160416.67</TaxBase>
@@ -530,7 +530,7 @@
 					<Code>000000</Code>
 					<Name>SQUARE CONTINENTAL TRASH BIN 62LT</Name>
 					<Unit>UM.0021</Unit>
-					<Price>263541.67</Price>
+					<Price>287500</Price>
 					<Qty>3</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>790625</TaxBase>
@@ -566,7 +566,7 @@
 					<Code>000000</Code>
 					<Name>TONG SAMPAH INJAK RODA 90L SILVER</Name>
 					<Unit>UM.0021</Unit>
-					<Price>329836.31</Price>
+					<Price>359821.43</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>329836.31</TaxBase>
@@ -602,9 +602,9 @@
 					<Code>000000</Code>
 					<Name>TRIPLEX 3MM SANGON</Name>
 					<Unit>UM.0021</Unit>
-					<Price>49107.14</Price>
+					<Price>53571.43</Price>
 					<Qty>40</Qty>
-					<TotalDiscount>163690.48</TotalDiscount>
+					<TotalDiscount>178571.43</TotalDiscount>
 					<TaxBase>1800595.29</TaxBase>
 					<OtherTaxBase>1800595.29</OtherTaxBase>
 					<VATRate>12</VATRate>
@@ -638,7 +638,7 @@
 					<Code>000000</Code>
 					<Name>TERPAL 6X8 A3</Name>
 					<Unit>UM.0021</Unit>
-					<Price>188244.04</Price>
+					<Price>205357.14</Price>
 					<Qty>2</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>376488.09</TaxBase>
@@ -674,9 +674,9 @@
 					<Code>000000</Code>
 					<Name>PAKU 5CM</Name>
 					<Unit>UM.0033</Unit>
-					<Price>392857.14</Price>
+					<Price>428571.43</Price>
 					<Qty>1</Qty>
-					<TotalDiscount>45014.88</TotalDiscount>
+					<TotalDiscount>49107.14</TotalDiscount>
 					<TaxBase>347842.27</TaxBase>
 					<OtherTaxBase>347842.27</OtherTaxBase>
 					<VATRate>12</VATRate>
@@ -710,9 +710,9 @@
 					<Code>000000</Code>
 					<Name>PAKU 7CM</Name>
 					<Unit>UM.0033</Unit>
-					<Price>392857.14</Price>
+					<Price>428571.43</Price>
 					<Qty>1</Qty>
-					<TotalDiscount>45014.88</TotalDiscount>
+					<TotalDiscount>49107.14</TotalDiscount>
 					<TaxBase>347842.27</TaxBase>
 					<OtherTaxBase>347842.27</OtherTaxBase>
 					<VATRate>12</VATRate>
@@ -746,9 +746,9 @@
 					<Code>000000</Code>
 					<Name>PAKU 10CM</Name>
 					<Unit>UM.0033</Unit>
-					<Price>392857.14</Price>
+					<Price>428571.43</Price>
 					<Qty>2</Qty>
-					<TotalDiscount>90029.77</TotalDiscount>
+					<TotalDiscount>98214.29</TotalDiscount>
 					<TaxBase>695684.52</TaxBase>
 					<OtherTaxBase>695684.52</OtherTaxBase>
 					<VATRate>12</VATRate>
@@ -782,7 +782,7 @@
 					<Code>000000</Code>
 					<Name>CANAL C 75/75 TEBAL</Name>
 					<Unit>UM.0021</Unit>
-					<Price>81845.23</Price>
+					<Price>89285.71</Price>
 					<Qty>50</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>4092261.71</TaxBase>
@@ -818,7 +818,7 @@
 					<Code>000000</Code>
 					<Name>RENG RBM 030</Name>
 					<Unit>UM.0021</Unit>
-					<Price>36830.36</Price>
+					<Price>40178.57</Price>
 					<Qty>16</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>589285.69</TaxBase>
@@ -854,7 +854,7 @@
 					<Code>000000</Code>
 					<Name>SPANDEX GALVALUM 035X6M</Name>
 					<Unit>UM.0021</Unit>
-					<Price>167782.73</Price>
+					<Price>183035.71</Price>
 					<Qty>16</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>2684523.75</TaxBase>
@@ -890,7 +890,7 @@
 					<Code>000000</Code>
 					<Name>TORA SELF DRILLING SCREW 12X20 YE</Name>
 					<Unit>UM.0033</Unit>
-					<Price>171875</Price>
+					<Price>187500</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>171875</TaxBase>
@@ -926,7 +926,7 @@
 					<Code>000000</Code>
 					<Name>TORA SELF DRILLING SCREW 12X50 YELLOW ZINC PLATING</Name>
 					<Unit>UM.0022</Unit>
-					<Price>147321.43</Price>
+					<Price>160714.29</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>147321.43</TaxBase>
@@ -962,7 +962,7 @@
 					<Code>000000</Code>
 					<Name>TRIPLEX 5MM SANGON</Name>
 					<Unit>UM.0021</Unit>
-					<Price>73660.71</Price>
+					<Price>80357.14</Price>
 					<Qty>233</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>17162945.82</TaxBase>
@@ -998,7 +998,7 @@
 					<Code>000000</Code>
 					<Name>PAKU 3CM</Name>
 					<Unit>UM.0003</Unit>
-					<Price>22916.67</Price>
+					<Price>25000</Price>
 					<Qty>5</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>114583.33</TaxBase>
@@ -1034,9 +1034,9 @@
 					<Code>000000</Code>
 					<Name>SEMEN TONASA</Name>
 					<Unit>UM.0033</Unit>
-					<Price>69568.46</Price>
+					<Price>75892.86</Price>
 					<Qty>36</Qty>
-					<TotalDiscount>58928.57</TotalDiscount>
+					<TotalDiscount>64285.71</TotalDiscount>
 					<TaxBase>2445535.81</TaxBase>
 					<OtherTaxBase>2445535.81</OtherTaxBase>
 					<VATRate>12</VATRate>
@@ -1070,7 +1070,7 @@
 					<Code>000000</Code>
 					<Name>BESI 10 STD</Name>
 					<Unit>UM.0033</Unit>
-					<Price>57291.67</Price>
+					<Price>62500</Price>
 					<Qty>50</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>2864583.33</TaxBase>
@@ -1106,7 +1106,7 @@
 					<Code>000000</Code>
 					<Name>BESI 8 STD</Name>
 					<Unit>UM.0021</Unit>
-					<Price>38467.27</Price>
+					<Price>41964.29</Price>
 					<Qty>20</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>769345.32</TaxBase>
@@ -1142,7 +1142,7 @@
 					<Code>000000</Code>
 					<Name>BESI 6 STD</Name>
 					<Unit>UM.0033</Unit>
-					<Price>26190.48</Price>
+					<Price>28571.43</Price>
 					<Qty>40</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>1047619.1</TaxBase>
@@ -1178,7 +1178,7 @@
 					<Code>000000</Code>
 					<Name>BENDRAT</Name>
 					<Unit>UM.0003</Unit>
-					<Price>16369.04</Price>
+					<Price>17857.14</Price>
 					<Qty>5</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>81845.22</TaxBase>
@@ -1214,7 +1214,7 @@
 					<Code>000000</Code>
 					<Name>GURINDA POTONG WD</Name>
 					<Unit>UM.0021</Unit>
-					<Price>6547.62</Price>
+					<Price>7142.86</Price>
 					<Qty>4</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>26190.49</TaxBase>
@@ -1250,7 +1250,7 @@
 					<Code>000000</Code>
 					<Name>TRIPLEX 5MM SANGON</Name>
 					<Unit>UM.0021</Unit>
-					<Price>73660.71</Price>
+					<Price>80357.14</Price>
 					<Qty>30</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>2209821.35</TaxBase>
@@ -1286,7 +1286,7 @@
 					<Code>000000</Code>
 					<Name>SENG GELOMBANG GALVALUM 030</Name>
 					<Unit>UM.0021</Unit>
-					<Price>53199.4</Price>
+					<Price>58035.71</Price>
 					<Qty>30</Qty>
 					<TotalDiscount>0</TotalDiscount>
 					<TaxBase>1595982.02</TaxBase>
