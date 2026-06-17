@@ -29,8 +29,8 @@
 					<Price>2657657.66</Price>
 					<Qty>1</Qty>
 					<TotalDiscount>0</TotalDiscount>
-					<TaxBase>2436186.19</TaxBase>
-					<OtherTaxBase>0</OtherTaxBase>
+					<TaxBase>2657657.66</TaxBase>
+					<OtherTaxBase>2436186.19</OtherTaxBase>
 					<VATRate>12</VATRate>
 					<VAT>292342.34</VAT>
 					<STLGRate>0</STLGRate>

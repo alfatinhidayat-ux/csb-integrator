@@ -29,10 +29,40 @@
 					<Price>21621.62</Price>
 					<Qty>500</Qty>
 					<TotalDiscount>1339285.71</TotalDiscount>
-					<TaxBase>9909909.91</TaxBase>
-					<OtherTaxBase>0</OtherTaxBase>
+					<TaxBase>10810810.81</TaxBase>
+					<OtherTaxBase>9909909.91</OtherTaxBase>
 					<VATRate>12</VATRate>
 					<VAT>1189189.19</VAT>
+					<STLGRate>0</STLGRate>
+					<STLG>0</STLG>
+				</GoodService>
+				<GoodService>
+					<Opt>A</Opt>
+					<Code>000000</Code>
+					<Name>PAKU MULTIROOF</Name>
+					<Unit>UM.0003</Unit>
+					<Price>28828.83</Price>
+					<Qty>7</Qty>
+					<TotalDiscount>18750</TotalDiscount>
+					<TaxBase>201801.8</TaxBase>
+					<OtherTaxBase>184984.98</OtherTaxBase>
+					<VATRate>12</VATRate>
+					<VAT>22198.2</VAT>
+					<STLGRate>0</STLGRate>
+					<STLG>0</STLG>
+				</GoodService>
+				<GoodService>
+					<Opt>A</Opt>
+					<Code>000000</Code>
+					<Name>BESI 12 STD</Name>
+					<Unit>UM.0033</Unit>
+					<Price>94594.59</Price>
+					<Qty>8</Qty>
+					<TotalDiscount>35714.29</TotalDiscount>
+					<TaxBase>756756.76</TaxBase>
+					<OtherTaxBase>693693.69</OtherTaxBase>
+					<VATRate>12</VATRate>
+					<VAT>83243.24</VAT>
 					<STLGRate>0</STLGRate>
 					<STLG>0</STLG>
 				</GoodService>

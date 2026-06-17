@@ -297,7 +297,8 @@ def build_invoices(faktur_rows, detail_rows):
     header_resolver = ColumnResolver(faktur_rows[0])
     detail_resolver = ColumnResolver(detail_rows[0]) if detail_rows else None
 
-    # index detail rows by (batch_id, baris)
+    # index detail rows by batch_id saja
+    # (baris di detail = nomor urut item, bukan nomor faktur)
     detail_index = {}
     if detail_resolver:
         for d in detail_rows:
@@ -305,8 +306,7 @@ def build_invoices(faktur_rows, detail_rows):
             batch_val = detail_resolver.get(d, "batch_id")
             if baris_val is None or str(baris_val).strip().upper() == "END":
                 continue
-            key = (batch_val, str(baris_val).strip())
-            detail_index.setdefault(key, []).append(d)
+            detail_index.setdefault(batch_val, []).append(d)
 
     invoices = []
     for f in faktur_rows:
@@ -362,7 +362,7 @@ def build_invoices(faktur_rows, detail_rows):
 
         # ---- Items (GoodService) ----
         items = []
-        for d in detail_index.get((batch_val, str(baris_val).strip()), []):
+        for d in detail_index.get(batch_val, []):
             item = {}
             
             # 1. Parse raw numerics dari DB
@@ -390,13 +390,13 @@ def build_invoices(faktur_rows, detail_rows):
             # A = Harga Jual / 1.11 (strip PPN 11% lama)
             A = harga_jual / Decimal("1.11")
 
-            # Harga satuan (Price per unit) = A / qty
-            price_per_unit = (A / qty) if qty != 0 else A
-
             # B = DPP = A * 11 / 12
             new_dpp = (A * Decimal("11")) / Decimal("12")
             # C = PPN = DPP * 12%
             new_ppn = new_dpp * Decimal("0.12")
+
+            # Harga satuan (Price) = A / qty
+            price_per_unit = (A / qty) if qty != 0 else A
 
             # Diskon ikut proporsi: diskon per unit × qty
             # (gunakan nilai diskon asli dari DB)
@@ -409,9 +409,9 @@ def build_invoices(faktur_rows, detail_rows):
                 elif xml_tag == "TotalDiscount":
                     item[xml_tag] = fmt_number(orig_disc)         # Diskon asli dari DB
                 elif xml_tag == "TaxBase":
-                    item[xml_tag] = fmt_number(new_dpp)           # DPP = A * 11/12
+                    item[xml_tag] = fmt_number(A)                 # TaxBase = Price × Qty = A
                 elif xml_tag == "OtherTaxBase":
-                    item[xml_tag] = "0"                           # DPP Nilai Lain = 0
+                    item[xml_tag] = fmt_number(new_dpp)           # DPP Nilai Lain = A * 11/12
                 elif xml_tag == "VAT":
                     item[xml_tag] = fmt_number(new_ppn)           # PPN = DPP * 12%
                 elif xml_tag == "VATRate":
