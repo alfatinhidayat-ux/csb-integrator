@@ -913,5 +913,58 @@ SALES_ENDPOINTS: list[Endpoint] = [
 ]
 
 
+FINANCE_ENDPOINTS: list[Endpoint] = [
+    Endpoint(
+        "Brighter Pelunasan Hutang",
+        "/transaksi/pelunasan_hutang",
+        "brighter_transaksi_pelunasan_hutang",
+        Strategy.FULL_REPLACE,
+        params={},
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Foto Pelunasan Hutang",
+        "/transaksi/pelunasan_hutang/:id/dfhutang_foto",
+        "brighter_transaksi_pelunasan_hutang_foto",
+        Strategy.FULL_REPLACE,
+        params={},
+        parent_table="brighter_transaksi_pelunasan_hutang",
+        parent_key="id",
+        parent_column="fhutang_id",
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Detail Pelunasan Hutang",
+        "/transaksi/pelunasan_hutang/:id/detail_pelunasan_hutang",
+        "brighter_transaksi_pelunasan_hutang_detail",
+        Strategy.FULL_REPLACE,
+        params={},
+        parent_table="brighter_transaksi_pelunasan_hutang",
+        parent_key="id",
+        parent_column="fhutang_id",
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Pelunasan Piutang",
+        "/transaksi/pelunasan_piutang",
+        "brighter_transaksi_pelunasan_piutang",
+        Strategy.FULL_REPLACE,
+        params={},
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Detail Piutang Customer",
+        "/transaksi/piutang_penjualan/customer/list_piutang/:cust_id/detail",
+        "brighter_transaksi_piutang_customer_detail",
+        Strategy.FULL_REPLACE,
+        params={},
+        parent_table="brighter_transaksi_pelunasan_piutang",
+        parent_key="cust_id",
+        parent_column="fpiutang_cust",
+        target_db="csb",
+    ),
+]
+
+
 SYNCABLE_ENDPOINTS = [ep for ep in ENDPOINTS if not ep.skip]
 SKIPPED_ENDPOINTS = [ep for ep in ENDPOINTS if ep.skip]

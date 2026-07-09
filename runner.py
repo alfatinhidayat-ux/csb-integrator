@@ -10,7 +10,7 @@ import httpx
 from auth import AuthManager
 from config import Config
 from db import DatabaseManager
-from endpoints import ENDPOINTS, SALES_ENDPOINTS, Strategy
+from endpoints import ENDPOINTS, FINANCE_ENDPOINTS, SALES_ENDPOINTS, Strategy
 from base import SyncError
 from delta import DeltaSyncer
 from full import FullSyncer
@@ -334,19 +334,25 @@ class SyncRunner:
         db.conn.commit()
 
     def run_sales_only(self):
+        self.run_brighter_endpoint_group(SALES_ENDPOINTS, "sales")
+
+    def run_finance_only(self):
+        self.run_brighter_endpoint_group(FINANCE_ENDPOINTS, "finance")
+
+    def run_brighter_endpoint_group(self, endpoints, label: str):
         self._ensure_dbs_connected()
         self.auth.login()
         db = self.csb_db
-        self.clean_endpoint_tables(SALES_ENDPOINTS)
-        for ep in SALES_ENDPOINTS:
+        self.clean_endpoint_tables(endpoints)
+        for ep in endpoints:
             self.ensure_placeholder_table(db, ep.table)
 
         cabang_ids = self.get_cabang_ids()
         self.stats["cabang"] = len(cabang_ids)
-        logger.info("Will sync sales endpoints for %d cabang(s): %s", len(cabang_ids), cabang_ids)
+        logger.info("Will sync %s endpoints for %d cabang(s): %s", label, len(cabang_ids), cabang_ids)
 
-        main_endpoints = [ep for ep in SALES_ENDPOINTS if not ep.parent_table]
-        child_endpoints = [ep for ep in SALES_ENDPOINTS if ep.parent_table]
+        main_endpoints = [ep for ep in endpoints if not ep.parent_table]
+        child_endpoints = [ep for ep in endpoints if ep.parent_table]
 
         for ep in main_endpoints:
             all_records = []
@@ -380,7 +386,7 @@ class SyncRunner:
             all_records = []
             errors = 0
             for pid, cabang_id in seen.items():
-                path = ep.path.replace(":id", str(pid))
+                path = ep.path.replace(f":{ep.parent_key}", str(pid))
                 try:
                     records = self.fetch_endpoint_records(
                         ep,
