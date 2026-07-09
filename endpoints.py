@@ -23,6 +23,7 @@ class Endpoint:
     parent_table: Optional[str] = None
     parent_key: Optional[str] = None
     parent_column: Optional[str] = None
+    target_db: str = "brighter"
 
 
 ENDPOINTS: list[Endpoint] = [
@@ -34,9 +35,10 @@ ENDPOINTS: list[Endpoint] = [
         "Users",
         "/sistem/users/list",
         "sistem_users",
-        Strategy.DELTA,
+        Strategy.FULL_REPLACE,
         cabang_param="user_cabang_id",
         params={"user_aktif": "Aktif", "data_group_detail": "true", "user_karyawan_data": "true"},
+        target_db="csb",
     ),
     Endpoint(
         "User by ID",
@@ -44,6 +46,10 @@ ENDPOINTS: list[Endpoint] = [
         "sistem_users_detail",
         Strategy.FULL_REPLACE,
         params={},
+        parent_table="sistem_users",
+        parent_key="id",
+        parent_column="user_id",
+        target_db="csb",
     ),
     Endpoint(
         "User Cabang",
@@ -793,6 +799,117 @@ ENDPOINTS: list[Endpoint] = [
     Endpoint("Lap Kasbank Masuk Print", "/laporan/lap_kasbank_masuk/print", "", Strategy.FULL_REPLACE, skip=True),
     Endpoint("Lap Kasbank Keluar Print", "/laporan/lap_kasbank_keluar/print", "", Strategy.FULL_REPLACE, skip=True),
     Endpoint("Static File", "/static/:modul/:bulan/:nama_file", "", Strategy.FULL_REPLACE, skip=True),
+]
+
+
+SALES_ENDPOINTS: list[Endpoint] = [
+    Endpoint(
+        "Brighter Order Jual",
+        "/transaksi/order_jual",
+        "brighter_transaksi_order_jual",
+        Strategy.FULL_REPLACE,
+        params={},
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Order Jual by ID",
+        "/transaksi/order_jual/:id",
+        "brighter_transaksi_order_jual_detail",
+        Strategy.FULL_REPLACE,
+        params={},
+        parent_table="brighter_transaksi_order_jual",
+        parent_key="id",
+        parent_column="ojual_id",
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Detail Produk Order Jual",
+        "/transaksi/order_jual/:id/detail_ojual_produk",
+        "brighter_transaksi_order_jual_produk",
+        Strategy.FULL_REPLACE,
+        params={},
+        parent_table="brighter_transaksi_order_jual",
+        parent_key="id",
+        parent_column="ojual_id",
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Surat Kirim Jual Produk",
+        "/transaksi/surat_kirim_jual_produk",
+        "brighter_transaksi_surat_kirim_jual_produk",
+        Strategy.FULL_REPLACE,
+        params={},
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Surat Kirim Jual by ID",
+        "/transaksi/surat_kirim_jual_produk/:id",
+        "brighter_transaksi_surat_kirim_jual_produk_detail",
+        Strategy.FULL_REPLACE,
+        parent_table="brighter_transaksi_surat_kirim_jual_produk",
+        parent_key="id",
+        parent_column="sk_jproduk_id",
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Detail Produk Surat Kirim Jual",
+        "/transaksi/surat_kirim_jual_produk/:id/detail_surat_kirim_produk",
+        "brighter_transaksi_surat_kirim_jual_produk_detail_produk",
+        Strategy.FULL_REPLACE,
+        params={},
+        parent_table="brighter_transaksi_surat_kirim_jual_produk",
+        parent_key="id",
+        parent_column="sk_jproduk_id",
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter File Surat Kirim Jual",
+        "/transaksi/surat_kirim_jual_produk/:id/dsk_file",
+        "brighter_transaksi_surat_kirim_jual_produk_file",
+        Strategy.FULL_REPLACE,
+        params={},
+        parent_table="brighter_transaksi_surat_kirim_jual_produk",
+        parent_key="id",
+        parent_column="sk_jproduk_id",
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter POS",
+        "/transaksi/pos",
+        "brighter_transaksi_pos",
+        Strategy.FULL_REPLACE,
+        params={},
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Retur Penjualan",
+        "/transaksi/retur_penjualan",
+        "brighter_transaksi_retur_penjualan",
+        Strategy.FULL_REPLACE,
+        params={},
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Retur Penjualan by ID",
+        "/transaksi/retur_penjualan/:id",
+        "brighter_transaksi_retur_penjualan_detail",
+        Strategy.FULL_REPLACE,
+        parent_table="brighter_transaksi_retur_penjualan",
+        parent_key="id",
+        parent_column="rjproduk_id",
+        target_db="csb",
+    ),
+    Endpoint(
+        "Brighter Detail Retur Penjualan",
+        "/transaksi/retur_penjualan/:id/rjproduk_det",
+        "brighter_transaksi_retur_penjualan_produk",
+        Strategy.FULL_REPLACE,
+        params={},
+        parent_table="brighter_transaksi_retur_penjualan",
+        parent_key="id",
+        parent_column="rjproduk_id",
+        target_db="csb",
+    ),
 ]
 
 

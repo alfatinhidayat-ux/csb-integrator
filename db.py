@@ -25,17 +25,24 @@ def _safe_col(name: str) -> str:
 
 
 class DatabaseManager:
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, target_db: str = "brighter"):
         self.config = config
+        self.target_db = target_db
         self.conn: Optional[pymysql.Connection] = None
 
     def connect(self):
+        if self.target_db == "csb":
+            kwargs = self.config.csb_db_kwargs()
+        else:
+            kwargs = dict(
+                host=self.config.db_host,
+                port=self.config.db_port,
+                user=self.config.db_user,
+                password=self.config.db_password,
+                database=self.config.db_name,
+            )
         self.conn = pymysql.connect(
-            host=self.config.db_host,
-            port=self.config.db_port,
-            user=self.config.db_user,
-            password=self.config.db_password,
-            database=self.config.db_name,
+            **kwargs,
             charset="utf8mb4",
             cursorclass=DictCursor,
             autocommit=False,

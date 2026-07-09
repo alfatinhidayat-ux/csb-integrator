@@ -74,7 +74,7 @@ class CsbSafeWriter:
         existing row is left untouched.
         """
         existing_cols = self.get_columns(table)
-        if pk_col not in record:
+        if pk_col not in record or record[pk_col] is None:
             raise ValueError(f"record missing pk field '{pk_col}' for table {table}")
 
         matched = {k: v for k, v in record.items() if k in existing_cols}
@@ -99,7 +99,10 @@ class CsbSafeWriter:
             return "update" if exists else "insert"
 
         if exists:
-            update_fields = [c for c in update_cols if c in matched and c != pk_col]
+            # None from the API never overwrites an existing value - only real
+            # values get written, so a flaky/incomplete API response can't null
+            # out data the row already had.
+            update_fields = [c for c in update_cols if c in matched and c != pk_col and matched[c] is not None]
             if not update_fields:
                 return "skip"
             set_clause = ", ".join(f"{_safe_col(c)} = %s" for c in update_fields)
@@ -110,7 +113,10 @@ class CsbSafeWriter:
             )
             return "update"
         else:
-            cols = list(matched.keys())
+            # Omit None-valued fields entirely so MySQL falls back to the
+            # column's own DEFAULT instead of failing on NOT NULL columns
+            # (e.g. produk_berat missing from the API response).
+            cols = [c for c in matched if matched[c] is not None]
             placeholders = ", ".join(["%s"] * len(cols))
             col_names = ", ".join(_safe_col(c) for c in cols)
             values = [self._serialize(matched[c]) for c in cols]

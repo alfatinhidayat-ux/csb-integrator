@@ -1,5 +1,7 @@
 # csb-integrator
 
+Panduan sync khusus users ke `csb_db`: [README_USERS_SYNC.md](README_USERS_SYNC.md).
+
 Brighter API → MySQL data integrator. Menarik semua data dari 101 endpoint Brighter API ke database MySQL lokal (`brighter_mirror`) secara otomatis.
 
 ## Prasyarat

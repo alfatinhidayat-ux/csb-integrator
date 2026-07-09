@@ -34,14 +34,21 @@ PRODUK_UPDATE_COLS = [
     "produk_satuan_nama", "produk_satuan_default_nama",
     "produk_berat", "produk_keterangan",
     "produk_aktif", "is_active", "produk_status",
-    "produk_group_data", "produk_brand_data",
-    "produk_satuan_konversi_data", "produk_satuan_konversi_cabang_data",
-    "produk_foto_data", "has_foto",
+    "has_foto",
     "produk_harga_beli_terakhir", "produk_diskon_beli_terakhir",
     "produk_satuan_beli_terakhir", "produk_satuan_beli_terakhir_kode",
     "produk_satuan_beli_terakhir_nama",
     "produk_barcode_url", "timestamp_data", "produk_id_parent",
 ]
+# NOT included, deliberately: produk_foto_data, produk_brand_data,
+# produk_satuan_konversi_data, produk_satuan_konversi_cabang_data,
+# produk_group_data, produk_group_sub_data.
+# The /master/produk list endpoint always returns null for these regardless
+# of query params - they are NOT reliable data from this endpoint. An earlier
+# version of this whitelist included them and nulled out real pre-existing
+# values in csb_db.produk for ~9,476 rows before the None-skip safety net
+# (csb_writer.py) existed. Do not add these back without confirming the API
+# actually returns real content for every record first.
 
 PRODUK_BRAND_UPDATE_COLS = [
     "pbrand_kode", "pbrand_nama", "pbrand_keterangan", "pbrand_kelompok",

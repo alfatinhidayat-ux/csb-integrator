@@ -70,6 +70,14 @@ def main():
         help="Skip main sync, only run child endpoints (resume after crash)",
     )
     parser.add_argument(
+        "--users-only", action="store_true",
+        help="Only sync /sistem/users/list and /sistem/users/:id into csb_db",
+    )
+    parser.add_argument(
+        "--sales-only", action="store_true",
+        help="Only sync Brighter sales order/kirim/POS/retur endpoints into csb_db brighter_* tables",
+    )
+    parser.add_argument(
         "--resume-from", type=str, default=None,
         help="Resume child endpoints from this endpoint name (e.g. 'Satuan Konversi Cabang Produk')",
     )
@@ -103,7 +111,11 @@ def main():
         sys.exit(1)
 
     runner = SyncRunner(config)
-    if args.child_only:
+    if args.sales_only:
+        runner.run_sales_only()
+    elif args.users_only:
+        runner.run_users_only()
+    elif args.child_only:
         runner.run_child_endpoints(resume_from=args.resume_from)
     else:
         runner.run_all()
