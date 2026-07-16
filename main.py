@@ -78,6 +78,10 @@ def main():
         help="Only sync Brighter sales order/kirim/POS/retur endpoints into csb_db brighter_* tables",
     )
     parser.add_argument(
+        "--customer-only", action="store_true",
+        help="Only sync /master/customer into csb_db customer table (truncate + reload, loop per cabang)",
+    )
+    parser.add_argument(
         "--finance-only", action="store_true",
         help="Only sync Brighter finance hutang/piutang endpoints into csb_db brighter_* tables",
     )
@@ -115,7 +119,9 @@ def main():
         sys.exit(1)
 
     runner = SyncRunner(config)
-    if args.finance_only:
+    if args.customer_only:
+        runner.run_customer_only()
+    elif args.finance_only:
         runner.run_finance_only()
     elif args.sales_only:
         runner.run_sales_only()

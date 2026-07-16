@@ -336,6 +336,24 @@ class SyncRunner:
     def run_sales_only(self):
         self.run_brighter_endpoint_group(SALES_ENDPOINTS, "sales")
 
+    def run_customer_only(self):
+        from customer_sync import CustomerSyncer
+
+        self._ensure_dbs_connected()
+        self.auth.login()
+
+        cabang_ids = self.get_cabang_ids()
+        self.stats["cabang"] = len(cabang_ids)
+        logger.info("Will sync customer for %d cabang(s): %s", len(cabang_ids), cabang_ids)
+
+        syncer = CustomerSyncer(self.config, self.auth, self.csb_db)
+        count = syncer.run(cabang_ids)
+        self.stats["endpoint"] += 1
+        self.stats["records"] += count
+
+        self._close_dbs()
+        self._log_summary()
+
     def run_finance_only(self):
         self.run_brighter_endpoint_group(FINANCE_ENDPOINTS, "finance")
 
