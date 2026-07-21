@@ -1,7 +1,9 @@
+import json
 import logging
 import time
 import hashlib
 import re
+import uuid as _uuid
 from datetime import datetime
 from typing import Optional
 
@@ -213,6 +215,136 @@ class SyncRunner:
                 db.update_sync_meta(users_ep.name, cabang_id, datetime.now())
 
         self.run_child_endpoints(only_names={detail_ep.name}, finalize=False)
+        self._close_dbs()
+        self._log_summary()
+
+    def run_karyawan_only(self):
+        self._ensure_dbs_connected()
+        self.auth.login()
+
+        ep = next(ep for ep in ENDPOINTS if ep.name == "Karyawan")
+        db = self.csb_db
+
+        existing_cols = db.get_table_columns("karyawan")
+        if not existing_cols:
+            logger.error("Table 'karyawan' not found in csb_db")
+            return
+        logger.info("csb_db.karyawan columns: %s", sorted(existing_cols))
+
+        logger.info("Fetching all karyawan from API ...")
+        all_records = []
+        page = 1
+        while True:
+            params = dict(ep.params)
+            params["page"] = str(page)
+            params["results_per_page"] = str(self.config.results_per_page)
+            data = self.auth.ensure_token() or None
+            resp = httpx.get(
+                f"{self.config.base_url}{ep.path}",
+                params=params,
+                headers=self.auth.get_headers(),
+                timeout=self.config.request_timeout,
+            )
+            resp.raise_for_status()
+            body = resp.json()
+            batch = body.get("data", [])
+            if not isinstance(batch, list):
+                batch = [batch] if batch else []
+            all_records.extend(batch)
+            paging = body.get("paging", {})
+            total_pages = paging.get("total_pages", 1)
+            logger.info("  Page %d/%d — %d records", page, total_pages, len(batch))
+            if page >= total_pages:
+                break
+            page += 1
+
+        if not all_records:
+            logger.warning("No karyawan records fetched from API")
+            self._close_dbs()
+            self._log_summary()
+            return
+
+        logger.info("Total fetched: %d records", len(all_records))
+
+        FIELD_MAP = {
+            "karyawan_id": "id",
+            "karyawan_cabang_id": "cabang_id",
+            "karyawan_no": "kode",
+            "karyawan_nama": "nama",
+            "karyawan_kelamin": "kelamin",
+            "karyawan_agama": "agama",
+            "karyawan_tgllahir": "tanggal_lahir",
+            "karyawan_email": "email",
+            "karyawan_notelp": "notelp",
+            "karyawan_ktp": "noktp",
+            "karyawan_foto_path": "foto_path",
+            "karyawan_aktif": "aktif",
+        }
+
+        filtered = []
+        for rec in all_records:
+            row = {}
+            for api_key, db_col in FIELD_MAP.items():
+                if db_col not in existing_cols:
+                    continue
+                v = rec.get(api_key)
+                if v is None:
+                    continue
+                if db_col == "aktif":
+                    v = 1 if v == "Aktif" else 0
+                row[db_col] = v
+            if "karyawan_departemen_data" in rec and "departement_id" in existing_cols:
+                dept = rec["karyawan_departemen_data"]
+                if isinstance(dept, dict) and dept.get("departemen_id"):
+                    row["departement_id"] = dept["departemen_id"]
+            if "karyawan_jabatan_data" in rec:
+                jab = rec["karyawan_jabatan_data"]
+                if isinstance(jab, dict):
+                    if "jabatan_id" in existing_cols and jab.get("jabatan_id"):
+                        row["jabatan_id"] = jab["jabatan_id"]
+                    if "karyawan_jabatan_data" in existing_cols:
+                        row["karyawan_jabatan_data"] = json.dumps(jab, ensure_ascii=False)
+            if "cabang_id" not in row:
+                row["cabang_id"] = rec.get("karyawan_cabang_id", 1)
+            if "uuid" not in row:
+                row["uuid"] = str(_uuid.uuid4())
+            filtered.append(row)
+
+        if not filtered:
+            logger.warning("No karyawan records matched csb_db.karyawan columns")
+            self._close_dbs()
+            self._log_summary()
+            return
+
+        logger.info("Upserting %d karyawan records to csb_db.karyawan ...", len(filtered))
+
+        first = filtered[0]
+        cols = list(first.keys())
+        placeholders = ", ".join(["%s"] * len(cols))
+        col_names = ", ".join(f"`{c}`" for c in cols)
+        updates = ", ".join(
+            f"`{c}` = VALUES(`{c}`)" for c in cols if c not in ("id", "uuid")
+        )
+        sql = f"INSERT INTO `karyawan` ({col_names}) VALUES ({placeholders})"
+        if updates:
+            sql += f" ON DUPLICATE KEY UPDATE {updates}"
+
+        batch = []
+        for row in filtered:
+            batch.append([row.get(c) for c in cols])
+
+        cur = db.conn.cursor()
+        batch_size = 500
+        for i in range(0, len(batch), batch_size):
+            chunk = batch[i : i + batch_size]
+            cur.executemany(sql, chunk)
+            db.conn.commit()
+            logger.info("    upserted %d/%d", min(i + batch_size, len(batch)), len(batch))
+
+        self.stats["endpoint"] += 1
+        self.stats["records"] += len(filtered)
+        logger.info("Done: %d karyawan records upserted to csb_db.karyawan", len(filtered))
+
         self._close_dbs()
         self._log_summary()
 

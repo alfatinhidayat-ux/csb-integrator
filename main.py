@@ -86,6 +86,10 @@ def main():
         help="Only sync Brighter finance hutang/piutang endpoints into csb_db brighter_* tables",
     )
     parser.add_argument(
+        "--karyawan-only", action="store_true",
+        help="Only sync /master/karyawan into csb_db karyawan table (upsert, no truncate)",
+    )
+    parser.add_argument(
         "--resume-from", type=str, default=None,
         help="Resume child endpoints from this endpoint name (e.g. 'Satuan Konversi Cabang Produk')",
     )
@@ -127,6 +131,8 @@ def main():
         runner.run_sales_only()
     elif args.users_only:
         runner.run_users_only()
+    elif args.karyawan_only:
+        runner.run_karyawan_only()
     elif args.child_only:
         runner.run_child_endpoints(resume_from=args.resume_from)
     else:

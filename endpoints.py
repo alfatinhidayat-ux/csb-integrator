@@ -186,11 +186,10 @@ ENDPOINTS: list[Endpoint] = [
     Endpoint(
         "Karyawan",
         "/master/karyawan",
-        "master_karyawan",
-        Strategy.DELTA,
-        cabang_param="karyawan_cabang_id",
+        "karyawan",
+        Strategy.FULL_REPLACE,
+        target_db="csb",
         params={
-            "karyawan_aktif": "Aktif",
             "karyawan_departemen_data": "true",
             "karyawan_jabatan_data": "true",
         },
