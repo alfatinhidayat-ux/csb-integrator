@@ -474,12 +474,10 @@ class SyncRunner:
         self._ensure_dbs_connected()
         self.auth.login()
 
-        cabang_ids = self.get_cabang_ids()
-        self.stats["cabang"] = len(cabang_ids)
-        logger.info("Will sync customer for %d cabang(s): %s", len(cabang_ids), cabang_ids)
+        logger.info("Will sync all customers (no cabang filter)")
 
         syncer = CustomerSyncer(self.config, self.auth, self.csb_db)
-        count = syncer.run(cabang_ids)
+        count = syncer.run()
         self.stats["endpoint"] += 1
         self.stats["records"] += count
 

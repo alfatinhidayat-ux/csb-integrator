@@ -252,9 +252,9 @@ class CustomerSyncer:
                 )
         return records
 
-    def fetch_cabang(self, cabang_id: int) -> list[dict]:
-        params = {"timestamp_data": "true", "cust_cabang_id": str(cabang_id)}
-        return self.fetch_all_pages(CUSTOMER_PATH, params, f"Cabang {cabang_id}")
+    def fetch_all_customers(self) -> list[dict]:
+        params = {}
+        return self.fetch_all_pages(CUSTOMER_PATH, params, "All Customers")
 
     def map_record(self, rec: dict, cabang_id: int, valid_kategori: set) -> dict:
         ts = rec.get("timestamp_data") or {}
@@ -309,23 +309,21 @@ class CustomerSyncer:
         }
         return row
 
-    def replace_all(self, rows: list[dict], chunk_size: int = 500):
+    def upsert_all(self, rows: list[dict], chunk_size: int = 500):
+        updatable = [c for c in INSERT_COLUMNS if c not in ("id",)]
         col_names = ", ".join(f"`{c}`" for c in INSERT_COLUMNS)
         placeholders = ", ".join(["%s"] * len(INSERT_COLUMNS))
-        sql = f"INSERT INTO `{CUSTOMER_TABLE}` ({col_names}) VALUES ({placeholders})"
-
-        self.db._execute("SET FOREIGN_KEY_CHECKS=0")
-        try:
-            self.db._execute(f"TRUNCATE TABLE `{CUSTOMER_TABLE}`")
-            cur = self.db.conn.cursor()
-            for start in range(0, len(rows), chunk_size):
-                chunk = rows[start:start + chunk_size]
-                batch = [[row[c] for c in INSERT_COLUMNS] for row in chunk]
-                cur.executemany(sql, batch)
-            self.db.conn.commit()
-        finally:
-            self.db._execute("SET FOREIGN_KEY_CHECKS=1")
-            self.db.conn.commit()
+        updates = ", ".join(f"`{c}` = VALUES(`{c}`)" for c in updatable)
+        sql = (
+            f"INSERT INTO `{CUSTOMER_TABLE}` ({col_names}) VALUES ({placeholders}) "
+            f"ON DUPLICATE KEY UPDATE {updates}"
+        )
+        cur = self.db.conn.cursor()
+        for start in range(0, len(rows), chunk_size):
+            chunk = rows[start:start + chunk_size]
+            batch = [[row[c] for c in INSERT_COLUMNS] for row in chunk]
+            cur.executemany(sql, batch)
+        self.db.conn.commit()
 
     def map_deposit_record(self, rec: dict) -> dict:
         ts = rec.get("timestamp_data") or {}
@@ -471,33 +469,30 @@ class CustomerSyncer:
         logger.info(LOG_INSERTED, len(rows), PINJAMAN_TABLE)
         return len(rows)
 
-    def run(self, cabang_ids: list[int]) -> int:
+    def run(self) -> int:
         self.ensure_cabang_column()
         valid_kategori = self.load_valid_kategori_ids()
 
+        logger.info("  SYNC %-40s %s", "Brighter Customer", CUSTOMER_PATH)
+        records = self.fetch_all_customers()
+
         rows_by_id: dict = {}
-        for cabang_id in cabang_ids:
-            logger.info("  SYNC %-40s %s cabang=%s", "Brighter Customer", CUSTOMER_PATH, cabang_id)
-            records = self.fetch_cabang(cabang_id)
-            for rec in records:
-                row = self.map_record(rec, cabang_id, valid_kategori)
-                if row["id"] is None:
-                    continue
-                if row["id"] in rows_by_id:
-                    logger.warning(
-                        "  Duplicate cust_id %s (cabang %s), keeping first occurrence",
-                        row["id"], cabang_id,
-                    )
-                    continue
-                rows_by_id[row["id"]] = row
-            logger.info("    -> %d records fetched (running total %d)", len(records), len(rows_by_id))
+        for rec in records:
+            row = self.map_record(rec, 1, valid_kategori)
+            if row["id"] is None:
+                continue
+            if row["id"] in rows_by_id:
+                logger.warning(
+                    "  Duplicate cust_id %s, keeping first occurrence", row["id"],
+                )
+                continue
+            rows_by_id[row["id"]] = row
+        logger.info("    -> %d records fetched", len(rows_by_id))
 
         rows = list(rows_by_id.values())
-        # Fetch dulu semua data baru truncate, supaya table tidak kosong
-        # kalau API gagal di tengah jalan.
         self.db.reconnect()
-        self.replace_all(rows)
-        logger.info(LOG_INSERTED, len(rows), CUSTOMER_TABLE)
+        self.upsert_all(rows)
+        logger.info("  -> %d records upserted into %s", len(rows), CUSTOMER_TABLE)
 
         deposit_count = self.sync_deposits()
         pinjaman_count = self.sync_pinjaman_karyawan()
