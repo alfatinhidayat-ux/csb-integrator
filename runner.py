@@ -586,6 +586,8 @@ class SyncRunner:
                         rec[col] = pid
                     if "cabang_id" not in rec:
                         rec["cabang_id"] = cabang_id
+                    if ep.id_field != "id" and ep.id_field in rec:
+                        rec["id"] = rec[ep.id_field]
                 return ("ok", pid, None, records)
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
@@ -752,6 +754,8 @@ class SyncRunner:
                                     rec[ep.parent_key] = pid
                                 if "cabang_id" not in rec:
                                     rec["cabang_id"] = cabang_id
+                                if ep.id_field != "id" and ep.id_field in rec:
+                                    rec["id"] = rec[ep.id_field]
                             all_batches.extend(batch)
                             break
                         except Exception:

@@ -793,6 +793,21 @@ ENDPOINTS: list[Endpoint] = [
         parent_filter="kasbank_pengeluaran_lain",
     
     ),
+    Endpoint(
+        "Detail Pinjaman Karyawan",
+        "/akuntansi/kasbank_keluar/:id/detail_pinjaman_karyawan",
+        "akuntansi_kasbank_keluar_detail_pinjaman_karyawan",
+        Strategy.FULL_PAGING,
+        params={
+            "dkasbank_pinjaman_ppinjaman_data": "true",
+            "dkasbank_pinjaman_karyawan_data": "true",
+        },
+        parent_table="akuntansi_kasbank_keluar",
+        parent_key="id",
+        parent_column="kasbank_id",
+        parent_filter="kasbank_pengeluaran_pinjaman_karyawan",
+        id_field="dkasbank_pinjaman_id",
+    ),
     # ── Akuntansi - Jurnal Umum ───────────────────────────────────
     Endpoint(
         "Jurnal Umum",

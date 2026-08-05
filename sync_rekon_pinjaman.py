@@ -25,7 +25,9 @@ def run(step, title, script, flags=(), check=True):
     print(f"[{step}] {title}")
     print("=" * 70)
     cmd = [PY, script] + list(flags) + extra_args + ["--env"]
-    if VERBOSE:
+    # rekon_pinjaman_karyawan.py tidak mendukung flag --verbose
+    supports_verbose = not script.startswith("rekon_pinjaman")
+    if VERBOSE and supports_verbose:
         cmd.append("--verbose")
     env = dict(os.environ)
     env["PYTHONUNBUFFERED"] = "1"

@@ -26,7 +26,7 @@ Single-file Python app that syncs data from 101 Brighter API endpoints to a MySQ
 - **Delta filtering is client-side**: pulls all records with `timestamp_data=true`, then discards those `<= last_synced`.
 - **`master_cabang` only syncs for cabang_id=1** (hardcoded in `runner.py:_should_sync`).
 - **Endpoints without `cabang_param`** only sync for cabang_id=1.
-- **Path param endpoints** (`:id`, `:produk_id`, `:cust_id`) are **skipped** in the main loop — 24 are wired as child endpoints via `parent_table`/`parent_key`/`parent_column`.
+- **Path param endpoints** (`:id`, `:produk_id`, `:cust_id`) are **skipped** in the main loop — 25 are wired as child endpoints via `parent_table`/`parent_key`/`parent_column`.
 - **Child endpoints** auto-inject parent key value and `cabang_id` into each fetched record before upsert. `parent_column` (for DB query) may differ from `parent_key` (for URL path replacement).
 - **`clean_start()`** truncates ALL data tables (including child ones) before every run.
 
@@ -66,7 +66,7 @@ python main.py --env --db-host "..." --db-port 3306 --db-user "..." --db-passwor
 | `FULL_REPLACE` | Paginate all, upsert only (no delete) | 39 |
 | `skip` | Manually skipped (PDF/static routes) | 39 |
 
-### Child endpoints (24) — parent-child relationships
+### Child endpoints (25) — parent-child relationships
 
 | Child Table | Parent Table | Parent Key |
 |-------------|-------------|------------|
@@ -94,6 +94,7 @@ python main.py --env --db-host "..." --db-port 3306 --db-user "..." --db-passwor
 | `akuntansi_kasbank_masuk_bukti_pelunasan` | `akuntansi_kasbank_masuk` | `id` |
 | `akuntansi_kasbank_keluar_item` | `akuntansi_kasbank_keluar` | `id` |
 | `akuntansi_kasbank_keluar_pengeluaran_lain` | `akuntansi_kasbank_keluar` | `id` |
+| `akuntansi_kasbank_keluar_detail_pinjaman_karyawan` | `akuntansi_kasbank_keluar` | `id` |
 
 ## Data flow
 
