@@ -23,6 +23,7 @@ class Endpoint:
     parent_table: Optional[str] = None
     parent_key: Optional[str] = None
     parent_column: Optional[str] = None
+    parent_filter: Optional[str] = None
     target_db: str = "brighter"
 
 
@@ -722,6 +723,7 @@ ENDPOINTS: list[Endpoint] = [
         Strategy.DELTA,
         parent_table="akuntansi_kasbank_masuk",
         parent_key="id",
+        parent_column="kasbank_id",
     
     ),
     Endpoint(
@@ -731,6 +733,8 @@ ENDPOINTS: list[Endpoint] = [
         Strategy.FULL_PAGING,
         parent_table="akuntansi_kasbank_masuk",
         parent_key="id",
+        parent_column="kasbank_id",
+        parent_filter="kasbank_penerimaan_lain",
     
     ),
     Endpoint(
@@ -740,6 +744,8 @@ ENDPOINTS: list[Endpoint] = [
         Strategy.DELTA,
         parent_table="akuntansi_kasbank_masuk",
         parent_key="id",
+        parent_column="kasbank_id",
+        parent_filter="kasbank_piutang_bayar",
     
     ),
     Endpoint(
@@ -749,6 +755,7 @@ ENDPOINTS: list[Endpoint] = [
         Strategy.FULL_REPLACE,
         parent_table="akuntansi_kasbank_masuk",
         parent_key="id",
+        parent_column="kasbank_id",
     
     ),
     # ── Akuntansi - Kas/Bank Keluar ───────────────────────────────
@@ -772,6 +779,7 @@ ENDPOINTS: list[Endpoint] = [
         Strategy.FULL_PAGING,
         parent_table="akuntansi_kasbank_keluar",
         parent_key="id",
+        parent_column="kasbank_id",
     
     ),
     Endpoint(
@@ -781,6 +789,8 @@ ENDPOINTS: list[Endpoint] = [
         Strategy.FULL_PAGING,
         parent_table="akuntansi_kasbank_keluar",
         parent_key="id",
+        parent_column="kasbank_id",
+        parent_filter="kasbank_pengeluaran_lain",
     
     ),
     # ── Akuntansi - Jurnal Umum ───────────────────────────────────

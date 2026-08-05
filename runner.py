@@ -132,19 +132,19 @@ class SyncRunner:
             db.conn.commit()
         logger.info("All tables truncated, sync meta reset")
 
-    def clean_endpoint_tables(self, endpoints):
+    def clean_endpoint_tables(self, endpoints, db=None):
         for ep in endpoints:
-            db = self._db_for_endpoint(ep)
-            db.reconnect()
+            target = db or self._db_for_endpoint(ep)
+            target.reconnect()
             try:
-                db.truncate_table(ep.table)
+                target.truncate_table(ep.table)
             except Exception:
                 pass
-            db._execute(
+            target._execute(
                 "DELETE FROM sync_meta WHERE endpoint = %s",
                 (ep.name,),
             )
-            db.conn.commit()
+            target.conn.commit()
         logger.info("Selected endpoint tables truncated, sync meta cleared")
 
     def run_all(self):
@@ -487,11 +487,24 @@ class SyncRunner:
     def run_finance_only(self):
         self.run_brighter_endpoint_group(FINANCE_ENDPOINTS, "finance")
 
+    def run_kasbank_only(self):
+        """Clear + full re-sync tabel akuntansi kas/bank (masuk & keluar + child-nya)
+        agar satu snapshot dengan tabel lain (mis. pinjaman_karyawan) sebelum rekon."""
+        kasbank_eps = [
+            ep for ep in ENDPOINTS
+            if ep.table
+            and ep.table.startswith("akuntansi_kasbank")
+            and not ep.skip
+            and not (":" in ep.path and not ep.parent_table)
+        ]
+        self.run_brighter_endpoint_group(kasbank_eps, "kasbank")
+
     def run_brighter_endpoint_group(self, endpoints, label: str):
+        t_group = time.time()
         self._ensure_dbs_connected()
         self.auth.login()
         db = self.csb_db
-        self.clean_endpoint_tables(endpoints)
+        self.clean_endpoint_tables(endpoints, db)
         for ep in endpoints:
             self.ensure_placeholder_table(db, ep.table)
 
@@ -505,6 +518,7 @@ class SyncRunner:
         for ep in main_endpoints:
             all_records = []
             endpoint_cabang_ids = cabang_ids if ep.cabang_param else [1]
+            t_ep = time.time()
             for cabang_id in endpoint_cabang_ids:
                 logger.info("  SYNC %-40s %s cabang=%s", ep.name, ep.path, cabang_id)
                 records = self.fetch_endpoint_records_parallel(ep, cabang_id)
@@ -515,13 +529,13 @@ class SyncRunner:
                 db.upsert_records(ep.table, all_records, 1)
             self.stats["endpoint"] += 1
             self.stats["records"] += len(all_records)
-            logger.info("  -> %d records upserted into %s", len(all_records), ep.table)
+            logger.info("  -> %d records upserted into %s (%ds)", len(all_records), ep.table, int(time.time() - t_ep))
 
         for ep in child_endpoints:
-            logger.info("=== Sales Child Endpoint: %s ===", ep.name)
+            logger.info("=== Child Endpoint: %s (%s) ===", ep.name, ep.table)
             col = ep.parent_column or ep.parent_key
             try:
-                parent_tuples = db.get_distinct_with_cabang(ep.parent_table, col)
+                parent_tuples = db.get_distinct_with_cabang(ep.parent_table, col, ep.parent_filter or "")
             except Exception:
                 logger.warning("  SKIP %s: table %s or column %s not found", ep.name, ep.parent_table, col)
                 continue
@@ -530,9 +544,16 @@ class SyncRunner:
             for pid, cid in parent_tuples:
                 if pid is not None and pid not in seen:
                     seen[pid] = cid
+            total = len(seen)
+            if not total:
+                logger.info("    tidak ada parent — dilewati")
+                continue
+            logger.info("    Akan fetch dari %d parent", total)
 
             all_records = []
             errors = 0
+            t0 = time.time()
+            done = 0
             for pid, cabang_id in seen.items():
                 path = ep.path.replace(f":{ep.parent_key}", str(pid))
                 try:
@@ -545,6 +566,7 @@ class SyncRunner:
                 except Exception as exc:
                     logger.warning("  SKIP %s parent=%s: %s", ep.name, pid, exc)
                     errors += 1
+                    done += 1
                     continue
                 for rec in records:
                     if col not in rec:
@@ -552,6 +574,14 @@ class SyncRunner:
                     if "cabang_id" not in rec:
                         rec["cabang_id"] = cabang_id
                 all_records.extend(records)
+                done += 1
+                if done % 25 == 0 or done == total:
+                    est = time.time() - t0
+                    eta = est / done * (total - done) if done else 0
+                    logger.info("    %s %d/%d (%.0f%%) | %d records, %d skip | sudah %dm%02ds, sisa ~%dm%02ds",
+                                ep.table, done, total, 100.0 * done / total,
+                                len(all_records), errors,
+                                int(est // 60), int(est % 60), int(eta // 60), int(eta % 60))
 
             if all_records:
                 db.ensure_table(ep.table, all_records[0])
@@ -560,6 +590,8 @@ class SyncRunner:
             self.stats["records"] += len(all_records)
             logger.info("  -> %d records upserted into %s (%d skipped)", len(all_records), ep.table, errors)
 
+        logger.info("  Kasbank group selesai (%ds, total %d records)",
+                    int(time.time() - t_group), self.stats["records"])
         self._close_dbs()
         self._log_summary()
 
@@ -652,7 +684,7 @@ class SyncRunner:
             db.reconnect()
             col = ep.parent_column or ep.parent_key
             try:
-                parent_tuples = db.get_distinct_with_cabang(ep.parent_table, col)
+                parent_tuples = db.get_distinct_with_cabang(ep.parent_table, col, ep.parent_filter or "")
             except Exception:
                 logger.warning("  SKIP %s: table %s or column %s not found", ep.name, ep.parent_table, col)
                 continue
@@ -711,12 +743,18 @@ class SyncRunner:
             with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
                 futures = {pool.submit(fetch_child, pid): pid for pid in parent_ids}
                 all_records = []
+                total_p = len(futures)
+                done_p = 0
                 for future in concurrent.futures.as_completed(futures):
                     result = future.result()
                     if result is not None:
                         all_records.extend(result)
                     else:
                         errors += 1
+                    done_p += 1
+                    if done_p % 50 == 0 or done_p == total_p:
+                        logger.info("    progress %s: %d/%d parent (records=%d, skipped=%d)",
+                                    ep.table, done_p, total_p, len(all_records), errors)
 
             if all_records:
                 db.reconnect()

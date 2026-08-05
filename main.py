@@ -8,12 +8,19 @@ from runner import SyncRunner
 
 def setup_logging(verbose: bool):
     level = logging.DEBUG if verbose else logging.INFO
+    try:
+        sys.stdout.reconfigure(line_buffering=True)
+    except Exception:
+        pass
     logging.basicConfig(
         level=level,
         format="%(asctime)s [%(levelname)s] %(message)s",
         datefmt="%H:%M:%S",
         stream=sys.stdout,
+        force=True,
     )
+    if not verbose:
+        logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 def main():
@@ -86,6 +93,10 @@ def main():
         help="Only sync Brighter finance hutang/piutang endpoints into csb_db brighter_* tables",
     )
     parser.add_argument(
+        "--kasbank-only", action="store_true",
+        help="Clear + re-sync akuntansi kas/bank masuk & keluar (incl. child) ke csb_db",
+    )
+    parser.add_argument(
         "--karyawan-only", action="store_true",
         help="Only sync /master/karyawan into csb_db karyawan table (upsert, no truncate)",
     )
@@ -127,6 +138,8 @@ def main():
         runner.run_customer_only()
     elif args.finance_only:
         runner.run_finance_only()
+    elif args.kasbank_only:
+        runner.run_kasbank_only()
     elif args.sales_only:
         runner.run_sales_only()
     elif args.users_only:

@@ -100,7 +100,8 @@ class DatabaseManager:
         except (pymysql.err.OperationalError, pymysql.err.ProgrammingError):
             return set()
 
-    def ensure_table(self, table: str, sample: dict) -> set[str]:
+    def ensure_table(self, table: str, sample: dict, date_cols: Optional[set] = None) -> set[str]:
+        date_cols = date_cols or set()
         existing = self.get_table_columns(table)
         if not existing:
             cols = []
@@ -113,6 +114,8 @@ class DatabaseManager:
                         cols.append(f"{_safe_col(k)} {_mysql_type(v)} NOT NULL")
                 elif k == "cabang_id":
                     cols.append("cabang_id INT NOT NULL")
+                elif k in date_cols:
+                    cols.append(f"{_safe_col(k)} DATE NULL")
                 else:
                     cols.append(f"{_safe_col(k)} {_mysql_type(v)} NULL")
             if "cabang_id" not in sample:
@@ -128,18 +131,70 @@ class DatabaseManager:
             self._execute(sql)
             self.conn.commit()
             return set(sample.keys()) | {"cabang_id", "synced_at"}
-        needed = {"cabang_id", "synced_at"}
-        for k in sample:
-            if k not in existing:
-                col = k.replace("`", "")
+
+        added = set()
+        # kolom tanggal: jadikan DATE (dan strip waktu dari data lama agar bersih)
+        for dcol in date_cols:
+            if dcol not in existing:
                 try:
                     self._execute(
-                        f"ALTER TABLE {_safe_col(table)} ADD COLUMN {_safe_col(col)} TEXT NULL"
+                        f"ALTER TABLE {_safe_col(table)} ADD COLUMN {_safe_col(dcol)} DATE NULL"
                     )
+                    added.add(dcol)
                 except (pymysql.err.OperationalError, pymysql.err.ProgrammingError):
                     pass
-                needed.add(col)
-        return existing | needed
+            else:
+                self._ensure_date_col(table, dcol)
+                added.add(dcol)
+        # kolom lain dari sample yang belum ada
+        for k in sample:
+            if k in existing or k in date_cols or k in ("id", "cabang_id", "synced_at"):
+                continue
+            col = k.replace("`", "")
+            try:
+                self._execute(
+                    f"ALTER TABLE {_safe_col(table)} ADD COLUMN {_safe_col(col)} TEXT NULL"
+                )
+                added.add(col)
+            except (pymysql.err.OperationalError, pymysql.err.ProgrammingError):
+                pass
+        # jamin kolom wajib selalu ada (cabang_id, synced_at)
+        if "cabang_id" not in existing and "cabang_id" not in added:
+            try:
+                self._execute(
+                    f"ALTER TABLE {_safe_col(table)} ADD COLUMN `cabang_id` INT NULL"
+                )
+                added.add("cabang_id")
+            except (pymysql.err.OperationalError, pymysql.err.ProgrammingError):
+                pass
+        if "synced_at" not in existing and "synced_at" not in added:
+            try:
+                self._execute(
+                    f"ALTER TABLE {_safe_col(table)} ADD COLUMN `synced_at` "
+                    "DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"
+                )
+                added.add("synced_at")
+            except (pymysql.err.OperationalError, pymysql.err.ProgrammingError):
+                pass
+        self.conn.commit()
+        return existing | set(sample.keys()) | {"cabang_id", "synced_at"}
+
+    def _ensure_date_col(self, table: str, col: str):
+        """Convert an existing column to DATE, stripping the trailing time from its
+        values so tanggal fields stay date-clean (no time component)."""
+        try:
+            cur = self._execute(f"SHOW COLUMNS FROM {_safe_col(table)} LIKE %s", (col,))
+            row = cur.fetchone()
+            if row and str(row.get("Type") or "").upper().startswith("DATE"):
+                return
+            self._execute(
+                f"UPDATE {_safe_col(table)} SET {_safe_col(col)} = "
+                f"DATE(STR_TO_DATE({_safe_col(col)}, '%%Y-%%m-%%d %%H:%%i:%%s')) "
+                f"WHERE {_safe_col(col)} LIKE '%%:%%:%%'"
+            )
+            self._execute(f"ALTER TABLE {_safe_col(table)} MODIFY {_safe_col(col)} DATE NULL")
+        except (pymysql.err.OperationalError, pymysql.err.ProgrammingError, pymysql.err.DataError):
+            pass
 
     def upsert_records(self, table: str, records: list[dict], cabang_id: int):
         if not records:
@@ -194,10 +249,13 @@ class DatabaseManager:
         )
         return [row[column] for row in cur.fetchall()]
 
-    def get_distinct_with_cabang(self, table: str, column: str) -> list[tuple]:
+    def get_distinct_with_cabang(self, table: str, column: str, filter_col: str = "") -> list[tuple]:
         try:
+            where = ""
+            if filter_col:
+                where = f" WHERE CAST({_safe_col(filter_col)} AS DECIMAL(20,2)) > 0"
             cur = self._execute(
-                f"SELECT DISTINCT {_safe_col(column)}, cabang_id FROM {_safe_col(table)}"
+                f"SELECT DISTINCT {_safe_col(column)}, cabang_id FROM {_safe_col(table)}{where}"
             )
             return [(row[column], row["cabang_id"]) for row in cur.fetchall()]
         except Exception as e:
