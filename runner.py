@@ -489,11 +489,21 @@ class SyncRunner:
 
     def run_kasbank_only(self):
         """Clear + full re-sync tabel akuntansi kas/bank (masuk & keluar + child-nya)
-        agar satu snapshot dengan tabel lain (mis. pinjaman_karyawan) sebelum rekon."""
+        agar satu snapshot dengan tabel lain (mis. pinjaman_karyawan) sebelum rekon.
+
+        Child `_item` (jurnal akun) dan `_bukti_pelunasan` DILEWATI karena hampir
+        selalu kosong (404) — buang ±3000 request yang tidak menghasilkan data.
+        Tabel yang relevan untuk rekon: header + `_piutang_karyawan`,
+        `_penerimaan_lain`, `_pengeluaran_lain`."""
+        skip_tables = {
+            "akuntansi_kasbank_masuk_item",      # jurnal akun (jarang terisi)
+            "akuntansi_kasbank_masuk_bukti_pelunasan",
+        }
         kasbank_eps = [
             ep for ep in ENDPOINTS
             if ep.table
             and ep.table.startswith("akuntansi_kasbank")
+            and ep.table not in skip_tables
             and not ep.skip
             and not (":" in ep.path and not ep.parent_table)
         ]
@@ -550,11 +560,15 @@ class SyncRunner:
                 continue
             logger.info("    Akan fetch dari %d parent", total)
 
+            import concurrent.futures
             all_records = []
             errors = 0
             t0 = time.time()
             done = 0
-            for pid, cabang_id in seen.items():
+            _lock = __import__("threading").Lock()
+
+            def fetch_one(item):
+                pid, cabang_id = item
                 path = ep.path.replace(f":{ep.parent_key}", str(pid))
                 try:
                     records = self.fetch_endpoint_records(
@@ -564,24 +578,34 @@ class SyncRunner:
                         tolerate_not_found=True,
                     )
                 except Exception as exc:
-                    logger.warning("  SKIP %s parent=%s: %s", ep.name, pid, exc)
-                    errors += 1
-                    done += 1
-                    continue
+                    return ("error", pid, exc, [])
                 for rec in records:
+                    if ep.parent_key not in rec:
+                        rec[ep.parent_key] = pid
                     if col not in rec:
                         rec[col] = pid
                     if "cabang_id" not in rec:
                         rec["cabang_id"] = cabang_id
-                all_records.extend(records)
-                done += 1
-                if done % 25 == 0 or done == total:
-                    est = time.time() - t0
-                    eta = est / done * (total - done) if done else 0
-                    logger.info("    %s %d/%d (%.0f%%) | %d records, %d skip | sudah %dm%02ds, sisa ~%dm%02ds",
-                                ep.table, done, total, 100.0 * done / total,
-                                len(all_records), errors,
-                                int(est // 60), int(est % 60), int(eta // 60), int(eta % 60))
+                return ("ok", pid, None, records)
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as pool:
+                futures = {pool.submit(fetch_one, item): item for item in seen.items()}
+                for fut in concurrent.futures.as_completed(futures):
+                    status, pid, exc, records = fut.result()
+                    if status == "ok":
+                        with _lock:
+                            all_records.extend(records)
+                    else:
+                        logger.warning("  SKIP %s parent=%s: %s", ep.name, pid, exc)
+                        errors += 1
+                    done += 1
+                    if done % 25 == 0 or done == total:
+                        est = time.time() - t0
+                        eta = est / done * (total - done) if done else 0
+                        logger.info("    %s %d/%d (%.0f%%) | %d records, %d skip | sudah %dm%02ds, sisa ~%dm%02ds",
+                                    ep.table, done, total, 100.0 * done / total,
+                                    len(all_records), errors,
+                                    int(est // 60), int(est % 60), int(eta // 60), int(eta % 60))
 
             if all_records:
                 db.ensure_table(ep.table, all_records[0])

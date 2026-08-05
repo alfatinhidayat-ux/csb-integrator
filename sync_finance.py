@@ -27,6 +27,7 @@ SUPPLIER_TABLE = "supplier"          # tabel supplier CSB yang sudah ada (relasi
 DUMMY_PASSWORD_HASH = "$2y$12$Uz8LHQTFtjsBliHJUy8hYOaou5BPGKz2O/6YYzzD0V8ppx3JHm3RS"
 
 TABLES = {
+    "pembelian": "brighter_persediaan_pembelian",
     "pelunasan_hutang": "brighter_transaksi_pelunasan_hutang",
     "pelunasan_hutang_detail": "brighter_transaksi_pelunasan_hutang_detail",
     "pelunasan_hutang_foto": "brighter_transaksi_pelunasan_hutang_foto",
@@ -51,6 +52,17 @@ ENDPOINT_META = {
         "cabang_param": None,
         "params": {
             "supplier_aktif": "Aktif",
+            "timestamp_data": "true",
+        },
+    },
+    "pembelian": {
+        "path": "/persediaan/pembelian",
+        "prefix": "pembelian_",
+        "cabang_param": "pembelian_cabang_id",
+        "params": {
+            "pembelian_status_dok": "Semua",
+            "pembelian_status_lunas": "Semua",
+            "pembelian_supplier_data": "true",
             "timestamp_data": "true",
         },
     },
@@ -587,7 +599,7 @@ def main():
     #    (id == supplier_id, relasi ke pelunasan hutang). Karena tiap server punya
     #    master supplier sendiri, tarik per URL server (dedup) memakai server
     #    pertama yang memakai URL tersebut.
-    print("\n[0/6] Master Supplier (upsert per server, ke tabel `supplier`)...")
+    print("\n[0/7] Master Supplier (upsert per server, ke tabel `supplier`)...")
     server_repr = {}   # base_url -> representative cabang_id
     for cid in cabang_ids:
         url = cabang_cfg[cid].base_url
@@ -628,8 +640,19 @@ def main():
         cfg_c = cabang_cfg[c_id]
         auth_c = cabang_auth[c_id]
 
-        # 1. Header: Pelunasan Hutang
-        print("  [1/6] Pelunasan Hutang (header)...")
+        # 1. Faktur Pembelian (dokumen lawan/asal dari pelunasan hutang)
+        print("  [1/7] Faktur Pembelian (header)...")
+        try:
+            pembelian_rows = sync_headers(cfg_c, auth_c, db, "pembelian", c_id, args.verbose)
+        except Exception as e:
+            print(f"       -> ERROR header faktur pembelian: {e}")
+            pembelian_rows = []
+        pembelian_mapped = [map_record("pembelian", r, c_id) for r in pembelian_rows]
+        totals["pembelian"] += upsert_batch(db, TABLES["pembelian"], pembelian_mapped, c_id)
+        print(f"       -> {len(pembelian_rows)} records")
+
+        # 2. Header: Pelunasan Hutang
+        print("  [2/7] Pelunasan Hutang (header)...")
         try:
             hutang_rows = sync_headers(cfg_c, auth_c, db, "pelunasan_hutang", c_id, args.verbose)
         except Exception as e:
@@ -639,11 +662,11 @@ def main():
         totals["pelunasan_hutang"] += upsert_batch(db, TABLES["pelunasan_hutang"], hutang_mapped, c_id)
         print(f"       -> {len(hutang_rows)} records")
 
-        # 2 & 3. Child: Detail + Foto per pelunasan hutang (concurrent)
+        # 3 & 4. Child: Detail + Foto per pelunasan hutang (concurrent)
         detail_rows = []
         foto_rows = []
         if hutang_rows:
-            print("  [2/6] Detail Pelunasan Hutang (concurrent)...")
+            print("  [3/7] Detail Pelunasan Hutang (concurrent)...")
             with ThreadPoolExecutor(max_workers=args.workers) as ex:
                 futs = {
                     ex.submit(
@@ -669,7 +692,7 @@ def main():
             totals["pelunasan_hutang_detail"] += upsert_batch(
                 db, TABLES["pelunasan_hutang_detail"], detail_rows, c_id)
 
-            print("  [3/6] Foto Pelunasan Hutang (concurrent)...")
+            print("  [4/7] Foto Pelunasan Hutang (concurrent)...")
             with ThreadPoolExecutor(max_workers=args.workers) as ex:
                 futs = {
                     ex.submit(
@@ -695,8 +718,8 @@ def main():
             totals["pelunasan_hutang_foto"] += upsert_batch(
                 db, TABLES["pelunasan_hutang_foto"], foto_rows, c_id)
 
-        # 4. Header: Pelunasan Piutang
-        print("  [4/6] Pelunasan Piutang (header)...")
+        # 5. Header: Pelunasan Piutang
+        print("  [5/7] Pelunasan Piutang (header)...")
         try:
             piutang_rows = sync_headers(cfg_c, auth_c, db, "pelunasan_piutang", c_id, args.verbose)
         except Exception as e:
@@ -706,7 +729,7 @@ def main():
         totals["pelunasan_piutang"] += upsert_batch(db, TABLES["pelunasan_piutang"], piutang_mapped, c_id)
         print(f"       -> {len(piutang_rows)} records")
 
-        # 5. Child: Detail Piutang Customer per customer found in pelunasan piutang
+        # 6/7. Child: Detail Piutang Customer per customer found in pelunasan piutang
         cust_ids = []
         seen = set()
         for r in piutang_rows:
@@ -717,7 +740,7 @@ def main():
 
         piutang_detail_rows = []
         if cust_ids:
-            print(f"  [5/6] Detail Piutang Customer for {len(cust_ids)} customers (concurrent)...")
+            print(f"  [6/7] Detail Piutang Customer for {len(cust_ids)} customers (concurrent)...")
             with ThreadPoolExecutor(max_workers=args.workers) as ex:
                 futs = {
                     ex.submit(
@@ -741,7 +764,7 @@ def main():
                         print(f"    error piutang detail for cust {cid}: {e}")
             print(f"       -> {len(piutang_detail_rows)} records")
         else:
-            print("  [5/6] Detail Piutang Customer (no customers found, skipped)")
+            print("  [6/7] Detail Piutang Customer (no customers found, skipped)")
         totals["piutang_customer_detail"] += upsert_batch(
             db, TABLES["piutang_customer_detail"], piutang_detail_rows, c_id)
 
