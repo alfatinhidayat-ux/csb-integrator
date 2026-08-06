@@ -10,6 +10,17 @@ python sync_finance.py --env --cabang-ids 1,6 # cabang tertentu
 python sync_finance.py --env --workers 10     # paralel fetch child (default 5)
 ```
 
+## Rekon pembelian vs pelunasan hutang
+
+Script read-only (`rekon_pembelian_hutang.py`) — membandingkan faktur pembelian vs header/detail pelunasan hutang per cabang, dengan 6 cek konsistensi.
+
+```bash
+python rekon_pembelian_hutang.py --env
+python rekon_pembelian_hutang.py --env --cabang-ids 1,5
+```
+
+Tabel yang dipakai: `brighter_persediaan_pembelian`, `brighter_transaksi_pelunasan_hutang`, `brighter_transaksi_pelunasan_hutang_detail`. Catatan: header pelunasan memakai kolom `stat_dok` (bukan `status_dok`); pembelian memakai `status_dok`.
+
 ## Alur kerja (6 langkah per cabang)
 
 | Step | Isi | Endpoint API |

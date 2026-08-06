@@ -17,6 +17,9 @@ Single-file Python app that syncs data from 101 Brighter API endpoints to a MySQ
 - `delta.py` — `DeltaSyncer`: filters by `updated_at`/`created_at` timestamps against `sync_meta.last_synced_at`.
 - `full.py` — `FullSyncer`: FULL_PAGING truncates table before upsert; FULL_REPLACE only upserts.
 - `runner.py` — `SyncRunner`: orchestrates per-cabang, per-endpoint sync. `clean_start()` truncates all data tables and resets `sync_meta.last_synced_at` to NULL before every run. Child endpoints with `parent_table`/`parent_key` use `ThreadPoolExecutor(max_workers=5)` for concurrent fetch; uses `parent_column` for DB query (falls back to `parent_key`) and `parent_key` for path replacement. Injects both parent key value and `cabang_id` into each child record.
+- `sync_finance.py` — separate pipeline → `csb_db` (not mirror): master supplier (upsert ke tabel `supplier`), pembelian, pelunasan hutang/piutang + child detail/foto. Header pelunasan pakai kolom `stat_dok` (bukan `status_dok`). Child detail pakai `flatten()` + id hash deterministik saat API tak memberi `id`.
+- `rekon_pinjaman_karyawan.py` — read-only rekon pinjaman vs kas/bank (per cabang).
+- `rekon_pembelian_hutang.py` — read-only rekon pembelian vs pelunasan hutang (per cabang); 6 cek konsistensi.
 
 ## Critical conventions
 

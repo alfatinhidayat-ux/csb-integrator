@@ -2,7 +2,7 @@ import argparse
 import sys
 import time
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import httpx
@@ -200,22 +200,28 @@ def map_detail(rec: dict, cabang_id: int) -> dict:
 
 
 def fetch_pos_headers(config: Config, auth: AuthManager, cabang_id: int, tanggal_awal: str, tanggal_akhir: str) -> list[dict]:
-    """Fetches POS headers for a specific branch from /transaksi/pos with early stopping."""
+    """Fetches POS headers for a specific branch from /transaksi/pos.
+
+    The API does not support server-side date filtering and does NOT return
+    records sorted by `jproduk_tanggal` (ordering is by id, and the date can be
+    edited independently, so it is NOT monotonic with id). Therefore we scan
+    every page and filter client-side. Early stopping on date is unsafe and
+    caused whole ranges of dates to be skipped.
+    """
     client = httpx.Client(base_url=config.base_url, timeout=config.request_timeout)
     page = 1
     results = []
+    seen_ids = set()
     
     while True:
         params = {
             "page": str(page),
-            "results_per_page": "100",  # Max allowed page size
+            "results_per_page": str(config.results_per_page),  # Max allowed page size
             "jproduk_stat_dok": "Semua",
             "jproduk_cust_data": "true",
             "timestamp_data": "true",
             "jproduk_cabang_id": str(cabang_id)
         }
-        # Note: server ignores raw tanggal_awal/tanggal_akhir on this endpoint,
-        # so we do client-side filtering and early stopping based on descending date sort order.
         
         auth.ensure_token()
         headers = auth.get_headers()
@@ -230,22 +236,22 @@ def fetch_pos_headers(config: Config, auth: AuthManager, cabang_id: int, tanggal
         if not batch:
             break
             
-        should_stop = False
         for rec in batch:
             rec_date_str = rec.get("jproduk_tanggal")
             if rec_date_str:
-                # Early stop: since records are newest first, once date is older than tanggal_awal, stop fetching.
+                # Client-side date range filter (server ignores date params)
                 if tanggal_awal and rec_date_str < tanggal_awal:
-                    should_stop = True
-                    break
-                # Skip records newer than tanggal_akhir (no stop, older might still be in range)
+                    continue
                 if tanggal_akhir and rec_date_str > tanggal_akhir:
                     continue
+            # Dedupe by id: offset pagination can repeat records when new
+            # transactions are inserted mid-scan.
+            rid = rec.get("jproduk_id")
+            if rid is not None:
+                if rid in seen_ids:
+                    continue
+                seen_ids.add(rid)
             results.append(rec)
-            
-        if should_stop:
-            print(" -> Reached records older than start date filter. Stopping fetch.")
-            break
             
         # Determine if there's a next page
         paging = data.get("paging")
@@ -254,8 +260,8 @@ def fetch_pos_headers(config: Config, auth: AuthManager, cabang_id: int, tanggal
             if page >= total_pages:
                 break
         else:
-            total = data.get("total", 0)
-            total_pages = (total + 99) // 100
+            total = data.get("total_records", 0) or 0
+            total_pages = (total + config.results_per_page - 1) // config.results_per_page
             if page >= total_pages:
                 break
         page += 1
@@ -283,17 +289,6 @@ def fetch_pos_detail(config: Config, auth: AuthManager, pos_id: int) -> list[dic
         return []
     resp.raise_for_status()
     return resp.json().get("data", []) or []
-
-
-def date_chunks(start_str: str, end_str: str, chunk_days: int = 5):
-    """Yield (chunk_start, chunk_end) tuples splitting the range into chunk_days intervals."""
-    start = datetime.strptime(start_str, "%Y-%m-%d")
-    end = datetime.strptime(end_str, "%Y-%m-%d")
-    current = start
-    while current <= end:
-        chunk_end = min(current + timedelta(days=chunk_days - 1), end)
-        yield (current.strftime("%Y-%m-%d"), chunk_end.strftime("%Y-%m-%d"))
-        current += timedelta(days=chunk_days)
 
 
 def insert_batch_upsert(db: DatabaseManager, table: str, records: list[dict]):
@@ -344,12 +339,6 @@ def main():
         help="Forces syncing of all historical data (warning: generates a large number of API calls)",
     )
     parser.add_argument(
-        "--chunk-days",
-        type=int,
-        default=5,
-        help="Days per chunk (default: 5). Increase to reduce API calls.",
-    )
-    parser.add_argument(
         "--workers",
         type=int,
         default=3,
@@ -381,13 +370,7 @@ def main():
         tanggal_akhir = datetime.now().strftime("%Y-%m-%d")
         print(f"Defaulting to full range: {tanggal_awal} to {tanggal_akhir}")
 
-    # Split into chunks to avoid heavy load
-    chunks = list(date_chunks(tanggal_awal, tanggal_akhir, chunk_days=args.chunk_days))
-    # API returns newest-first, so process newest chunks first for efficiency
-    chunks.reverse()
-    print(f"Date range split into {len(chunks)} chunk(s) of {args.chunk_days} days each (newest first): {tanggal_awal} -> {tanggal_akhir}")
-    for cs, ce in chunks:
-        print(f"  Chunk: {cs} to {ce}")
+    print(f"Date range filter: {tanggal_awal} -> {tanggal_akhir}")
 
     # Initialize Auth & Database (once)
     auth = AuthManager(config)
@@ -419,76 +402,63 @@ def main():
     total_headers_synced = 0
     total_details_synced = 0
     
-    # 3. Main Sync Loop: for each chunk, sync all cabangs
-    for chunk_idx, (chunk_start, chunk_end) in enumerate(chunks, 1):
-        print(f"\n{'=' * 60}")
-        print(f"CHUNK {chunk_idx}/{len(chunks)}: {chunk_start} to {chunk_end}")
-        print(f"{'=' * 60}")
+    # 3. Main Sync Loop: for each cabang, scan all pages and filter client-side
+    for c_id in cabang_ids:
+        print(f"\n--- Cabang {c_id} | {tanggal_awal} -> {tanggal_akhir} ---")
         
-        for c_id in cabang_ids:
-            print(f"\n--- Cabang {c_id} | {chunk_start} -> {chunk_end} ---")
-            
-            # Ping DB before each cabang to avoid lost connection
-            try:
-                db.reconnect()
-            except Exception:
-                pass
-            
-            try:
-                headers = fetch_pos_headers(config, auth, c_id, chunk_start, chunk_end)
-                print(f" -> Found {len(headers)} POS headers.")
-                if not headers:
-                    continue
-                    
-                headers_to_insert = []
-                details_to_insert = []
-                
-                for h in headers:
-                    headers_to_insert.append(map_header(h, c_id))
-                    
-                print(f" -> Fetching details for {len(headers)} transactions...")
-                errors_count = 0
-                with ThreadPoolExecutor(max_workers=args.workers) as executor:
-                    future_to_id = {
-                        executor.submit(fetch_pos_detail, config, auth, h["jproduk_id"]): h["jproduk_id"]
-                        for h in headers
-                    }
-                    
-                    for i, future in enumerate(as_completed(future_to_id)):
-                        pos_id = future_to_id[future]
-                        try:
-                            items = future.result()
-                            for item in items:
-                                mapped_det = map_detail(item, c_id)
-                                details_to_insert.append(mapped_det)
-                        except Exception as e:
-                            if args.verbose:
-                                print(f"Error fetching details for POS ID {pos_id}: {e}")
-                            errors_count += 1
-                            
-                        if (i + 1) % 50 == 0 or (i + 1) == len(headers):
-                            print(f"    Detail fetch progress: {i + 1}/{len(headers)}")
-                
-                if errors_count > 0:
-                    print(f" -> Detail fetch warnings/errors count: {errors_count}")
-                    
-                print(f" -> Upserting {len(headers_to_insert)} headers...")
-                insert_batch_upsert(db, "brighter_pos", headers_to_insert)
-                
-                print(f" -> Upserting {len(details_to_insert)} items...")
-                insert_batch_upsert(db, "brighter_pos_detail", details_to_insert)
-                
-                total_headers_synced += len(headers_to_insert)
-                total_details_synced += len(details_to_insert)
-                print(f"Done Cabang {c_id} chunk {chunk_start} -> {chunk_end}")
-                
-            except Exception as e:
-                print(f"Error syncing Cabang {c_id} chunk {chunk_start}: {e}")
+        # Ping DB before each cabang to avoid lost connection
+        try:
+            db.reconnect()
+        except Exception:
+            pass
         
-        # Cooldown between chunks
-        if chunk_idx < len(chunks):
-            print(f"\n -> Cooling down 3s before next chunk...")
-            time.sleep(3)
+        try:
+            headers = fetch_pos_headers(config, auth, c_id, tanggal_awal, tanggal_akhir)
+            print(f" -> Found {len(headers)} POS headers in range.")
+            if not headers:
+                continue
+                
+            headers_to_insert = [map_header(h, c_id) for h in headers]
+                
+            print(f" -> Fetching details for {len(headers)} transactions...")
+            errors_count = 0
+            details_to_insert = []
+            with ThreadPoolExecutor(max_workers=args.workers) as executor:
+                future_to_id = {
+                    executor.submit(fetch_pos_detail, config, auth, h["jproduk_id"]): h["jproduk_id"]
+                    for h in headers
+                }
+                
+                for i, future in enumerate(as_completed(future_to_id)):
+                    pos_id = future_to_id[future]
+                    try:
+                        items = future.result()
+                        for item in items:
+                            mapped_det = map_detail(item, c_id)
+                            details_to_insert.append(mapped_det)
+                    except Exception as e:
+                        if args.verbose:
+                            print(f"Error fetching details for POS ID {pos_id}: {e}")
+                        errors_count += 1
+                        
+                    if (i + 1) % 50 == 0 or (i + 1) == len(headers):
+                        print(f"    Detail fetch progress: {i + 1}/{len(headers)}")
+            
+            if errors_count > 0:
+                print(f" -> Detail fetch warnings/errors count: {errors_count}")
+                
+            print(f" -> Upserting {len(headers_to_insert)} headers...")
+            insert_batch_upsert(db, "brighter_pos", headers_to_insert)
+            
+            print(f" -> Upserting {len(details_to_insert)} items...")
+            insert_batch_upsert(db, "brighter_pos_detail", details_to_insert)
+            
+            total_headers_synced += len(headers_to_insert)
+            total_details_synced += len(details_to_insert)
+            print(f"Done Cabang {c_id}")
+            
+        except Exception as e:
+            print(f"Error syncing Cabang {c_id}: {e}")
 
     db.close()
     

@@ -50,6 +50,21 @@ AUDIT_COLUMNS = [
     "created_at", "updated_at", "deleted_at",
 ]
 
+# Override manual hasil rekonsiliasi: pelunasan terjadi di 2025 (sebelum data kas
+# bank Brighter tersedia mulai Jan 2026), sehingga API tetap melaporkan sisa>0.
+# Nilai di sini DIPAKSA setiap sync agar tidak tertimpa data API yang stale.
+MANUAL_OVERRIDES = {
+    # SB/PPK/2501-002 (Wisnu, 200rb) — lunas 2025, diverifikasi di apps Brighter
+    8: {"ppinjaman_pelunasan": 200000, "ppinjaman_sisa": 0},
+    # SB/PPK/2304-006/007/008 (karyawan 15, nilai 1) — lunas
+    14: {"ppinjaman_pelunasan": 1, "ppinjaman_sisa": 0},
+    15: {"ppinjaman_pelunasan": 1, "ppinjaman_sisa": 0},
+    16: {"ppinjaman_pelunasan": 1, "ppinjaman_sisa": 0},
+    # MDR/PPK/2606-0043 & 2606-0045 (status Batal di Brighter, tidak ada di apps) — sisa 0
+    327: {"ppinjaman_pelunasan": 1000000, "ppinjaman_sisa": 0},
+    329: {"ppinjaman_pelunasan": 1500000, "ppinjaman_sisa": 0},
+}
+
 
 def clip(value, max_len):
     """Potong string agar muat kolom varchar (created_by csb_db varchar(20))."""
@@ -129,6 +144,10 @@ def map_record(rec, cabang_default):
                 row["ppinjaman_sisa"] = 0
         except (TypeError, ValueError):
             pass
+    # Override rekonsiliasi manual (lunas 2025, data API stale)
+    ovr = MANUAL_OVERRIDES.get(rec.get("ppinjaman_id"))
+    if ovr:
+        row.update(ovr)
     # cabang_id wajib NOT NULL -> ambil dari data pinjaman, fallback 1
     row["cabang_id"] = row.get("ppinjaman_cabang_id") or cabang_default
     return row
@@ -202,7 +221,17 @@ def main():
     upd_cols = [c for c in insert_cols if c != "ppinjaman_id"]
     col_names = ", ".join(f"`{c}`" for c in insert_cols)
     placeholders = ", ".join(["%s"] * len(insert_cols))
-    update_clause = ", ".join(f"`{c}` = VALUES(`{c}`)" for c in upd_cols)
+
+    # Kolom backlink berasal dari proses backfill (bukan API); bila API mengembalikan
+    # NULL, pertahankan nilai yang sudah ada di DB agar tidak terhapus.
+    BACKLINK_COL = "ppinjaman_dkasbank_pinjaman_karyawan_id"
+
+    def upd_expr(c):
+        if c == BACKLINK_COL:
+            return f"`{c}` = COALESCE(VALUES(`{c}`), `{c}`)"
+        return f"`{c}` = VALUES(`{c}`)"
+
+    update_clause = ", ".join(upd_expr(c) for c in upd_cols)
     if update_clause:
         update_clause += ", `synced_at` = CURRENT_TIMESTAMP"
     else:

@@ -24,26 +24,26 @@ python sync_pos.py --env --cabang-ids 1 --tanggal-awal 2026-07-25 --tanggal-akhi
 | `--verbose` | Mengaktifkan logging debug secara detail. | Berguna jika terjadi error koneksi atau mapping data untuk melihat trace log. |
 
 > **Catatan Penting**:
-> Jika `--tanggal-awal`, `--tanggal-akhir`, dan `--all-history` tidak ditentukan, script akan otomatis menyaring data untuk **30 hari terakhir** demi keamanan server API dan database Anda.
+> Jika `--tanggal-awal`, `--tanggal-akhir`, dan `--all-history` tidak ditentukan, script akan otomatis menyaring data dari **1 Januari 2026 s.d. hari ini**.
 
 ---
 
 ## Cara Kerja Alur Program (Data Flow)
 
-1. **Rebuild Table**: Script akan menghapus (`DROP`) tabel `brighter_pos` dan `brighter_pos_detail` (jika sudah ada), lalu membuatnya ulang (`CREATE`) dengan skema kolom yang baru dan bersih.
+1. **Rebuild Table**: Script akan membuat tabel `brighter_pos` dan `brighter_pos_detail` jika belum ada (`CREATE TABLE IF NOT EXISTS` — tidak menghapus data yang sudah ada).
 2. **Discover Cabang**: Mencari daftar cabang aktif untuk dijalankan satu per satu.
 3. **Fetch Header**: Mengambil data header transaksi dari API `/transaksi/pos` per halaman (100 data per request).
-   * **Optimasi Early Stopping**: Karena data dari API terurut berdasarkan tanggal terbaru secara menurun (descending), jika script mendeteksi transaksi yang tanggalnya lebih lama dari `--tanggal-awal`, script akan **berhenti mengambil halaman berikutnya** untuk menghemat kuota request API.
-4. **Fetch Details (Concurrent)**: Menggunakan `ThreadPoolExecutor` (5 worker thread secara paralel) untuk menembak detail item barang yang dibeli per transaksi melalui `/transaksi/pos/:id/detail_pos`.
+   * **Penting**: API tidak mendukung filter tanggal server-side dan **tidak mengurutkan data berdasarkan tanggal**. Urutan API berdasarkan `id`, sementara `jproduk_tanggal` bisa diubah terpisah sehingga tidak selalu berurutan dengan `id`. Oleh karena itu script **menelusuri seluruh halaman** dan memfilter tanggal di sisi klien. Optimasi "early stopping" yang lama dihapus karena menyebabkan banyak tanggal terlewat (tidak tersinkron).
+4. **Fetch Details (Concurrent)**: Menggunakan `ThreadPoolExecutor` (3 worker thread secara paralel) untuk menembak detail item barang yang dibeli per transaksi melalui `/transaksi/pos/:id/detail_pos`.
 5. **Flattening & Ingestion**: Seluruh nested JSON (seperti detail data customer, timestamp, cara bayar, dan satuan barang) dipecah menjadi kolom-kolom biasa di MySQL, kemudian dimasukkan secara massal (`batch insert`) menggunakan perintah `executemany` MySQL untuk kinerja maksimal.
 
 ---
 
 ## Penjelasan Fungsi di [sync_pos.py](file:///d:/CSB%20Project/csb-integrator/sync_pos.py)
 
-### 1. `rebuild_tables(db)`
-* **Kegunaan**: Melakukan pembersihan dan standarisasi skema database sebelum sinkronisasi dimulai.
-* **Proses**: Menghapus tabel lama `brighter_pos_detail` dan `brighter_pos`, lalu membuat ulang tabel baru dengan indeks primary key `(id, cabang_id)` dan tipe data kolom yang terstandardisasi (seperti `Decimal` untuk mata uang dan `DATETIME` untuk waktu).
+### 1. `ensure_tables(db)`
+* **Kegunaan**: Memastikan tabel `brighter_pos` dan `brighter_pos_detail` sudah ada sebelum sinkronisasi dimulai.
+* **Proses**: Membuat tabel jika belum ada (`CREATE TABLE IF NOT EXISTS`) dengan primary key `(id, cabang_id)` dan tipe data kolom terstandardisasi (seperti `Decimal` untuk mata uang dan `DATETIME` untuk waktu). **Tidak menghapus** tabel/data yang sudah ada — sinkronisasi ulang bersifat upsert (idempoten).
 
 ### 2. `map_header(rec, cabang_id)`
 * **Kegunaan**: Melakukan pemetaan (*mapping*) data header transaksi dari response JSON API ke kolom tabel `brighter_pos`.
@@ -63,7 +63,7 @@ python sync_pos.py --env --cabang-ids 1 --tanggal-awal 2026-07-25 --tanggal-akhi
 
 ### 4. `fetch_pos_headers(config, auth, cabang_id, tanggal_awal, tanggal_akhir)`
 * **Kegunaan**: Menarik data transaksi header secara halaman demi halaman (pagination) dari API `/transaksi/pos`.
-* **Fitur Utama**: Mendukung Client-side range checking. Jika mendeteksi transaksi yang usianya di luar `tanggal_awal`, perulangan pagination akan langsung dibatalkan (`break`) untuk menghindari pemanggilan API yang sia-sia.
+* **Fitur Utama**: Menelusuri **seluruh halaman** (berdasarkan `paging.total_pages`) lalu memfilter tanggal secara klien-side. Tidak ada "early stopping" karena API tidak menjamin urutan tanggal. Dilengkapi deduplikasi per `id` untuk mengantisipasi record ganda bila ada data baru yang masuk saat proses berjalan.
 
 ### 5. `fetch_pos_detail(config, auth, pos_id)`
 * **Kegunaan**: Memanggil API `/transaksi/pos/:id/detail_pos` dengan parameter tambahan `dproduk_produk_data=true` dan `dproduk_satuan_data=true` untuk mendapatkan informasi barang secara lengkap.
