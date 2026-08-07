@@ -45,6 +45,50 @@ def _dec(v):
         return 0.0
 
 
+def resolve_nobukti_collision(cur, no_formatting, apply=False):
+    cur.execute("SELECT id, legacy_kasbank_id FROM kas_bank WHERE no_formatting = %s".replace("no_formatting", "no_bukti"), (no_formatting,))
+    row = cur.fetchone()
+    if not row:
+        return "insert"
+    
+    if row["legacy_kasbank_id"] is not None:
+        return "skip"
+        
+    if "-" in no_formatting:
+        parts = no_formatting.rsplit("-", 1)
+        prefix = parts[0] + "-"
+        suffix = parts[1]
+        suffix_len = len(suffix)
+    else:
+        prefix = no_formatting + "-"
+        suffix_len = 4
+        
+    cur.execute("SELECT no_formatting FROM kas_bank WHERE no_formatting LIKE %s".replace("no_formatting", "no_bukti"), (prefix + "%",))
+    existing_nobuktis = [r["no_bukti"] for r in cur.fetchall()]
+    
+    max_num = 0
+    for eb in existing_nobuktis:
+        if eb.startswith(prefix):
+            num_part = eb[len(prefix):]
+            num_digits = "".join(c for c in num_part if c.isdigit())
+            if num_digits:
+                try:
+                    max_num = max(max_num, int(num_digits))
+                except ValueError:
+                    pass
+                    
+    next_num = max_num + 1
+    new_no_built = f"{prefix}{str(next_num).zfill(suffix_len)}"
+    
+    if apply:
+        cur.execute("UPDATE kas_bank SET no_formatting = %s WHERE id = %s".replace("no_formatting", "no_bukti"), (new_no_built, row["id"]))
+        print(f"  [COLLISION RESOLVED] Renamed existing app record ID {row['id']} from '{no_formatting}' to '{new_no_built}'")
+    else:
+        print(f"  [COLLISION WILL RESOLVE] Will rename existing app record ID {row['id']} from '{no_formatting}' to '{new_no_built}'")
+        
+    return "insert"
+
+
 def _main():
     parser = argparse.ArgumentParser(
         description="Backfill kas keluar mirror -> tabel backend kas_bank/kas_bank_detail")
@@ -79,12 +123,11 @@ def _main():
     cabang_ids = [int(x.strip()) for x in args.cabang_ids.split(",") if x.strip()]
     cabang_filter = "(%s)" % ",".join(str(x) for x in cabang_ids)
 
-    # Cari akun cashbank "Kas Tunai Kasir" per cabang
+    # Ambil semua akun cashbank untuk cabang-cabang ini
     cur.execute(
         "SELECT akun_id, cabang_id, akun_nama, akun_kode FROM akun_cashbank "
-        "WHERE cabang_id IN %s AND akun_kode=%s" % (cabang_filter, "%s"),
-        (KAS_TUNAI_KASIR_KODE,))
-    akun_by_cabang = {r["cabang_id"]: r for r in cur.fetchall()}
+        "WHERE cabang_id IN %s" % cabang_filter)
+    akun_by_id = {r["akun_id"]: r for r in cur.fetchall()}
 
     # Cek akun lawan ada
     cur.execute("SELECT akun_id FROM akun WHERE akun_id IN (%s)" %
@@ -158,9 +201,10 @@ def _main():
         args.bulan, args.cabang_ids, "APPLY (commit)" if args.apply else "DRY-RUN (no commit)"))
     print("=" * 120)
 
-    missing_akun = [c for c in cabang_ids if c not in akun_by_cabang]
+    cabang_with_akun = {r["cabang_id"] for r in akun_by_id.values()}
+    missing_akun = [c for c in cabang_ids if c not in cabang_with_akun]
     if missing_akun:
-        print("!! AKUN CASHBANK 'Kas Tunai Kasir' tidak ditemukan utk cabang:", missing_akun)
+        print("!! AKUN CASHBANK tidak ditemukan utk cabang:", missing_akun)
     if akun_ok != {AKUN_PINJAMAN, AKUN_PENGELUARAN_LAIN, AKUN_GAJI}:
         print("!! Akun lawan tidak lengkap:", akun_ok)
 
@@ -171,7 +215,11 @@ def _main():
 
     for h in headers:
         kb_id = h["kasbank_id"]
-        if kb_id in done:
+        nobukti = h["kasbank_nobukti"]
+        
+        # Check and resolve collisions automatically
+        collision_action = resolve_nobukti_collision(cur, nobukti, args.apply)
+        if collision_action == "skip" or kb_id in done:
             skipped += 1
             continue
         if _dec(h["kasbank_keluar_total"]) <= 0:
@@ -179,7 +227,30 @@ def _main():
             continue
 
         cbg = int(h["kasbank_cabang_id"])
-        akun = akun_by_cabang.get(cbg)
+        
+        # Get actual account dynamically from kasbank_akun
+        ref_akun_id = None
+        if h.get("kasbank_akun"):
+            try:
+                ref_akun_id = int(h["kasbank_akun"])
+            except (ValueError, TypeError):
+                pass
+
+        akun = None
+        if ref_akun_id and ref_akun_id in akun_by_id:
+            akun = akun_by_id[ref_akun_id]
+        else:
+            # Fallback to Kas Tunai Kasir ("1.11.04")
+            for a in akun_by_id.values():
+                if a["cabang_id"] == cbg and a["akun_code"] == "1.11.04":
+                    akun = a
+                    break
+            if not akun:
+                for a in akun_by_id.values():
+                    if a["cabang_id"] == cbg:
+                        akun = a
+                        break
+
         if not akun:
             print("  !! SKIP %s: akun cashbank cbg %s tidak tersedia" % (h["kasbank_nobukti"], cbg))
             continue
