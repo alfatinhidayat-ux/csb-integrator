@@ -115,9 +115,8 @@ ENDPOINT_META = {
             "lpiutang_stat_dok": "Tertutup",
             "piutang_cust_data": "true",
         },
-        # Faktur sebelum tanggal ini diabaikan (mengikuti laporan Rekap Piutang
-        # Penjualan yang memakai Periode Faktur 01-01-2024 s/d tanggal berjalan).
-        "min_faktur_tanggal": "2024-01-01",
+        # Tidak ada filter min_faktur_tanggal — semua faktur dari semua periode
+        # diambil agar angka cocok dengan laporan Brighter mode "semua periode".
     },
 }
 
@@ -794,25 +793,15 @@ def main():
         print(f"       -> {len(piutang_rows)} records")
 
         # 6/7. Piutang Customer: tarik langsung seluruh faktur piutang per cabang
-        #      dari /transaksi/piutang_penjualan (filter stat_dok=Tertutup). Ini
-        #      sumber yang benar utk laporan "Rekap Piutang Penjualan", bukan child
-        #      dari pelunasan piutang (yang cuma menangkap sebagian pelanggan).
-        print("  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup)...")
+        #      dari /transaksi/piutang_penjualan (filter stat_dok=Tertutup). Semua
+        #      periode faktur diambil agar angka cocok dgn laporan Brighter
+        #      mode "semua periode" (tanpa filter tanggal faktur).
+        print("  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...")
         try:
             piutang_detail_rows = sync_headers(cfg_c, auth_c, db, "piutang_customer_detail", c_id, args.verbose)
         except Exception as e:
             print(f"       -> ERROR piutang customer detail: {e}")
             piutang_detail_rows = []
-        meta_piutang = ENDPOINT_META["piutang_customer_detail"]
-        min_t = meta_piutang.get("min_faktur_tanggal")
-        if min_t:
-            _before = len(piutang_detail_rows)
-            piutang_detail_rows = [
-                r for r in piutang_detail_rows
-                if str(r.get("lpiutang_faktur_tanggal") or "")[:10] >= min_t
-            ]
-            if _before != len(piutang_detail_rows) and args.verbose:
-                print(f"       -> filter faktur >= {min_t}: {_before} -> {len(piutang_detail_rows)}")
         piutang_detail_mapped = [map_record("piutang_customer_detail", r, c_id) for r in piutang_detail_rows]
         totals["piutang_customer_detail"] += len(piutang_detail_mapped)
         upsert_batch(db, TABLES["piutang_customer_detail"], piutang_detail_mapped, c_id)
