@@ -108,16 +108,16 @@ ENDPOINT_META = {
         },
     },
     "piutang_customer_detail": {
-        "path": "/transaksi/piutang_penjualan/customer/list_piutang/{cust_id}/detail",
+        "path": "/transaksi/piutang_penjualan",
         "prefix": "lpiutang_",
         "cabang_param": "lpiutang_cabang_id",
         "params": {
-            "lpiutang_stat_dok": "Semua",
-            "lpiutang_cust": "{cust_id}",
-            "lpiutang_cust_data": "true",
+            "lpiutang_stat_dok": "Tertutup",
+            "piutang_cust_data": "true",
         },
-        "parent_key": "cust_id",
-        "join_id": "fpiutang_cust",
+        # Faktur sebelum tanggal ini diabaikan (mengikuti laporan Rekap Piutang
+        # Penjualan yang memakai Periode Faktur 01-01-2024 s/d tanggal berjalan).
+        "min_faktur_tanggal": "2024-01-01",
     },
 }
 
@@ -273,6 +273,48 @@ def upsert_batch(db, table, records, cabang_id):
     db.ensure_table(table, first, DATE_COLS_BY_TABLE.get(table, set()))
     db.upsert_records(table, records, cabang_id)
     return len(records)
+
+
+def backfill_piutang_customer_data(db, cabang_id, verbose=False):
+    """Lengkapi kolom cust_data_cust_* pada brighter_transaksi_piutang_customer_detail
+    dari kolom `customer` berdasar customer id (cust). Sumber API /piutang_penjualan
+    tidak menyertakan detail customer (field cust_data), jadi di-join manual.
+    Hanya kolom yang relevan diisi; sisanya dibiarkan NULL."""
+    cols = {
+        "cust_data_cust_id": "id",
+        "cust_data_cust_cabang_id": "cabang_id",
+        "cust_data_cust_no": "kode",
+        "cust_data_cust_kategori_id": "kategori_id",
+        "cust_data_cust_jns_identitas": "jns_identitas",
+        "cust_data_cust_no_identitas": "no_identitas",
+        "cust_data_cust_nama": "nama",
+        "cust_data_cust_kelamin": "kelamin",
+        "cust_data_cust_alamat": "alamat",
+        "cust_data_cust_hp": "notelp",
+        "cust_data_cust_email": "email",
+        "cust_data_cust_tgllahir": "tanggal_lahir",
+        "cust_data_cust_keterangan": "keterangan",
+        "cust_data_cust_npwp": "npwp",
+        "cust_data_cust_aktif": "aktif",
+    }
+    sets = ", ".join(f"`{k}` = COALESCE(`{k}`, c.`{kk}`)" for k, kk in cols.items())
+    sql = (
+        f"UPDATE brighter_transaksi_piutang_customer_detail d "
+        f"JOIN customer c ON c.id = d.cust "
+        f"SET {sets} "
+        f"WHERE d.cabang_id = %s AND d.cust_data_cust_nama IS NULL"
+    )
+    try:
+        cur = db.conn.cursor()
+        n = cur.execute(sql, (cabang_id,))
+        db.conn.commit()
+        if verbose:
+            print(f"       -> backfill customer data: {n} rows")
+        return n
+    except Exception as e:
+        if verbose:
+            print(f"       -> backfill customer data skipped: {e}")
+        return 0
 
 
 def _pick(rec, *keys):
@@ -729,44 +771,31 @@ def main():
         totals["pelunasan_piutang"] += upsert_batch(db, TABLES["pelunasan_piutang"], piutang_mapped, c_id)
         print(f"       -> {len(piutang_rows)} records")
 
-        # 6/7. Child: Detail Piutang Customer per customer found in pelunasan piutang
-        cust_ids = []
-        seen = set()
-        for r in piutang_rows:
-            cid = r.get("fpiutang_cust")
-            if cid is not None and cid not in seen:
-                seen.add(cid)
-                cust_ids.append(cid)
-
-        piutang_detail_rows = []
-        if cust_ids:
-            print(f"  [6/7] Detail Piutang Customer for {len(cust_ids)} customers (concurrent)...")
-            with ThreadPoolExecutor(max_workers=args.workers) as ex:
-                futs = {
-                    ex.submit(
-                        fetch_all_pages, cfg_c, auth_c,
-                        ENDPOINT_META["piutang_customer_detail"]["path"],
-                        {"cust_id": cid},
-                        ENDPOINT_META["piutang_customer_detail"]["params"],
-                        c_id, ENDPOINT_META["piutang_customer_detail"]["cabang_param"], args.verbose
-                    ): cid
-                    for cid in cust_ids
-                }
-                for fut in as_completed(futs):
-                    cid = futs[fut]
-                    try:
-                        for r in fut.result():
-                            piutang_detail_rows.append(map_record(
-                                "piutang_customer_detail", r, c_id,
-                                extra={"fpiutang_cust": cid},
-                            ))
-                    except Exception as e:
-                        print(f"    error piutang detail for cust {cid}: {e}")
-            print(f"       -> {len(piutang_detail_rows)} records")
-        else:
-            print("  [6/7] Detail Piutang Customer (no customers found, skipped)")
-        totals["piutang_customer_detail"] += upsert_batch(
-            db, TABLES["piutang_customer_detail"], piutang_detail_rows, c_id)
+        # 6/7. Piutang Customer: tarik langsung seluruh faktur piutang per cabang
+        #      dari /transaksi/piutang_penjualan (filter stat_dok=Tertutup). Ini
+        #      sumber yang benar utk laporan "Rekap Piutang Penjualan", bukan child
+        #      dari pelunasan piutang (yang cuma menangkap sebagian pelanggan).
+        print("  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup)...")
+        try:
+            piutang_detail_rows = sync_headers(cfg_c, auth_c, db, "piutang_customer_detail", c_id, args.verbose)
+        except Exception as e:
+            print(f"       -> ERROR piutang customer detail: {e}")
+            piutang_detail_rows = []
+        meta_piutang = ENDPOINT_META["piutang_customer_detail"]
+        min_t = meta_piutang.get("min_faktur_tanggal")
+        if min_t:
+            _before = len(piutang_detail_rows)
+            piutang_detail_rows = [
+                r for r in piutang_detail_rows
+                if str(r.get("lpiutang_faktur_tanggal") or "")[:10] >= min_t
+            ]
+            if _before != len(piutang_detail_rows) and args.verbose:
+                print(f"       -> filter faktur >= {min_t}: {_before} -> {len(piutang_detail_rows)}")
+        piutang_detail_mapped = [map_record("piutang_customer_detail", r, c_id) for r in piutang_detail_rows]
+        totals["piutang_customer_detail"] += len(piutang_detail_mapped)
+        upsert_batch(db, TABLES["piutang_customer_detail"], piutang_detail_mapped, c_id)
+        print(f"       -> {len(piutang_detail_rows)} records")
+        backfill_piutang_customer_data(db, c_id, args.verbose)
 
         print(f"Done Cabang {c_id}")
 
