@@ -4,16 +4,31 @@
 -- ============================================================
 
 -- 1. Rekon GRAND TOTAL per cabang (bandingkan dgn PDF)
-SELECT cabang_id,
-       COUNT(*) AS dokumen,
-       SUM(total_qty) AS qty,
-       SUM(total_nilai) AS total_biaya,
-       SUM(diskon_header) AS diskon,
-       SUM(grand_total) AS net
-FROM pembelian
-WHERE cabang_id IN (2,4,7)
-GROUP BY cabang_id
-ORDER BY cabang_id;
+SELECT
+    p.cabang_id,
+    c.nama,
+    COUNT(*) AS dokumen,
+    FORMAT(COALESCE(SUM(p.total_qty), 0), 0, 'id_ID') AS qty,
+    CONCAT(
+        'Rp ',
+        FORMAT(COALESCE(SUM(p.total_nilai), 0), 0, 'id_ID')
+    ) AS total_biaya,
+    CONCAT(
+        'Rp ',
+        FORMAT(COALESCE(SUM(p.diskon_header), 0), 0, 'id_ID')
+    ) AS diskon,
+    CONCAT(
+        'Rp ',
+        FORMAT(COALESCE(SUM(p.grand_total), 0), 0, 'id_ID')
+    ) AS net
+FROM pembelian AS p
+JOIN cabang AS c
+    ON c.id = p.cabang_id
+GROUP BY
+    p.cabang_id,
+    c.nama
+ORDER BY
+    c.nama;
 
 -- 2. 4 dok outlier (net != bayar+sisa sumber) di tabel hasil migrasi
 SELECT p.id, p.kode, p.cabang_id, p.total_nilai, p.diskon_header, p.grand_total
