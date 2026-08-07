@@ -41,6 +41,9 @@ from auth import AuthManager
 HEADER_PATH = "/persediaan/barang_titipan_internal"
 DETAIL_PATH = "/persediaan/barang_titipan_internal/{btitipan_id}/detail_barang_titipan_internal"
 
+# Header tanpa supplier_id di-skip (kolom btitipan_supplier_id app NOT NULL).
+SKIP_NULL_SUPPLIER = True
+
 HEADER_FIELDS = [
     "btitipan_id", "btitipan_nobukti", "btitipan_supplier_id",
     "btitipan_non_konosemen", "btitipan_kapal_id", "btitipan_pelabuhan_asal_id",
@@ -80,6 +83,7 @@ def connect_csb() -> pymysql.connections.Connection:
         host=kw["host"], port=kw["port"], user=kw["user"], password=kw["password"],
         database=kw["database"], charset="utf8mb4",
         cursorclass=pymysql.cursors.DictCursor, autocommit=False,
+        connect_timeout=30, read_timeout=300, write_timeout=300,
     )
 
 
@@ -113,7 +117,15 @@ def extract_header(row: dict) -> list:
 
 
 def extract_detail(row: dict) -> list:
-    return [row.get(f) for f in DETAIL_FIELDS]
+    vals = []
+    for f in DETAIL_FIELDS:
+        v = row.get(f)
+        if f == "btitipan_det_dorder_diskon" and v is not None:
+            v = float(v)
+            if v > 999.99:
+                v = v / 1000.0
+        vals.append(v)
+    return vals
 
 
 def main():
@@ -132,15 +144,20 @@ def main():
     auth.ensure_token()
     headers_auth = auth.get_headers()
 
-    conn = connect_csb()
-
     client = httpx.Client(base_url=cfg.base_url, timeout=cfg.request_timeout)
     try:
         print("Fetching header titipan dari API ...")
         hdrs = fetch_paginated(
             client, HEADER_PATH, {"timestamp_data": "true"}, headers_auth, cfg
         )
-        print(f"  header di API: {len(hdrs)}")
+        skipped_null_supplier = sum(
+            1 for h in hdrs if h.get("btitipan_supplier_id") in (None, "", 0)
+        )
+        if SKIP_NULL_SUPPLIER:
+            hdrs = [
+                h for h in hdrs if h.get("btitipan_supplier_id") not in (None, "", 0)
+            ]
+        print(f"  header di API: {len(hdrs) + skipped_null_supplier} (skip supplier kosong: {skipped_null_supplier})")
 
         if args.limit:
             hdrs = hdrs[: args.limit]
@@ -171,6 +188,7 @@ def main():
         print(f"  Header : {len(hdrs)}")
         print(f"  Detail : {total_details}")
         print(f"  Error  : {detail_errors}")
+        print(f"  Skip (supplier kosong): {skipped_null_supplier}")
         print("=" * 62)
 
         if args.no_write or args.dry_run:
@@ -182,6 +200,8 @@ def main():
             if ans.strip().lower() != "yes":
                 print("Dibatalkan.")
                 return
+
+        conn = connect_csb()
 
         # Full replace: kosongkan kedua tabel lalu isi ulang.
         with conn.cursor() as cur:
@@ -236,7 +256,11 @@ def main():
         print("=" * 62)
     finally:
         client.close()
-        conn.close()
+        if "conn" in locals():
+            try:
+                conn.close()
+            except Exception:
+                pass
 
 
 if __name__ == "__main__":
