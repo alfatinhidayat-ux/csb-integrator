@@ -17,30 +17,22 @@ from db import DatabaseManager
 
 
 def ensure_tables(db: DatabaseManager):
-    """Creates brighter_pos and brighter_pos_detail tables if they don't exist (no DROP)."""
-    print("Ensuring tables exist (brighter_pos, brighter_pos_detail)...")
+    """Creates brighter_retur_penjualan and brighter_retur_penjualan_detail tables if they don't exist (no DROP)."""
+    print("Ensuring tables exist (brighter_retur_penjualan, brighter_retur_penjualan_detail)...")
     with db.conn.cursor() as cur:
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS brighter_pos (
+            CREATE TABLE IF NOT EXISTS brighter_retur_penjualan (
                 id BIGINT NOT NULL,
                 cabang_id INT NOT NULL,
                 tanggal DATE NULL,
                 no_bukti VARCHAR(100) NULL,
+                faktur_id BIGINT NULL,
+                faktur_nobukti VARCHAR(100) NULL,
                 customer_id INT NULL,
-                keterangan TEXT NULL,
                 status_dokumen VARCHAR(50) NULL,
-                bayar DECIMAL(15,2) NULL,
-                cara VARCHAR(100) NULL,
-                card_jenis VARCHAR(100) NULL,
-                card_edc VARCHAR(100) NULL,
-                card_no VARCHAR(100) NULL,
-                total_biaya DECIMAL(15,2) NULL,
-                request_stat_dok_batal VARCHAR(50) NULL,
-                request_batal_keterangan TEXT NULL,
-                request_batal_at DATETIME NULL,
-                request_batal_by VARCHAR(100) NULL,
-                approval_batal_at DATETIME NULL,
-                approval_batal_by VARCHAR(100) NULL,
+                total_rp DECIMAL(15,2) NULL,
+                keterangan TEXT NULL,
+                cara_bayar VARCHAR(50) NULL,
                 created_by VARCHAR(100) NULL,
                 created_at DATETIME NULL,
                 updated_by VARCHAR(100) NULL,
@@ -49,35 +41,37 @@ def ensure_tables(db: DatabaseManager):
                 deleted_at DATETIME NULL,
                 revised INT NULL,
                 cust_no VARCHAR(50) NULL,
-                cust_jns_identitas VARCHAR(50) NULL,
-                cust_no_identitas VARCHAR(100) NULL,
                 cust_nama VARCHAR(255) NULL,
-                cbayar_id BIGINT NULL,
-                cbayar_nama VARCHAR(50) NULL,
-                cbayar_nilai_bayar_rp DECIMAL(15,2) NULL,
-                cbayar_card_jenis VARCHAR(50) NULL,
-                cbayar_card_edc VARCHAR(50) NULL,
-                cbayar_card_no VARCHAR(100) NULL,
-                cbayar_card_tarik_tunai DECIMAL(15,2) NULL,
-                cbayar_transfer_bank_id BIGINT NULL,
-                cbayar_transfer_nama VARCHAR(150) NULL,
-                cbayar_all_methods VARCHAR(255) NULL,
+                cust_kelamin VARCHAR(10) NULL,
+                cust_alamat TEXT NULL,
+                cust_hp VARCHAR(50) NULL,
+                cust_email VARCHAR(150) NULL,
+                cust_npwp VARCHAR(50) NULL,
+                cust_tgllahir DATE NULL,
+                jproduk_id BIGINT NULL,
+                jproduk_nobukti VARCHAR(100) NULL,
+                jproduk_tanggal DATE NULL,
+                jproduk_totalbiaya DECIMAL(15,2) NULL,
+                jproduk_stat_dok VARCHAR(50) NULL,
                 synced_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (id, cabang_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         """)
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS brighter_pos_detail (
+            CREATE TABLE IF NOT EXISTS brighter_retur_penjualan_detail (
                 id BIGINT NOT NULL,
                 cabang_id INT NOT NULL,
-                pos_id BIGINT NOT NULL,
+                retur_id BIGINT NOT NULL,
+                dproduk_id BIGINT NULL,
                 produk_id INT NULL,
                 satuan_id INT NULL,
-                jumlah DECIMAL(15,4) NULL,
-                jumlah_retur DECIMAL(15,4) NULL,
+                qty DECIMAL(15,4) NULL,
+                qty_retur DECIMAL(15,4) NULL,
                 harga DECIMAL(15,2) NULL,
-                diskon DECIMAL(5,2) NULL,
+                diskon DECIMAL(15,2) NULL,
                 diskon_rp DECIMAL(15,2) NULL,
+                subtotal_rp DECIMAL(15,2) NULL,
+                keterangan TEXT NULL,
                 produk_kode VARCHAR(50) NULL,
                 produk_nama VARCHAR(255) NULL,
                 produk_sku VARCHAR(100) NULL,
@@ -85,11 +79,11 @@ def ensure_tables(db: DatabaseManager):
                 produk_group_sub INT NULL,
                 produk_brand VARCHAR(100) NULL,
                 produk_aktif VARCHAR(20) NULL,
-                satuan_code VARCHAR(50) NULL,
+                satuan_kode VARCHAR(50) NULL,
                 satuan_nama VARCHAR(100) NULL,
                 synced_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (id, cabang_id),
-                KEY idx_pos_id (pos_id)
+                KEY idx_retur_id (retur_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         """)
     db.conn.commit()
@@ -97,47 +91,24 @@ def ensure_tables(db: DatabaseManager):
 
 
 def map_header(rec: dict, cabang_id: int) -> dict:
-    """Maps API record dictionary to standardized flat schema for brighter_pos."""
+    """Maps API record dictionary to standardized flat schema for brighter_retur_penjualan."""
     timestamp = rec.get("timestamp_data") or {}
-    cust = rec.get("jproduk_cust_data") or {}
-    
-    cb_list = rec.get("jproduk_cara_bayar_data") or []
-    if isinstance(cb_list, dict):
-        cb_list = [cb_list]
-    elif not isinstance(cb_list, list):
-        cb_list = []
-        
-    cb_first = cb_list[0] if cb_list else {}
-    
-    # Concatenate all payment methods
-    methods = []
-    for cb in cb_list:
-        name = cb.get("djual_cbayar_nama") or "unknown"
-        val = cb.get("djual_nilai_bayar_rp") or 0.0
-        methods.append(f"{name}: {val}")
-    cbayar_all_methods = ", ".join(methods) if methods else None
-    
+    cust = rec.get("rjproduk_cust_data") or {}
+    faktur = rec.get("rjproduk_faktur_data") or {}
+
     return {
-        "id": rec.get("jproduk_id"),
+        "id": rec.get("rjproduk_id"),
         "cabang_id": cabang_id,
-        "tanggal": rec.get("jproduk_tanggal") or None,
-        "no_bukti": rec.get("jproduk_nobukti"),
-        "customer_id": rec.get("jproduk_cust"),
-        "keterangan": rec.get("jproduk_keterangan"),
-        "status_dokumen": rec.get("jproduk_stat_dok"),
-        "bayar": rec.get("jproduk_bayar"),
-        "cara": rec.get("jproduk_cara"),
-        "card_jenis": rec.get("jproduk_card_jenis"),
-        "card_edc": rec.get("jproduk_card_edc"),
-        "card_no": rec.get("jproduk_card_no"),
-        "total_biaya": rec.get("jproduk_totalbiaya"),
-        "request_stat_dok_batal": rec.get("jproduk_request_stat_dok_batal"),
-        "request_batal_keterangan": rec.get("jproduk_request_batal_keterangan"),
-        "request_batal_at": rec.get("jproduk_request_batal_at") or None,
-        "request_batal_by": rec.get("jproduk_request_batal_by"),
-        "approval_batal_at": rec.get("jproduk_approval_batal_at") or None,
-        "approval_batal_by": rec.get("jproduk_approval_batal_by"),
-        
+        "tanggal": rec.get("rjproduk_tanggal") or None,
+        "no_bukti": rec.get("rjproduk_nobukti"),
+        "faktur_id": rec.get("rjproduk_faktur_id"),
+        "faktur_nobukti": rec.get("rjproduk_faktur_nobukti"),
+        "customer_id": rec.get("rjproduk_cust_id"),
+        "status_dokumen": rec.get("rjproduk_stat_dok"),
+        "total_rp": rec.get("rjproduk_total_rp"),
+        "keterangan": rec.get("rjproduk_keterangan"),
+        "cara_bayar": rec.get("rjproduk_cara_bayar"),
+
         # Flattened timestamp_data
         "created_by": timestamp.get("created_by"),
         "created_at": timestamp.get("created_at") or None,
@@ -146,45 +117,47 @@ def map_header(rec: dict, cabang_id: int) -> dict:
         "deleted_by": timestamp.get("deleted_by"),
         "deleted_at": timestamp.get("deleted_at") or None,
         "revised": timestamp.get("revised"),
-        
-        # Flattened jproduk_cust_data
+
+        # Flattened rjproduk_cust_data
         "cust_no": cust.get("cust_no"),
-        "cust_jns_identitas": cust.get("cust_jns_identitas"),
-        "cust_no_identitas": cust.get("cust_no_identitas"),
         "cust_nama": cust.get("cust_nama"),
-        
-        # Flattened jproduk_cara_bayar_data (first payment method)
-        "cbayar_id": cb_first.get("djual_cbayar_id"),
-        "cbayar_nama": cb_first.get("djual_cbayar_nama"),
-        "cbayar_nilai_bayar_rp": cb_first.get("djual_nilai_bayar_rp"),
-        "cbayar_card_jenis": cb_first.get("djual_card_jenis"),
-        "cbayar_card_edc": cb_first.get("djual_card_edc"),
-        "cbayar_card_no": cb_first.get("djual_card_no"),
-        "cbayar_card_tarik_tunai": cb_first.get("djual_card_tarik_tunai_rp"),
-        "cbayar_transfer_bank_id": cb_first.get("djual_transfer_bank_id"),
-        "cbayar_transfer_nama": cb_first.get("djual_transfer_nama"),
-        "cbayar_all_methods": cbayar_all_methods,
+        "cust_kelamin": cust.get("cust_kelamin"),
+        "cust_alamat": cust.get("cust_alamat"),
+        "cust_hp": cust.get("cust_hp"),
+        "cust_email": cust.get("cust_email"),
+        "cust_npwp": cust.get("cust_npwp"),
+        "cust_tgllahir": cust.get("cust_tgllahir") or None,
+
+        # Flattened rjproduk_faktur_data (original POS invoice)
+        "jproduk_id": faktur.get("jproduk_id"),
+        "jproduk_nobukti": faktur.get("jproduk_nobukti"),
+        "jproduk_tanggal": faktur.get("jproduk_tanggal") or None,
+        "jproduk_totalbiaya": faktur.get("jproduk_totalbiaya"),
+        "jproduk_stat_dok": faktur.get("jproduk_stat_dok"),
     }
 
 
 def map_detail(rec: dict, cabang_id: int) -> dict:
-    """Maps API record dictionary to standardized flat schema for brighter_pos_detail."""
-    prod = rec.get("dproduk_produk_data") or {}
-    satuan = rec.get("dproduk_satuan_data") or {}
-    
+    """Maps API record dictionary to standardized flat schema for brighter_retur_penjualan_detail."""
+    prod = rec.get("rjproduk_det_produk_data") or {}
+    satuan = rec.get("rjproduk_det_satuan_data") or {}
+
     return {
-        "id": rec.get("dproduk_id"),
+        "id": rec.get("rjproduk_det_id"),
         "cabang_id": cabang_id,
-        "pos_id": rec.get("dproduk_master"),
-        "produk_id": rec.get("dproduk_produk"),
-        "satuan_id": rec.get("dproduk_satuan"),
-        "jumlah": rec.get("dproduk_jumlah"),
-        "jumlah_retur": rec.get("dproduk_retur_jml"),
-        "harga": rec.get("dproduk_harga"),
-        "diskon": rec.get("dproduk_diskon"),
-        "diskon_rp": rec.get("dproduk_diskon_rp"),
-        
-        # Flattened dproduk_produk_data
+        "retur_id": rec.get("rjproduk_det_master_id"),
+        "dproduk_id": rec.get("rjproduk_det_dproduk_id"),
+        "produk_id": rec.get("rjproduk_det_produk_id"),
+        "satuan_id": rec.get("rjproduk_det_satuan_id"),
+        "qty": rec.get("rjproduk_det_qty"),
+        "qty_retur": rec.get("rjproduk_det_qty_retur"),
+        "harga": rec.get("rjproduk_det_produk_harga"),
+        "diskon": rec.get("rjproduk_det_diskon"),
+        "diskon_rp": rec.get("rjproduk_det_diskon_rp"),
+        "subtotal_rp": rec.get("rjproduk_det_subtotal_rp"),
+        "keterangan": rec.get("rjproduk_det_keterangan"),
+
+        # Flattened rjproduk_det_produk_data
         "produk_kode": prod.get("produk_kode"),
         "produk_nama": prod.get("produk_nama"),
         "produk_sku": prod.get("produk_sku"),
@@ -192,67 +165,71 @@ def map_detail(rec: dict, cabang_id: int) -> dict:
         "produk_group_sub": prod.get("produk_group_sub"),
         "produk_brand": prod.get("produk_brand"),
         "produk_aktif": prod.get("produk_aktif"),
-        
-        # Flattened dproduk_satuan_data
-        "satuan_code": satuan.get("satuan_code") or satuan.get("satuan_kode"),
+
+        # Flattened rjproduk_det_satuan_data
+        "satuan_kode": satuan.get("satuan_kode"),
         "satuan_nama": satuan.get("satuan_nama"),
     }
 
 
-def fetch_pos_headers(config: Config, auth: AuthManager, cabang_id: int, tanggal_awal: str, tanggal_akhir: str) -> list[dict]:
-    """Fetches POS headers for a specific branch from /transaksi/pos.
+def fetch_retur_headers(config: Config, auth: AuthManager, cabang_id: int, tanggal_awal: str, tanggal_akhir: str) -> list[dict]:
+    """Fetches retur penjualan headers for a specific branch from /transaksi/retur_penjualan.
 
-    The API does not support server-side date filtering and does NOT return
-    records sorted by `jproduk_tanggal` (ordering is by id, and the date can be
-    edited independently, so it is NOT monotonic with id). Therefore we scan
-    every page and filter client-side. Early stopping on date is unsafe and
-    caused whole ranges of dates to be skipped.
+    The API does not support server-side date filtering, so we scan every page
+    and filter client-side on `rjproduk_tanggal`.
     """
     client = httpx.Client(base_url=config.base_url, timeout=config.request_timeout)
     page = 1
     results = []
     seen_ids = set()
-    
+    skipped_no_name = 0
+
     while True:
         params = {
             "page": str(page),
-            "results_per_page": str(config.results_per_page),  # Max allowed page size
-            "jproduk_stat_dok": "Semua",
-            "jproduk_cust_data": "true",
+            "results_per_page": str(config.results_per_page),
+            "rjproduk_stat_dok": "Semua",
+            "rjproduk_cust_data": "true",
             "timestamp_data": "true",
-            "jproduk_cabang_id": str(cabang_id)
+            "rjproduk_cabang_id": str(cabang_id)
         }
-        
+
         auth.ensure_token()
         headers = auth.get_headers()
-        
+
         time.sleep(config.request_delay)
-        print(f" -> Fetching headers for Cabang {cabang_id}, page {page}...")
-        resp = client.get("/transaksi/pos", params=params, headers=headers)
+        print(f" -> Fetching retur headers for Cabang {cabang_id}, page {page}...")
+        resp = client.get("/transaksi/retur_penjualan", params=params, headers=headers)
         resp.raise_for_status()
         data = resp.json()
-        
+
         batch = data.get("data", [])
         if not batch:
             break
-            
+
         for rec in batch:
-            rec_date_str = rec.get("jproduk_tanggal")
+            rec_date_str = rec.get("rjproduk_tanggal")
             if rec_date_str:
                 # Client-side date range filter (server ignores date params)
                 if tanggal_awal and rec_date_str < tanggal_awal:
                     continue
                 if tanggal_akhir and rec_date_str > tanggal_akhir:
                     continue
+            # Skip retur to customers who are not "Aktif" (inactive/deleted) —
+            # not shown in the app report and inflate the totals (e.g. no-name
+            # CSB/RJ/2601-0004..0007, inactive customer 6204 / SB/RJ/2602-0003).
+            if (rec.get("rjproduk_cust_data") or {}).get("cust_aktif") != "Aktif":
+                skipped_no_name += 1
+                continue
             # Dedupe by id: offset pagination can repeat records when new
             # transactions are inserted mid-scan.
-            rid = rec.get("jproduk_id")
+            rid = rec.get("rjproduk_id")
             if rid is not None:
                 if rid in seen_ids:
                     continue
                 seen_ids.add(rid)
             results.append(rec)
-            
+
         # Determine if there's a next page
         paging = data.get("paging")
         if paging:
@@ -265,30 +242,57 @@ def fetch_pos_headers(config: Config, auth: AuthManager, cabang_id: int, tanggal
             if page >= total_pages:
                 break
         page += 1
-        
+
     client.close()
+    if skipped_no_name:
+        print(f" -> Skipped {skipped_no_name} retur with inactive/unknown customer (matches app report).")
     return results
 
 
-def fetch_pos_detail(config: Config, auth: AuthManager, pos_id: int) -> list[dict]:
-    """Fetches detailed items for a specific POS ID."""
+def fetch_retur_detail(config: Config, auth: AuthManager, retur_id: int) -> list[dict]:
+    """Fetches detail items for a specific retur penjualan ID.
+
+    Unlike the POS detail endpoint, /rjproduk_det is paginated, so we loop
+    through all pages.
+    """
     client = httpx.Client(base_url=config.base_url, timeout=config.request_timeout)
-    url = f"/transaksi/pos/{pos_id}/detail_pos"
-    params = {
-        "dproduk_produk_data": "true",
-        "dproduk_satuan_data": "true"
-    }
-    
-    auth.ensure_token()
-    headers = auth.get_headers()
-    
-    resp = client.get(url, params=params, headers=headers)
+    url = f"/transaksi/retur_penjualan/{retur_id}/rjproduk_det"
+    page = 1
+    results = []
+
+    while True:
+        params = {
+            "page": str(page),
+            "results_per_page": str(config.results_per_page),
+            "rjproduk_det_produk_data": "true",
+            "rjproduk_det_satuan_data": "true",
+            "timestamp_data": "false",
+        }
+
+        auth.ensure_token()
+        headers = auth.get_headers()
+
+        time.sleep(config.request_delay)
+        resp = client.get(url, params=params, headers=headers)
+        if resp.status_code == 404:
+            client.close()
+            return []
+        resp.raise_for_status()
+        data = resp.json()
+
+        batch = data.get("data", [])
+        if not batch:
+            break
+        results.extend(batch)
+
+        paging = data.get("paging")
+        total_pages = paging.get("total_pages", 0) if paging else 0
+        if page >= total_pages:
+            break
+        page += 1
+
     client.close()
-    
-    if resp.status_code == 404:
-        return []
-    resp.raise_for_status()
-    return resp.json().get("data", []) or []
+    return results
 
 
 def insert_batch_upsert(db: DatabaseManager, table: str, records: list[dict], chunk_size: int = 500):
@@ -307,12 +311,12 @@ def insert_batch_upsert(db: DatabaseManager, table: str, records: list[dict], ch
     update_cols = [c for c in cols if c not in ("id", "cabang_id")]
     update_clause = ", ".join(f"`{c}` = VALUES(`{c}`)" for c in update_cols)
     sql = f"INSERT INTO `{table}` ({col_names}) VALUES ({placeholders}) ON DUPLICATE KEY UPDATE {update_clause}"
-    
+
     total = len(records)
     for start in range(0, total, chunk_size):
         chunk = records[start:start + chunk_size]
         batch = [[rec.get(c) for c in cols] for rec in chunk]
-        
+
         for attempt in range(3):
             try:
                 db.reconnect()
@@ -330,13 +334,13 @@ def insert_batch_upsert(db: DatabaseManager, table: str, records: list[dict], ch
                 print(f"    DB connection lost on {table} chunk {start}, reconnecting ({attempt + 1}/3)...")
                 db.close()
                 db.connect()
-        
+
         print(f"    Upsert {table}: {min(start + chunk_size, total)}/{total} rows")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Sync POS Header & Detail from Brighter API into csb_db"
+        description="Sync Retur Penjualan Header & Detail from Brighter API into csb_db"
     )
     parser.add_argument(
         "-e", "--env",
@@ -374,11 +378,7 @@ def main():
     args = parser.parse_args()
 
     # Load configuration
-    if args.env:
-        config = Config.from_env()
-    else:
-        # Load from .env file or default
-        config = Config.from_env()
+    config = Config.from_env()
 
     # Determine date range
     if args.tanggal_awal and args.tanggal_akhir:
@@ -398,7 +398,7 @@ def main():
     auth = AuthManager(config)
     db = DatabaseManager(config, target_db="csb")
     db.connect()
-    
+
     # 1. Ensure tables exist without dropping existing data
     ensure_tables(db)
 
@@ -420,39 +420,39 @@ def main():
             db_brighter.close()
 
     print(f"Cabangs to sync: {cabang_ids}")
-    
+
     total_headers_synced = 0
     total_details_synced = 0
-    
+
     # 3. Main Sync Loop: for each cabang, scan all pages and filter client-side
     for c_id in cabang_ids:
         print(f"\n--- Cabang {c_id} | {tanggal_awal} -> {tanggal_akhir} ---")
-        
+
         # Ping DB before each cabang to avoid lost connection
         try:
             db.reconnect()
         except Exception:
             pass
-        
+
         try:
-            headers = fetch_pos_headers(config, auth, c_id, tanggal_awal, tanggal_akhir)
-            print(f" -> Found {len(headers)} POS headers in range.")
+            headers = fetch_retur_headers(config, auth, c_id, tanggal_awal, tanggal_akhir)
+            print(f" -> Found {len(headers)} retur headers in range.")
             if not headers:
                 continue
-                
+
             headers_to_insert = [map_header(h, c_id) for h in headers]
-                
+
             print(f" -> Fetching details for {len(headers)} transactions...")
             errors_count = 0
             details_to_insert = []
             with ThreadPoolExecutor(max_workers=args.workers) as executor:
                 future_to_id = {
-                    executor.submit(fetch_pos_detail, config, auth, h["jproduk_id"]): h["jproduk_id"]
+                    executor.submit(fetch_retur_detail, config, auth, h["rjproduk_id"]): h["rjproduk_id"]
                     for h in headers
                 }
-                
+
                 for i, future in enumerate(as_completed(future_to_id)):
-                    pos_id = future_to_id[future]
+                    retur_id = future_to_id[future]
                     try:
                         items = future.result()
                         for item in items:
@@ -460,12 +460,12 @@ def main():
                             details_to_insert.append(mapped_det)
                     except Exception as e:
                         if args.verbose:
-                            print(f"Error fetching details for POS ID {pos_id}: {e}")
+                            print(f"Error fetching details for Retur ID {retur_id}: {e}")
                         errors_count += 1
-                        
+
                     if (i + 1) % 50 == 0 or (i + 1) == len(headers):
                         print(f"    Detail fetch progress: {i + 1}/{len(headers)}")
-                    
+
                     # Keep the MySQL connection alive during the long fetch phase
                     # so the server doesn't close it (prevents "MySQL server has gone away").
                     if (i + 1) % 200 == 0:
@@ -473,29 +473,29 @@ def main():
                             db.reconnect()
                         except Exception:
                             pass
-            
+
             if errors_count > 0:
                 print(f" -> Detail fetch warnings/errors count: {errors_count}")
-                
+
             print(f" -> Upserting {len(headers_to_insert)} headers...")
-            insert_batch_upsert(db, "brighter_pos", headers_to_insert)
-            
+            insert_batch_upsert(db, "brighter_retur_penjualan", headers_to_insert)
+
             print(f" -> Upserting {len(details_to_insert)} items...")
-            insert_batch_upsert(db, "brighter_pos_detail", details_to_insert)
-            
+            insert_batch_upsert(db, "brighter_retur_penjualan_detail", details_to_insert)
+
             total_headers_synced += len(headers_to_insert)
             total_details_synced += len(details_to_insert)
             print(f"Done Cabang {c_id}")
-            
+
         except Exception as e:
             print(f"Error syncing Cabang {c_id}: {e}")
 
     db.close()
-    
+
     print("\n" + "=" * 50)
-    print("ALL POS SYNC COMPLETE")
-    print(f"Total POS Headers synced: {total_headers_synced}")
-    print(f"Total POS Details synced: {total_details_synced}")
+    print("ALL RETUR PENJUALAN SYNC COMPLETE")
+    print(f"Total Retur Headers synced: {total_headers_synced}")
+    print(f"Total Retur Details synced: {total_details_synced}")
     print("=" * 50)
 
 

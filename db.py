@@ -240,7 +240,10 @@ class DatabaseManager:
         self.conn.commit()
 
     def get_cabang_list(self) -> list[dict]:
-        cur = self._execute("SELECT DISTINCT id, nama_cabang FROM master_cabang ORDER BY id")
+        cur = self._execute(
+            "SELECT DISTINCT cabang_id AS id, cabang_nama AS nama_cabang "
+            "FROM master_cabang ORDER BY cabang_id"
+        )
         return cur.fetchall()
 
     def get_distinct(self, table: str, column: str) -> list:
