@@ -275,6 +275,28 @@ def upsert_batch(db, table, records, cabang_id):
     return len(records)
 
 
+def _delete_orphan_piutang(db, cabang_id, api_ids, verbose=False):
+    """Hapus record piutang_customer_detail milik cabang yang `id`-nya (lpiutang_id)
+    tidak lagi ada di respons API. Mengembalikan jumlah record yang dihapus."""
+    if not api_ids:
+        return 0
+    try:
+        cur = db.conn.cursor()
+        api_ids = [int(i) for i in api_ids]
+        marks = ",".join(["%s"] * len(api_ids))
+        cur.execute(
+            f"DELETE FROM {TABLES['piutang_customer_detail']} "
+            f"WHERE cabang_id = %s AND id NOT IN ({marks})",
+            (cabang_id, *api_ids),
+        )
+        db.conn.commit()
+        return cur.rowcount
+    except Exception as e:
+        if verbose:
+            print(f"       -> delete orphan piutang skipped: {e}")
+        return 0
+
+
 def backfill_piutang_customer_data(db, cabang_id, verbose=False):
     """Lengkapi kolom cust_data_cust_* pada brighter_transaksi_piutang_customer_detail
     dari kolom `customer` berdasar customer id (cust). Sumber API /piutang_penjualan
@@ -794,6 +816,12 @@ def main():
         piutang_detail_mapped = [map_record("piutang_customer_detail", r, c_id) for r in piutang_detail_rows]
         totals["piutang_customer_detail"] += len(piutang_detail_mapped)
         upsert_batch(db, TABLES["piutang_customer_detail"], piutang_detail_mapped, c_id)
+        # Hapus record yang TIDAK ADA di API lagi (faktur dibatalkan/dihapus di
+        # aplikasi) agar tabel selalu sejalan dgn sumber. Identifikasi via lpiutang_id.
+        api_ids = [r.get("lpiutang_id") for r in piutang_detail_rows if r.get("lpiutang_id") is not None]
+        _del = _delete_orphan_piutang(db, c_id, api_ids, args.verbose)
+        if _del:
+            print(f"       -> deleted {_del} orphan piutang (tidak ada di API)")
         print(f"       -> {len(piutang_detail_rows)} records")
         backfill_piutang_customer_data(db, c_id, args.verbose)
 

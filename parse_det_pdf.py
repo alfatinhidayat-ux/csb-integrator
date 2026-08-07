@@ -1,103 +1,110 @@
 """Parse laporan hutang detail (det_*.pdf.txt) menjadi baris per faktur.
 
-Output: /tmp/opencode/det_parsed.py (dict cabang -> list of faktur dict)
+Cara kerja: setiap baris faktur diakhiri tepat 3 angka berurutan
+(HUTANG AWAL / TERBAYAR / SISA). Run 3+ angka berurutan yang TIDAK
+didahului "SUB TOTAL"/"GRAND TOTAL" = baris faktur. NO BUKTI PEMBELIAN
+diambil dari prefix /PB|PL/ terakhir sebelum run (karena dalam satu
+baris prefix pembelian selalu mendahului prefix hutang /LH/).
+
+Output: det_txt/det_parsed.py (dict cabang -> list of faktur dict)
 """
 import re
 import os
+import glob
 
-CABANG_NAMES = {"Kobisonta", "Bula", "Mandiri", "Kairatu", "Piru"}
+BASE = os.path.dirname(os.path.abspath(__file__))
+TXT_DIR = os.path.join(BASE, "det_txt")
+OUT = os.path.join(TXT_DIR, "det_parsed.py")
+
 CABANG_ID = {"kobisonta": 1, "bula": 2, "mandiri": 4, "kairatu": 5, "piru": 7}
-OUT = "/tmp/opencode/det_parsed.py"
+
+PEMB_PREFIX = re.compile(r"^[A-Z]{2,4}/(PB|PL)/\d{4,6}-?$")
+LH_PREFIX = re.compile(r"^[A-Z]{2,4}/LH/\d{4,6}-?$")
+NUM = re.compile(r"-?[\d.,]+")
 
 
 def is_num(s):
-    return re.fullmatch(r"-?[\d.,]+", s) is not None
+    return NUM.fullmatch(s) is not None
 
 
 def to_int(s):
     return int(s.replace(".", "").replace(",", ""))
 
 
-def parse_file(path):
-    lines = [l.strip() for l in open(path, encoding="utf-8") if not l.startswith("---")]
-    records = []
-    pending = []
+def find_amount_runs(lines):
+    """Return list of (start_idx, end_idx) for maximal runs of >=3 numerics,
+    where line before run is not SUB/GRAND TOTAL."""
+    runs = []
     i = 0
     n = len(lines)
     while i < n:
-        t = lines[i]
-        if t == "GRAND TOTAL":
-            break
-        if t == "SUB TOTAL":
-            pending = []
-            c = 0
-            while c < 3 and i + 1 < n:
-                i += 1
-                if is_num(lines[i]):
-                    c += 1
-            i += 1
-            continue
-        if t in CABANG_NAMES:
-            j = i + 1
-            vals = []
-            while j < n and lines[j] not in CABANG_NAMES and lines[j] != "SUB TOTAL" and lines[j] != "GRAND TOTAL":
-                if is_num(lines[j]):
-                    vals.append(to_int(lines[j]))
+        if is_num(lines[i]):
+            j = i
+            while j < n and is_num(lines[j]):
                 j += 1
-            if len(vals) >= 3:
-                ha, tb, si = vals[-3], vals[-2], vals[-1]
-                records.append((pending, ha, tb, si))
-            pending = []
+            if j - i >= 3:
+                prev = lines[i - 1] if i > 0 else ""
+                if prev not in ("SUB TOTAL", "GRAND TOTAL"):
+                    runs.append((i, j))
             i = j
-            continue
-        pending.append(t)
-        i += 1
+        else:
+            i += 1
+    return runs
+
+
+def parse_file(path):
+    lines = [l.strip() for l in open(path, encoding="utf-8") if not l.startswith("---")]
+    runs = find_amount_runs(lines)
+    records = []
+    prev_end = 0
+    for start, end in runs:
+        ha, tb, si = to_int(lines[end - 3]), to_int(lines[end - 2]), to_int(lines[end - 1])
+        window = lines[prev_end:start]
+        nobukti, supplier = extract_row_info(window, lines, start)
+        records.append({"nobukti": nobukti, "supplier": supplier,
+                        "hutang_awal": ha, "terbayar": tb, "sisa": si})
+        prev_end = start
     return records
 
 
-def extract_nobukti(seg):
-    """Ambil nobukti pembelian dari token seg (awal record)."""
-    for idx, tok in enumerate(seg):
-        m = re.fullmatch(r"[A-Z0-9]+/[A-Z]{2,3}/\d{4}-", tok)
-        if m:
-            parts = [tok]
-            k = idx + 1
-            while k < len(seg) and re.fullmatch(r"[\d]+(-[\d]+)?", seg[k]):
-                parts.append(seg[k])
-                k += 1
-            return "".join(parts)
-    return None
-
-
-def extract_supplier(seg):
-    """Nama supplier = token sebelum nobukti pertama."""
-    for idx, tok in enumerate(seg):
-        if re.fullmatch(r"[A-Z0-9]+/[A-Z]{2,3}/\d{4}-", tok):
-            return " ".join(p for p in seg[:idx] if re.fullmatch(r"\d+", p) is None).strip() or None
-    return None
+def extract_row_info(window, lines, run_start):
+    """Dari window (token sebelum run) ambil NO BUKTI PEMBELIAN dan supplier."""
+    pemb_idx = None
+    for idx in range(len(window) - 1, -1, -1):
+        if PEMB_PREFIX.match(window[idx]):
+            pemb_idx = idx
+            break
+    nobukti = None
+    if pemb_idx is not None:
+        parts = [window[pemb_idx]]
+        if pemb_idx + 1 < len(window) and re.fullmatch(r"\d+(-\d+)?", window[pemb_idx + 1]):
+            parts.append(window[pemb_idx + 1])
+        nobukti = "".join(parts)
+    # supplier = token non-numerik sebelum prefix pembelian (lewati header & nomor urut)
+    supplier_tokens = []
+    for tok in window[:pemb_idx] if pemb_idx is not None else window:
+        if re.fullmatch(r"\d+", tok):
+            continue
+        if tok in ("NO", "NAMA", "SUPPLIER", "NO.", "BUKTI", "PEMBELIAN", "HUTANG",
+                   "TANGGAL", "BAYAR", "CABANG", "AWAL", "TERBAYAR", "SISA"):
+            continue
+        supplier_tokens.append(tok)
+    supplier = " ".join(supplier_tokens).strip() or None
+    return nobukti, supplier
 
 
 def main():
     result = {}
     for base, cid in CABANG_ID.items():
-        path = f"/tmp/opencode/det_{base}.pdf.txt"
-        records = parse_file(path)
-        rows = []
-        for seg, ha, tb, si in records:
-            rows.append({
-                "cabang_id": cid,
-                "nobukti": extract_nobukti(seg),
-                "supplier": extract_supplier(seg),
-                "hutang_awal": ha,
-                "terbayar": tb,
-                "sisa": si,
-            })
+        path = os.path.join(TXT_DIR, f"det_{base}.pdf.txt")
+        rows = parse_file(path)
+        for r in rows:
+            r["cabang_id"] = cid
         result[cid] = rows
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("DET = " + repr(result) + "\n")
     print("Parsed:", {cid: len(rows) for cid, rows in result.items()})
 
-    # validasi vs grand total recap PDF
     grand = {
         1: (1476320570, 1254345382, 221975188),
         2: (12023195101, 14311681068, 44399387),
@@ -105,11 +112,20 @@ def main():
         5: (28907619720, 25184719021, 4071096524),
         7: (13339493481, 7559317208, 5853520272),
     }
-    print(f'{"c":>2} {"n":>5} {"sumHA":>15} {"sumTB":>15} {"sumSI":>15}  pdfHA      pdfTB      pdfSI')
+    print(f'{"c":>2} {"uniq":>6} {"sumHA":>15} {"sumTB":>15} {"sumSI":>15}  pdfHA         pdfTB         pdfSI')
     for cid, rows in result.items():
-        s = [sum(r[k] for r in rows) for k in ("hutang_awal", "terbayar", "sisa")]
+        agg = {}
+        for r in rows:
+            k = r["nobukti"]
+            if k not in agg:
+                agg[k] = {"hutang_awal": r["hutang_awal"], "terbayar": 0}
+            agg[k]["terbayar"] += r["terbayar"]
+        for v in agg.values():
+            v["sisa"] = v["hutang_awal"] - v["terbayar"]
+        s = [sum(v[k] for v in agg.values()) for k in ("hutang_awal", "terbayar", "sisa")]
         g = grand[cid]
-        print(f"{cid:>2} {len(rows):>5} {s[0]:>15,} {s[1]:>15,} {s[2]:>15,}  {g[0]:>12,} {g[1]:>12,} {g[2]:>12,}")
+        ok = all(a == b for a, b in zip(s, g))
+        print(f"{cid:>2} {len(agg):>6} {s[0]:>15,} {s[1]:>15,} {s[2]:>15,}  {g[0]:>12,} {g[1]:>12,} {g[2]:>12,}  {'OK' if ok else 'MISMATCH'}")
 
 
 if __name__ == "__main__":
