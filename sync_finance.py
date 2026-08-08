@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import random
+import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -272,6 +273,22 @@ def upsert_batch(db, table, records, cabang_id):
     db.ensure_table(table, first, DATE_COLS_BY_TABLE.get(table, set()))
     db.upsert_records(table, records, cabang_id)
     return len(records)
+
+
+def _count_piutang_tanpa_nama(db, cabang_id) -> int:
+    """Hitung record piutang pelanggan milik cabang yang nama cust-nya masih
+    NULL/kosong. Digunakan setelah sync piutang untuk memicu backfill nama."""
+    try:
+        cur = db.conn.cursor()
+        cur.execute(
+            f"SELECT COUNT(*) AS n FROM {TABLES['piutang_customer_detail']} "
+            f"WHERE cabang_id = %s "
+            f"AND (cust_data_cust_nama IS NULL OR cust_data_cust_nama = '')",
+            (cabang_id,),
+        )
+        return cur.fetchone()["n"]
+    except Exception:
+        return 0
 
 
 def _delete_orphan_piutang(db, cabang_id, api_ids, verbose=False):
@@ -813,6 +830,25 @@ def main():
             print(f"       -> deleted {_del} orphan piutang (tidak ada di API)")
         print(f"       -> {len(piutang_detail_rows)} records")
         backfill_piutang_customer_data(db, c_id, args.verbose)
+
+        # Backfill nama pelanggan dari API Brighter bila masih ada yang tanpa nama
+        # (fallback lokal `customer` tak mencakup pelanggan baru belum tersync).
+        _missing = _count_piutang_tanpa_nama(db, c_id)
+        if _missing:
+            print(f"       -> {_missing} record tanpa nama - jalankan backfill nama...")
+            try:
+                subprocess.run(
+                    [
+                        sys.executable,
+                        "backfill_piutang_cust_nama.py",
+                        "--env", "--cabang-ids", str(c_id),
+                    ],
+                    check=True,
+                )
+            except Exception as e:
+                print(f"       -> backfill nama gagal: {e}")
+        else:
+            print("       -> semua piutang sudah punya nama")
 
         print(f"Done Cabang {c_id}")
 

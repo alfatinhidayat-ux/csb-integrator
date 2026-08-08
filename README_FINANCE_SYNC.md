@@ -227,5 +227,82 @@ brighter_transaksi_pelunasan_piutang (cust)
 ## Perilaku khas
 
 - **`supplier`**: upsert-only, tidak pernah di-truncate. `cabang_id=1` untuk semua, akses cabang diatur lewat `authenticated_user_cabang`.
-- **Tabel pelunasan**: di-upsert per cabang (truncate per cabang tidak dilakukan script ini; jika ingin snapshot bersih gunakan `main.py`/`--finance-only`). Kolom bertipe tanggal disimpan sebagai `DATE` (tanpa komponen waktu).
-- **`id` deterministik**: hash MD5 dari isi record + `cabang_id`, supaya tidak dobel bila dijalankan ulang.
+- **Tabel pelunasan**: di-upsert per cabang (truncate per cabang tidak dilakukan oleh script ini; jika ada snapshot bersih gunakan `main.py`/`--finance-only`). Kolom bertipe tanggal disimpan sebagai `DATE` (tanpa komponen waktu).
+- **`id` deterministik**: nilai dari hash MD5 isi record + `cabang_id`, supaya tidak dobel bila dijalankan ulang.
+
+---
+
+## Catch-up pembelian & pelunasan hutang (`catch_up_pembelian_hutang.py`)
+
+**Kapan dipakai:** selama proses migrasi berjalan, transaksi baru terus masuk di Brighter (sync berjalan tanpa henti). Script ini mengejar "data yang tertinggal" dengan mengulang pipeline khusus **pembelian + pelunasan hutang** sampai tanggal hari ini. Semua langkah **idempotent** — aman diulang kapan saja tanpa menduplikat.
+
+```bash
+python catch_up_pembelian_hutang.py --env                  # semua cabang aktif
+python catch_up_pembelian_hutang.py --env --cabang-ids 1,5
+python catch_up_pembelian_hutang.py --env --skip-detail     # lewati refresh detail pembelian (berat)
+python catch_up_pembelian_hutang.py --env --skip-rekon      # lewati rekon di akhir
+python catch_up_pembelian_hutang.py --env --workers 10      # paralel child pelunasan (default 5)
+```
+
+### 6 langkah (berurutan otomatis)
+
+| # | Langkah | Script yang dijalankan | Tabel target |
+|---|---------|------------------------|--------------|
+| 1 | Upsert master supplier (per server) | internal (reuse `sync_finance.py`) | `supplier` |
+| 2 | Sync header pembelian (upsert) | internal (reuse `sync_finance.py`) | `brighter_persediaan_pembelian` |
+| 3 | Sync pelunasan hutang header + detail + foto (concurrent) | internal (reuse `sync_finance.py`) | `brighter_transaksi_pelunasan_hutang*` |
+| 4 | Refresh staging detail pembelian | `cek_produk_pembelian.py` | `brighter_persediaan_pembelian_detail` |
+| 5 | Migrasi ke app (insert baru + replace detail lama) | `migrate_pembelian_to_app.py --run` | `pembelian`, `pembelian_detail` |
+| 6 | Rekon pembelian vs pelunasan hutang | `rekon_pembelian_hutang.py` | — (read-only) |
+
+### Batas tanggal dinamis
+
+Batas maks tanggal pada langkah 4 & 5 diambil dari **tanggal hari ini**, bukan hardcode:
+
+- `cek_produk_pembelian.py` — `TANGGAL_AKHIR = datetime.now().strftime("%Y-%m-%d")`
+- `migrate_pembelian_to_app.py` — `TANGGAL_MAX = datetime.now().strftime("%Y-%m-%d")`
+
+Batas minimal tetap `2026-01-01` (awal periode migrasi). Karena itu setiap run menangkap dokumen baru yang muncul setelah run terakhir; angka laporan pembelian akan bertambah seiring data baru di Brighter (bukan duplikat — kunci `kode` di tabel app, dan perbandingan staging vs app menunjukkan 0 dokumen ganda).
+
+---
+
+## Piutang pelanggan (hutang customer) — narik ulang & backfill nama
+
+Piutang pelanggan **tidak** termasuk `catch_up_pembelian_hutang.py`. Cara narik ulang adalah menjalankan langsung pipeline piutang `sync_finance.py` yang sekaligus menyegarkan pembelian + pelunasan (hutang & piutang). Semua langkah **idempotent** — aman diulang kapan saja.
+
+```bash
+python sync_finance.py --env                  # semua cabang aktif; tarik ulang piutang juga
+python sync_finance.py --env --cabang-ids 1   # hanya cabang tertentu
+```
+
+Selama step **6/7 Piutang Customer Detail** (`/transaksi/piutang_penjualan`, `stat_dok=Tertutup`, semua periode) per cabang, script otomatis:
+
+1. Upsert seluruh faktur piutang (`brighter_transaksi_piutang_customer_detail`), hapus orphan yang tidak ada lagi di API.
+2. `backfill_piutang_customer_data()` — isi nama dari tabel `customer` lokal (fallback cepat).
+3. **Cek otomatis**: query `_count_piutang_tanpa_nama()` → jika masih ada record tanpa `cust_data_cust_nama`, langsung jalankan
+   `python backfill_piutang_cust_nama.py --env --cabang-ids <cabang>`.
+4. Kalau sudah bersih → log "semua piutang sudah punya nama" (tanpa panggil script).
+
+Backfill nama memakai 3 sumber berurutan:
+
+| # | Sumber | Keterangan |
+|---|--------|------------|
+| 1 | **API Brighter** `/master/customer/:id` | Paling akurat — menangkap pelanggan baru yang belum tersinkron ke tabel lokal |
+| 2 | `master_customer` (csb_db) | Fallback lokal |
+| 3 | `brighter_pos.cust_nama` | Fallback terakhir dari transaksi POS |
+
+Angka piutang harus cocok dengan laporan Rekap Piutang Brighter **mode "semua periode"** (tanggal faktur tidak difilter). Verifikasi:
+
+```sql
+SELECT d.cabang_id, c.nama,
+       COUNT(*)                                   AS total_faktur,
+       CONCAT('Rp ', FORMAT(SUM(d.total), 0, 'id_ID')) AS total_piutang,
+       CONCAT('Rp ', FORMAT(SUM(d.sisa), 0, 'id_ID'))  AS sisa_piutang,
+       SUM(d.cust_data_cust_nama IS NULL OR d.cust_data_cust_nama = '') AS tanpa_nama
+FROM brighter_transaksi_piutang_customer_detail d
+JOIN cabang c ON c.id = d.cabang_id
+GROUP BY d.cabang_id, c.nama
+ORDER BY d.cabang_id;
+```
+
+Referensi lengkap rekon & relasi ke POS: `analisis_piutang_pelanggan.md`.
