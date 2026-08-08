@@ -17,6 +17,7 @@ import csv
 import os
 import sys
 import time
+from datetime import datetime
 
 import httpx
 import pymysql
@@ -28,7 +29,7 @@ from auth import AuthManager
 from db import DatabaseManager
 
 TANGGAL_AWAL = "2026-01-01"
-TANGGAL_AKHIR = "2026-08-31"
+TANGGAL_AKHIR = datetime.now().strftime("%Y-%m-%d")  # dinamis: sampai hari ini
 STATUS_DOK = "Tertutup"
 
 DETAIL_PATH = "/persediaan/pembelian/{pid}/pembelian_detail_produk"

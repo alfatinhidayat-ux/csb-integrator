@@ -28,6 +28,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from datetime import datetime
 
 import pymysql
 
@@ -38,7 +39,7 @@ from db import DatabaseManager
 
 
 TANGGAL_MIN = "2026-01-01"
-TANGGAL_MAX = "2026-08-31"
+TANGGAL_MAX = datetime.now().strftime("%Y-%m-%d")  # dinamis: sampai hari ini
 SKIP_NOBUKTI = {"KRT/PB/2602-0164"}
 
 
