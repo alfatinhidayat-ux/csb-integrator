@@ -1,0 +1,2 @@
+DELETE from pos_invoice_sequences;
+DELETE from pos_invoice_reservations;

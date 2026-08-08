@@ -1,0 +1,63 @@
+-- -- SELECT
+-- --     id,
+-- --     nama AS nama_lama,
+-- --     REGEXP_REPLACE(
+-- --         REGEXP_REPLACE(
+-- --             nama,
+-- --             '[[:space:]]*[(]?[[:space:]]*0[0-9](?:[ .-]?[0-9]){8,12}[[:space:]]*[)]?',
+-- --             ''
+-- --         ),
+-- --         '[[:space:].,-]+$',
+-- --         ''
+-- --     ) AS nama_baru,
+-- --     COALESCE(
+-- --         NULLIF(TRIM(notelp), ''),
+-- --         REGEXP_REPLACE(
+-- --             REGEXP_SUBSTR(nama, '0[0-9](?:[ .-]?[0-9]){8,12}'),
+-- --             '[^0-9]',
+-- --             ''
+-- --         )
+-- --     ) AS notelp_baru
+-- -- FROM customer
+-- -- WHERE nama REGEXP '0[0-9](?:[ .-]?[0-9]){8,12}';
+-- 
+-- 
+-- START TRANSACTION;
+-- 
+-- UPDATE customer
+-- SET
+--     notelp = COALESCE(
+--         NULLIF(TRIM(notelp), ''),
+--         REGEXP_REPLACE(
+--             REGEXP_SUBSTR(nama, '0[0-9](?:[ .-]?[0-9]){8,12}'),
+--             '[^0-9]',
+--             ''
+--         )
+--     ),
+--     nama = REGEXP_REPLACE(
+--         REGEXP_REPLACE(
+--             nama,
+--             '[[:space:]]*[(]?[[:space:]]*0[0-9](?:[ .-]?[0-9]){8,12}[[:space:]]*[)]?',
+--             ''
+--         ),
+--         '[[:space:].,-]+$',
+--         ''
+--     )
+-- WHERE nama REGEXP '0[0-9](?:[ .-]?[0-9]){8,12}';
+
+
+-- START TRANSACTION;
+-- 
+-- UPDATE customer
+-- SET nama = TRIM(
+--     REGEXP_REPLACE(
+--         REGEXP_REPLACE(
+--             nama,
+--             '[[:space:]]*[(]?[[:space:]]*0[0-9][0-9 .-]{7,16}[0-9][[:space:]]*[)]?',
+--             ''
+--         ),
+--         '[[:space:].,-]+$',
+--         ''
+--     )
+-- )
+-- WHERE nama REGEXP '0[0-9][0-9 .-]{7,16}[0-9]';
