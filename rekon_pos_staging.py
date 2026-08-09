@@ -5,11 +5,17 @@ sekali ke tabel cache lokal `pos_ledger_cache`, lalu mencocokkan setiap nomor
 nota di pos_nota_staging dengan beberapa strategi:
 
   1. exact_nobukti        : staging nota == jproduk_nobukti (identik)
-  2. seq_in_nobukti       : bagian YYMM-SEQ staging nota == segmen terakhir
-                            jproduk_nobukti (nomor asli beda prefix)
-  3. seq_in_keterangan    : YYMM-SEQ staging nota muncul di jproduk_keterangan
-                            (biasanya referensi/retur dari record lain)
-  4. nota_in_keterangan   : string lengkap staging nota muncul di keterangan
+  2. nota_in_keterangan   : string staging nota muncul di jproduk_keterangan
+                            (nota staging ternyata adalah REFERENSI yang tertulis
+                             di kolom Keterangan dari record POS asli)
+  3. seq_in_nobukti       : bagian YYMM-SEQ staging nota == segmen terakhir
+                            jproduk_nobukti (fallback; BISA ambigu karena nomor
+                            urut dipakai ulang di banyak cabang/user)
+  4. seq_in_keterangan    : YYMM-SEQ staging nota muncul di keterangan
+
+CATATAN: pencocokan paling andal adalah (1) dan (2) via keywords string LENGKAP
+nota staging ΓÇö record yang keterangannya memuat string itu adalah record aslinya.
+Pencocokan berbasis sequence (3/4) hanya fallback karena rawan ambigu.
 
 Hasil ditulis ke tabel `pos_rekonsiliasi` dan CSV (default: rekon_pos_report.csv),
 agar Anda tahu untuk setiap nota: apakah ada, nomor aslinya, cabang, dan tanggalnya.
@@ -275,41 +281,53 @@ def match_staging(db: DatabaseManager, notas: list[dict], ledger: list[dict], ve
     return results, summary
 
 
+def nota_variants(nota: str) -> list[str]:
+    """Keyword variants to try for a staging nota: full string, then (for
+    3-segment BRANCH/USER/YYMM-SEQ) the branch-stripped USER/YYMM-SEQ form
+    which is the shape commonly written in jproduk_keterangan references."""
+    vs = [nota]
+    parts = nota.split("/")
+    if len(parts) == 3:
+        stripped = "/".join(parts[1:])
+        if stripped and stripped != nota:
+            vs.append(stripped)
+    seen = []
+    for v in vs:
+        if v not in seen:
+            seen.append(v)
+    return seen
+
+
 def match_staging_fast(db: DatabaseManager, notas: list[dict], config: Config,
                        auth: AuthManager, workers: int, verbose: bool):
-    """Match staging notas via API keyword search per sequence (no full download).
+    """Match staging notas via API keyword search on the FULL nota string.
 
-    For each nota, one keyword search on its YYMM-SEQ segment. Records returned
-    are classified by whether the segment appears in their nobukti (real match)
-    or in their keterangan (reference from another transaction).
+    A staging nota like NS/2601-0352 is usually a REFERENCE written inside the
+    jproduk_keterangan of a real POS record (e.g. SB/FR/2601-0732). Searching the
+    full string finds that record directly and uniquely. For 3-segment staging
+    notas that are not real nobukti, also try the branch-stripped form.
     """
-    summary = {"exact_nobukti": 0, "seq_in_nobukti": 0, "seq_in_keterangan": 0,
-               "nota_in_keterangan": 0, "tidak_ada": 0}
+    summary = {"exact_nobukti": 0, "nota_in_keterangan": 0, "tidak_ada": 0}
     results = []
     errors = []
 
     def worker(n: str):
-        seq = extract_seq(n)
-        kw = seq or n
-        data = api_get(client, config, auth, "/transaksi/pos", {
-            "page": "1",
-            "results_per_page": str(config.results_per_page),
-            "jproduk_stat_dok": "Semua",
-            "keywords": kw,
-        }).get("data") or []
         cands = []
-        for rec in data:
-            nb = (rec.get("jproduk_nobukti") or "").strip().upper()
-            ket = rec.get("jproduk_keterangan") or ""
-            if nb == n:
-                cands.append(("exact_nobukti", rec))
-            elif seq and nb.split("/")[-1] == seq:
-                cands.append(("seq_in_nobukti", rec))
-            elif seq and seq in ket:
-                cands.append(("seq_in_keterangan", rec))
-            elif n in ket:
-                cands.append(("nota_in_keterangan", rec))
-        return n, seq, cands
+        for kw in nota_variants(n):
+            data = api_get(client, config, auth, "/transaksi/pos", {
+                "page": "1",
+                "results_per_page": str(config.results_per_page),
+                "jproduk_stat_dok": "Semua",
+                "keywords": kw,
+            }).get("data") or []
+            for rec in data:
+                nb = (rec.get("jproduk_nobukti") or "").strip().upper()
+                ket = rec.get("jproduk_keterangan") or ""
+                if nb == n:
+                    cands.append(("exact_nobukti", rec))
+                elif n in ket or kw in ket:
+                    cands.append(("nota_in_keterangan", rec))
+        return n, cands
 
     client = httpx.Client(base_url=config.base_url, timeout=config.request_timeout,
                           follow_redirects=True)
@@ -322,7 +340,7 @@ def match_staging_fast(db: DatabaseManager, notas: list[dict], config: Config,
                 n = future_to_nota[future]
                 done += 1
                 try:
-                    nota, seq, cands = future.result()
+                    nota, cands = future.result()
                 except Exception as e:
                     errors.append((nota, str(e)))
                     results.append({"nota": nota, "seq": extract_seq(nota),
@@ -342,8 +360,7 @@ def match_staging_fast(db: DatabaseManager, notas: list[dict], config: Config,
                 if not dedup:
                     status = "tidak_ada"
                 else:
-                    order = {"exact_nobukti": 1, "seq_in_nobukti": 2,
-                             "seq_in_keterangan": 3, "nota_in_keterangan": 4}
+                    order = {"exact_nobukti": 1, "nota_in_keterangan": 2}
                     status = min(dedup, key=lambda x: order[x[0]])[0]
                 summary[status] += 1
 
@@ -355,15 +372,16 @@ def match_staging_fast(db: DatabaseManager, notas: list[dict], config: Config,
                         f"tgl={rec.get('jproduk_tanggal')}, keterangan={rec.get('jproduk_keterangan')!r})"
                     )
                 results.append({
-                    "nota": nota, "seq": seq, "status": status,
+                    "nota": nota, "seq": extract_seq(nota), "status": status,
                     "kandidat": "\n".join(kandidat_lines) or None, "catatan": None,
                 })
                 if verbose:
-                    print(f"  {nota:28s} seq={seq or '-':10s} -> {status} ({len(dedup)} kandidat)")
+                    print(f"  {nota:28s} -> {status} ({len(dedup)} kandidat)")
                 if done % 100 == 0 or done == len(notas):
                     print(f"    [progress] {done}/{len(notas)} -> "
-                          f"{summary['exact_nobukti']+summary['seq_in_nobukti']} di nobukti, "
-                          f"{summary['seq_in_keterangan']} di keterangan, {summary['tidak_ada']} tidak ada")
+                          f"exact={summary['exact_nobukti']}, "
+                          f"keterangan={summary['nota_in_keterangan']}, "
+                          f"tidak_ada={summary['tidak_ada']}")
     finally:
         client.close()
 
