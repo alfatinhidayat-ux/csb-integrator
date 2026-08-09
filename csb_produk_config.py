@@ -10,14 +10,13 @@ def find_endpoint(name: str):
 
 
 # Base "Produk" endpoint (shared with the brighter_mirror pipeline in endpoints.py)
-# filters to produk_aktif=Aktif only. For csb_db we want the full catalog
-# (12.539 produk per API, vs 9.697 if filtered to active) so inactive products
-# are represented too - their status is tracked via produk_aktif/is_active,
-# which are already in the update whitelist below. dataclasses.replace() makes
-# a copy so endpoints.py / the brighter_mirror pipeline is untouched.
+# filters to produk_aktif=Aktif only — for csb_db we also sync ACTIVE products
+# only (produk_aktif=Aktif), so inactive products are NOT pulled into csb_db.
+# dataclasses.replace() makes a copy so endpoints.py / the brighter_mirror
+# pipeline is untouched.
 _produk_all = dataclasses.replace(
     find_endpoint("Produk"),
-    params={"produk_brand_data": "true"},
+    params={"produk_aktif": "Aktif", "produk_brand_data": "true"},
 )
 
 

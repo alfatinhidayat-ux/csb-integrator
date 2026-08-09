@@ -306,3 +306,38 @@ ORDER BY d.cabang_id;
 ```
 
 Referensi lengkap rekon & relasi ke POS: `analisis_piutang_pelanggan.md`.
+
+---
+
+## Kas masuk & kas keluar (migrasi mirror → `kas_bank`)
+
+Kas/bank dibedakan 2 zona:
+
+1. **Mirror** (`bright_connector.akuntansi_kasbank_*`) — ditarik dari API oleh `main.py --kasbank-only` (clear + resync header & child).
+2. **App** — migrasi dari mirror ke `kas_bank` / `kas_bank_detail` oleh script `backfill_kasbank_*.py`.
+
+### Satu perintah lengkap
+
+`backfill_kasbank_all.py` merangkai semuanya (bulan di-input user):
+
+```powershell
+# 0. API -> mirror (hanya jika --sync-mirror) : main.py --kasbank-only
+# 1. kas masuk  -> kas_bank (backfill_kasbank_masuk.py)
+# 2. kas keluar -> kas_bank (backfill_kasbank_keluar.py)
+# 3. backfill timestamp created/approved (backfill_kasbank_timestamp.py)
+python backfill_kasbank_all.py --env --bulan 2026-08 --cabang-ids 1,2,3,4,5,6,7 --sync-mirror
+```
+
+- Tanpa `--apply` = dry-run (hanya rencana, tidak commit). Pakai `--apply` untuk eksekusi.
+- `--bulan YYYY-MM` diisi user; `--sampai` opsional potong akhir bulan; `--skip-timestamp` untuk melewati tahap 3.
+- Idempotent: header yang `legacy_kasbank_id`-nya sudah terisi otomatis `SKIP`; `no_bukti` yang bentrok di-rename.
+
+### Tabel & kolom penting
+
+| Tabel app | Sumber | Keterangan |
+|-----------|--------|------------|
+| `kas_bank` | `akuntansi_kasbank_masuk/keluar` | `tipe` masuk/keluar, `jenis_transaksi` kas_masuk/kas_keluar, `legacy_kasbank_id` idempoten |
+| `kas_bank_detail` | child penerimaan/pengeluaran lain, piutang karyawan, item, gaji | jalur `dkas_*` di-flatten |
+
+- Cabang tanpa akun di `akun_cashbank` (mis. cabang **non-aktif** seperti cabang 3 / test 9999) di-skip — tidak ada akun cashbank sehingga datanya tidak dimigrasi.
+- Timestamp: `backfill_kasbank_timestamp.py` isi `created_at`/`updated_at`/`approved_at` + `created_by/approved_by` dari `timestamp_data` (mirror → API). Hanya `kas_bank` yang `legacy_kasbank_id`-nya terisi & `created_at` masih NULL.

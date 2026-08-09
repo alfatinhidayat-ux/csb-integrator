@@ -74,7 +74,7 @@ class Stats:
 
 
 def sync_top_level(resource, config: Config, auth: AuthManager, writer: CsbSafeWriter,
-                    meta_db: DatabaseManager, limit: Optional[int], dry_run: bool) -> Stats:
+                    meta_db: DatabaseManager, limit: Optional[int], dry_run: bool) -> tuple[Stats, list]:
     endpoint = resource["endpoint"]
     is_delta = endpoint.strategy == Strategy.DELTA
     meta_name = f"csb_produk:{resource['key']}"
@@ -93,6 +93,10 @@ def sync_top_level(resource, config: Config, auth: AuthManager, writer: CsbSafeW
     if not dry_run:
         writer.ping()  # fetch above may have taken a while; reconnect if the DB dropped us
 
+    # Primary key values of the records actually fetched in THIS run. Child
+    # resources (foto/satuan konversi) iterate over these, so they only ever
+    # pull data for the products synced here (i.e. ACTIVE products).
+    pks: list = []
     newest_in_batch: Optional[datetime] = None
     processed = 0
     for rec in records:
@@ -106,6 +110,9 @@ def sync_top_level(resource, config: Config, auth: AuthManager, writer: CsbSafeW
                     newest_in_batch = rec_ts
                 if last_synced and rec_ts <= last_synced:
                     continue
+        pk = rec.get(resource["pk"])
+        if pk is not None and pk not in pks:
+            pks.append(pk)
         try:
             outcome = writer.upsert(resource["table"], resource["pk"], rec, resource["update_cols"], dry_run=dry_run)
             stats.add(outcome)
@@ -125,7 +132,30 @@ def sync_top_level(resource, config: Config, auth: AuthManager, writer: CsbSafeW
             elif not last_synced:
                 meta_db.update_sync_meta(meta_name, 1, datetime.now())
 
-    return stats
+    return stats, pks
+
+
+def load_active_produk_ids(writer: CsbSafeWriter) -> list:
+    """Load produk_id of ACTIVE products only from csb_db.produk (fallback parent
+    list for child sync when the parent wasn't synced in this run, e.g. running
+    with --tables produk_foto alone).
+
+    Tries the most reliable status columns in order; the last fallback returns all
+    produk_id so the child sync can still run.
+    """
+    cur = writer.conn.cursor()
+    for sql in (
+        "SELECT produk_id FROM produk WHERE is_active = 1 OR produk_aktif = 'Aktif'",
+        "SELECT produk_id FROM produk WHERE is_active = 1",
+        "SELECT produk_id FROM produk WHERE produk_aktif = 'Aktif'",
+        "SELECT produk_id FROM produk",
+    ):
+        try:
+            cur.execute(sql)
+            return [row["produk_id"] for row in cur.fetchall()]
+        except Exception:
+            continue
+    return []
 
 
 def fetch_child_records(config: Config, auth: AuthManager, endpoint, produk_id) -> list[dict]:
@@ -251,19 +281,21 @@ def main():
         logger.info("=== DRY RUN - no writes will be committed ===")
 
     try:
-        produk_ids = None
+        synced_pks: dict[str, list] = {}
         for resource in resources:
             logger.info("=== Resource: %s ===", resource["key"])
             try:
                 if resource["parent"]:
-                    if produk_ids is None:
-                        cur = writer.conn.cursor()
-                        cur.execute("SELECT produk_id FROM produk")
-                        produk_ids = [row["produk_id"] for row in cur.fetchall()]
-                        logger.info("Loaded %d produk_id from csb_db.produk", len(produk_ids))
-                    stats = sync_child(resource, config, auth, writer, produk_ids, args.limit, args.dry_run)
+                    if resource["parent"] in synced_pks:
+                        parent_ids = synced_pks[resource["parent"]]
+                        logger.info("Using %d produk_id fetched in this run (active only)", len(parent_ids))
+                    else:
+                        parent_ids = load_active_produk_ids(writer)
+                        logger.info("Loaded %d active produk_id from csb_db.produk", len(parent_ids))
+                    stats = sync_child(resource, config, auth, writer, parent_ids, args.limit, args.dry_run)
                 else:
-                    stats = sync_top_level(resource, config, auth, writer, meta_db, args.limit, args.dry_run)
+                    stats, pks = sync_top_level(resource, config, auth, writer, meta_db, args.limit, args.dry_run)
+                    synced_pks[resource["key"]] = pks
                 logger.info("[%s] done: %s", resource["key"], stats)
             except SyncError as e:
                 logger.error("[%s] sync error: %s", resource["key"], e)

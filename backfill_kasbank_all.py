@@ -40,6 +40,8 @@ def main():
                         help="Eksekusi & commit. Tanpa flag ini = dry-run.")
     parser.add_argument("--skip-timestamp", action="store_true",
                         help="Lewati tahap 3 (timestamp); hanya migrasi data")
+    parser.add_argument("--sync-mirror", action="store_true",
+                        help="Sync mirror kasbank dari API dulu (main.py --kasbank-only), lalu migrasi")
     args = parser.parse_args()
 
     def _cmd(script):
@@ -47,6 +49,11 @@ def main():
         if args.env:
             cmd.append("--env")
         return cmd
+
+    # Tahap 0 (opsional): API -> mirror (main.py --kasbank-only).
+    if args.sync_mirror:
+        mirror_cmd = _cmd("main.py") + ["--kasbank-only", "--cabang-ids", args.cabang_ids]
+        _run("0. SYNC MIRROR kasbank (API -> bright_connector)", mirror_cmd)
 
     # Tahap 1 & 2: terima --bulan / --sampai / --cabang-ids / --apply
     common = ["--bulan", args.bulan]
