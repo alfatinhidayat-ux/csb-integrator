@@ -15,6 +15,7 @@ Usage:
 import argparse
 import csv
 import os
+import random
 import sys
 import time
 from datetime import datetime
@@ -35,6 +36,7 @@ STATUS_DOK = "Tertutup"
 DETAIL_PATH = "/persediaan/pembelian/{pid}/pembelian_detail_produk"
 DETAIL_TABLE = "brighter_persediaan_pembelian_detail"
 REPORT_CSV = "laporan_cek_produk_pembelian.csv"
+FAILED_CSV = "laporan_cek_produk_pembelian_failed.csv"
 
 # kolom yang dipertahankan dari respons detail API
 DETAIL_KEEP = [
@@ -48,16 +50,45 @@ DETAIL_KEEP = [
 ]
 
 
-def fetch_paginated(client, path, params, headers, cfg):
+def _request_with_retry(client, path, params, headers, cfg, verbose=False):
+    """GET dengan retry + backoff untuk error sementara (5xx / 429 / network).
+
+    Tanpa retry ini, satu 502 sesaat dari server membuat seluruh dokumen
+    dilewati dan datanya hilang dari staging. Sekarang tiap error sementara
+    dicoba ulang sampai `max_tries` dengan jeda membesar agar server pulih.
+    """
+    max_tries = max(cfg.max_retries + 2, 5)
+    resp = None
+    for attempt in range(max_tries):
+        try:
+            resp = client.get(path, params=params, headers=headers)
+        except (httpx.TransportError, httpx.TimeoutException):
+            resp = None
+        if resp is not None and resp.status_code < 400:
+            return resp.json()
+        if resp is None or resp.status_code in (429,) or resp.status_code >= 500:
+            if attempt + 1 < max_tries:
+                sleep_s = min(2.0 ** attempt * 3, 20.0) + random.uniform(0, 0.5)
+                code = resp.status_code if resp is not None else "network"
+                if verbose:
+                    print(f"      -> retry {attempt + 1}/{max_tries} ({code}) {path} in {sleep_s:.1f}s")
+                time.sleep(sleep_s)
+                continue
+        break
+    if resp is None:
+        raise httpx.TransportError(f"network failure fetching {path}")
+    resp.raise_for_status()
+    return resp.json()
+
+
+def fetch_paginated(client, path, params, headers, cfg, verbose=False):
     page = 1
     rows = []
     while True:
         p = dict(params)
         p["page"] = str(page)
         p["results_per_page"] = str(cfg.results_per_page)
-        r = client.get(path, params=p, headers=headers)
-        r.raise_for_status()
-        d = r.json()
+        d = _request_with_retry(client, path, p, headers, cfg, verbose)
         batch = d.get("data") or []
         rows.extend(batch)
         paging = d.get("paging") or {}
@@ -66,6 +97,87 @@ def fetch_paginated(client, path, params, headers, cfg):
             break
         page += 1
     return rows
+
+
+def fetch_dokumen_det(client, cfg, headers_auth, h, verbose=False):
+    """Fetch semua halaman detail produk untuk satu dokumen pembelian."""
+    pid = int(h["id"])
+    dets = fetch_paginated(
+        client,
+        DETAIL_PATH.format(pid=pid),
+        {"pembelian_det_produk_data": "true", "pembelian_cabang_id": str(h["cabang_id"])},
+        headers_auth,
+        cfg,
+        verbose,
+    )
+    return pid, dets
+
+
+def process_dokumen(h, dets, by_id, mismatch_id, mismatch_name, rows_csv, rows_db, no_write):
+    """Proses baris detail satu dokumen -> rows_csv/rows_db + hitungan qty.
+    Return (qty_detail, missing_produk_data)."""
+    qty = 0.0
+    missing = 0
+    for d in dets:
+        qty += float(d.get("pembelian_det_qty_beli") or 0)
+        prod = d.get("pembelian_det_produk_data") or {}
+        p_id = prod.get("produk_id")
+        p_kode = (prod.get("produk_kode") or "").strip()
+        p_nama = (prod.get("produk_nama") or "").strip()
+        p_sku = (prod.get("produk_sku") or "").strip()
+
+        if not p_id and not p_kode and not p_nama:
+            missing += 1
+
+        row = by_id.get(int(p_id)) if p_id is not None else None
+        status = "OK"
+        detail_note = ""
+        db_kode, db_nama = p_kode, p_nama
+        db_afkir = ""
+        if row is None:
+            status = "MISSING_ID"
+            detail_note = "produk_id tidak ada di csb_db.produk"
+            mismatch_id.setdefault((p_id, p_kode, p_nama), 0)
+            mismatch_id[(p_id, p_kode, p_nama)] += 1
+        else:
+            db_kode = row["produk_kode"] or ""
+            db_nama = row["produk_nama"] or ""
+            db_afkir = "AFKIR" if (row["is_afkir"] or row["produk_jenis_afkir"]) else ""
+            if (db_kode or "").strip() != p_kode or (db_nama or "").strip() != p_nama:
+                status = "DIFF_NAME"
+                detail_note = "kode/nama produk berbeda dengan csb_db"
+                mismatch_name.setdefault(
+                    (p_id, p_kode, p_nama, db_kode, db_nama, db_afkir), []
+                ).append((h["nobukti"], h["cabang_id"]))
+
+        rows_csv.append({
+            "cabang": h["cabang_id"],
+            "nobukti": h["nobukti"],
+            "det_id": d.get("pembelian_det_id"),
+            "produk_id": p_id,
+            "produk_kode_api": p_kode,
+            "produk_nama_api": p_nama,
+            "produk_kode_db": db_kode,
+            "produk_nama_db": db_nama,
+            "afkir": db_afkir,
+            "qty_beli": d.get("pembelian_det_qty_beli"),
+            "qty_diterima": d.get("pembelian_det_qty_diterima"),
+            "subtotal_rp": d.get("pembelian_det_subtotal_rp"),
+            "subtotal_net_rp": d.get("pembelian_det_subtotal_net_rp"),
+            "status": status,
+            "catatan": detail_note,
+        })
+
+        if not no_write:
+            row_db = {k: d.get(k) for k in DETAIL_KEEP}
+            row_db["produk_kode"] = p_kode
+            row_db["produk_nama"] = p_nama
+            row_db["produk_sku"] = p_sku
+            row_db["cabang_id"] = h["cabang_id"]
+            row_db["nobukti"] = h["nobukti"]
+            rows_db.append(row_db)
+
+    return qty, missing
 
 
 def load_headers(conn, cabang_ids: tuple[int, ...]):
@@ -143,6 +255,9 @@ def main():
     parser.add_argument("--no-write", action="store_true", help="Jangan simpan ke DB (hanya laporan)")
     parser.add_argument("--cabang-ids", default="1,5",
                         help="Comma-separated cabang IDs; default 1,5")
+    parser.add_argument("--retry-failed", metavar="CSV", default=None,
+                        help="Proses ulang HANYA dokumen yang gagal pada run sebelumnya "
+                             "(file laporan_cek_produk_pembelian_failed.csv)")
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
@@ -151,7 +266,6 @@ def main():
     cfg = Config.from_env()
     auth = AuthManager(cfg)
     auth.ensure_token()
-    headers_auth = auth.get_headers()
 
     db = DatabaseManager(cfg, target_db="csb")
     db.connect()
@@ -159,15 +273,25 @@ def main():
 
     headers = load_headers(conn, cabang_ids)
     by_id, by_kode, by_nama = load_produk(conn)
-    if not args.no_write:
+    if not args.no_write or args.retry_failed:
         ensure_detail_table(conn)
     print(f"Dokumen staging (cab {','.join(str(c) for c in cabang_ids)}, {STATUS_DOK}, {TANGGAL_AWAL}..{TANGGAL_AKHIR}): {len(headers)}")
     print(f"Produk di csb_db.produk: {len(by_id)}")
 
     client = httpx.Client(base_url=cfg.base_url, timeout=cfg.request_timeout)
 
+    if args.retry_failed:
+        retry_set = set()
+        with open(args.retry_failed, newline="", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                try:
+                    retry_set.add((int(row["cabang_id"]), int(row["id"])))
+                except (KeyError, ValueError):
+                    continue
+        headers = [h for h in headers if (int(h["cabang_id"]), int(h["id"])) in retry_set]
+        print(f"Mode retry-failed: {len(headers)} dokumen gagal akan diproses ulang")
+
     processed = 0
-    errors = []
     qty_detail = 0.0
     qty_header = 0.0
     rows_csv = []
@@ -175,99 +299,71 @@ def main():
     mismatch_id = {}
     mismatch_name = {}
     missing_produk_data = 0
+    still_failed = []
+    retried_ok = 0
+
+    def fetch_and_process(h, delay):
+        """Fetch detail satu dokumen + proses barisnya. Return (ok, error_msg)."""
+        nonlocal qty_detail, qty_header, missing_produk_data
+        time.sleep(delay)
+        auth.ensure_token()
+        headers_auth = auth.get_headers()
+        try:
+            _, dets = fetch_dokumen_det(client, cfg, headers_auth, h, args.verbose)
+        except Exception as e:
+            print(f"  ERROR {h['cabang_id']}:{h['id']} {h['nobukti']} -> {e}")
+            return False, str(e)
+        qty_header += float(h["total_qty_produk"] or 0)
+        q, m = process_dokumen(
+            h, dets, by_id, mismatch_id, mismatch_name,
+            rows_csv, rows_db, args.no_write and not args.retry_failed,
+        )
+        qty_detail += q
+        missing_produk_data += m
+        return True, None
 
     for h in headers:
-        pid = int(h["id"])
         if args.limit and processed >= args.limit:
             break
         processed += 1
-        time.sleep(cfg.request_delay)
-        auth.ensure_token()
-        try:
-            dets = fetch_paginated(
-                client,
-                DETAIL_PATH.format(pid=pid),
-                {"pembelian_det_produk_data": "true", "pembelian_cabang_id": str(h["cabang_id"])},
-                headers_auth,
-                cfg,
-            )
-        except Exception as e:
-            errors.append((pid, h["nobukti"], str(e)))
-            print(f"  ERROR {h['cabang_id']}:{pid} {h['nobukti']} -> {e}")
-            continue
+        ok, err = fetch_and_process(h, cfg.request_delay)
+        if not ok:
+            still_failed.append((h, err))
+        elif args.verbose and processed % 100 == 0:
+            print(f"  [{processed}] cab {h['cabang_id']} {h['nobukti']} -> diproses")
 
-        qty_header += float(h["total_qty_produk"] or 0)
-
-        for d in dets:
-            qty_detail += float(d.get("pembelian_det_qty_beli") or 0)
-            prod = d.get("pembelian_det_produk_data") or {}
-            p_id = prod.get("produk_id")
-            p_kode = (prod.get("produk_kode") or "").strip()
-            p_nama = (prod.get("produk_nama") or "").strip()
-            p_sku = (prod.get("produk_sku") or "").strip()
-
-            if not p_id and not p_kode and not p_nama:
-                missing_produk_data += 1
-
-            # cek match
-            status = "OK"
-            detail_note = ""
-            db_kode, db_nama = p_kode, p_nama
-            db_afkir = ""
-            row = by_id.get(int(p_id)) if p_id is not None else None
-            if row is None:
-                status = "MISSING_ID"
-                detail_note = "produk_id tidak ada di csb_db.produk"
-                mismatch_id.setdefault((p_id, p_kode, p_nama), 0)
-                mismatch_id[(p_id, p_kode, p_nama)] += 1
+    # Pass 2: coba ulang dokumen yang gagal sekali lagi setelah jeda, server
+    # biasanya sudah pulih dari 502 sehingga data bisa dilengkapi di run yang sama.
+    if still_failed:
+        print(f"\n--- Retry {len(still_failed)} dokumen gagal (pass 2, jeda + backoff) ---")
+        time.sleep(5)
+        remaining = []
+        for h, _ in still_failed:
+            ok, err = fetch_and_process(h, cfg.request_delay * 5)
+            if ok:
+                retried_ok += 1
+                print(f"  OK retry cab {h['cabang_id']}:{h['id']} {h['nobukti']} -> pulih")
             else:
-                db_kode = row["produk_kode"] or ""
-                db_nama = row["produk_nama"] or ""
-                db_afkir = "AFKIR" if (row["is_afkir"] or row["produk_jenis_afkir"]) else ""
-                if (db_kode or "").strip() != p_kode or (db_nama or "").strip() != p_nama:
-                    status = "DIFF_NAME"
-                    detail_note = "kode/nama produk berbeda dengan csb_db"
-                    mismatch_name.setdefault(
-                        (p_id, p_kode, p_nama, db_kode, db_nama, db_afkir), []
-                    ).append((h["nobukti"], h["cabang_id"]))
-
-            rows_csv.append({
-                "cabang": h["cabang_id"],
-                "nobukti": h["nobukti"],
-                "det_id": d.get("pembelian_det_id"),
-                "produk_id": p_id,
-                "produk_kode_api": p_kode,
-                "produk_nama_api": p_nama,
-                "produk_kode_db": db_kode,
-                "produk_nama_db": db_nama,
-                "afkir": db_afkir,
-                "qty_beli": d.get("pembelian_det_qty_beli"),
-                "qty_diterima": d.get("pembelian_det_qty_diterima"),
-                "subtotal_rp": d.get("pembelian_det_subtotal_rp"),
-                "subtotal_net_rp": d.get("pembelian_det_subtotal_net_rp"),
-                "status": status,
-                "catatan": detail_note,
-            })
-
-            if not args.no_write:
-                row_db = {k: d.get(k) for k in DETAIL_KEEP}
-                row_db["produk_kode"] = p_kode
-                row_db["produk_nama"] = p_nama
-                row_db["produk_sku"] = p_sku
-                row_db["cabang_id"] = h["cabang_id"]
-                row_db["nobukti"] = h["nobukti"]
-                rows_db.append(row_db)
-
-        if args.verbose and processed % 100 == 0:
-            print(f"  [{processed}] cab {h['cabang_id']} {h['nobukti']} -> {len(dets)} baris")
+                remaining.append((h, err))
+        still_failed = remaining
 
     client.close()
 
-    # tulis ke DB (replace per cabang) bila diminta
+    # tulis ke DB bila diminta. Normal: replace per cabang (delete semua lalu insert).
+    # Mode retry-failed: delete HANYA nobukti yang diproses ulang, lalu insert —
+    # supaya baris hasil run sebelumnya (yang sudah sukses) tidak ikut terhapus.
     if rows_db:
         with conn.cursor() as cur:
-            ph = ",".join(["%s"] * len(cabang_ids))
-            cur.execute(f"DELETE FROM {DETAIL_TABLE} WHERE cabang_id IN ({ph})", cabang_ids)
+            if args.retry_failed:
+                pairs = [(h["cabang_id"], h["nobukti"]) for h in headers]
+                conditions = ",".join(["(%s, %s)"] * len(pairs))
+                cur.execute(
+                    f"DELETE FROM {DETAIL_TABLE} WHERE (cabang_id, nobukti) IN ({conditions})",
+                    [v for p in pairs for v in p],
+                )
+            else:
+                ph = ",".join(["%s"] * len(cabang_ids))
+                cur.execute(f"DELETE FROM {DETAIL_TABLE} WHERE cabang_id IN ({ph})", cabang_ids)
         cols = list(rows_db[0].keys())
         placeholders = ",".join(["%s"] * len(cols))
         colnames = ",".join(f"`{c}`" for c in cols)
@@ -278,17 +374,29 @@ def main():
         conn.commit()
         print(f"[DB] {DETAIL_TABLE}: {len(rows_db)} baris detail tersimpan")
 
-    # laporan CSV
-    with open(REPORT_CSV, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows_csv[0].keys()) if rows_csv else [])
-        if rows_csv:
-            writer.writeheader()
-            writer.writerows(rows_csv)
-    print(f"[CSV] laporan ditulis: {REPORT_CSV} ({len(rows_csv)} baris)")
+    # laporan CSV (mode retry-failed tidak menimpa laporan lengkap sebelumnya)
+    if not args.retry_failed:
+        with open(REPORT_CSV, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=list(rows_csv[0].keys()) if rows_csv else [])
+            if rows_csv:
+                writer.writeheader()
+                writer.writerows(rows_csv)
+        print(f"[CSV] laporan ditulis: {REPORT_CSV} ({len(rows_csv)} baris)")
+
+    # dokumen yang masih gagal disimpan untuk run berikutnya via --retry-failed
+    if still_failed:
+        with open(FAILED_CSV, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["cabang_id", "id", "nobukti", "error"])
+            for h, err in still_failed:
+                writer.writerow([h["cabang_id"], h["id"], h["nobukti"], err])
+        print(f"[CSV] dokumen gagal ditulis: {FAILED_CSV} ({len(still_failed)})")
+    elif os.path.exists(FAILED_CSV):
+        os.remove(FAILED_CSV)
 
     # ringkasan
     print("\n" + "=" * 60)
-    print(f"Dokumen diproses : {processed}")
+    print(f"Dokumen diproses : {processed} (+ {retried_ok} pulih di pass 2)")
     print(f"Baris detail     : {len(rows_csv)}")
     print(f"Qty detail       : {qty_detail:,.4f}")
     print(f"Qty header       : {qty_header:,.4f}")
@@ -302,10 +410,10 @@ def main():
     for (p_id, k, n, dk, dn, af), docs in sorted(mismatch_name.items(), key=lambda x: x[0]):
         contoh = ", ".join(f"{nb}({cab})" for nb, cab in docs[:3])
         print(f"   id={p_id} api:'{k}'/'{n}' db:'{dk}'/'{dn}' {af} -> {len(docs)} baris [{contoh}]")
-    if errors:
-        print(f"ERROR fetch: {len(errors)}")
-        for pid, nb, e in errors[:10]:
-            print(f"   {nb} ({pid}) -> {e}")
+    if still_failed:
+        print(f"ERROR fetch: {len(still_failed)} (tertulis di {FAILED_CSV})")
+        for h, err in still_failed[:10]:
+            print(f"   {h['nobukti']} ({h['id']}) -> {err}")
 
     db.conn.close()
 

@@ -224,7 +224,7 @@ def fetch_all_pages(config, auth, path, path_kwargs, query_params=None, cabang_i
             if resp is not None and resp.status_code < 500:
                 break
             if attempt + 1 < max_tries:
-                sleep_s = min(2.0 ** attempt, 8.0) + random.uniform(0, 0.5)
+                sleep_s = min(2.0 ** attempt * 3, 20.0) + random.uniform(0, 0.5)
                 if verbose:
                     print(f"      -> retry {attempt + 1}/{max_tries} "
                           f"({resp.status_code if resp else 'net'}) in {sleep_s:.1f}s")

@@ -243,6 +243,13 @@ def main():
     if not args.skip_detail:
         run_step("4/6 Fetching staging detail pembelian (cek_produk_pembelian)",
                  "cek_produk_pembelian.py", detail_flags)
+        # 4b: kalau masih ada dokumen yang gagal (502 dll), coba ulang HANYA yang
+        # gagal — supaya staging lengkap sebelum migrasi ke app.
+        failed_csv = "laporan_cek_produk_pembelian_failed.csv"
+        if os.path.exists(failed_csv):
+            print(f"\n[4b] {failed_csv} ada — retry {len(open(failed_csv).readlines()) - 1} dokumen gagal...")
+            run_step("4b Retry dokumen gagal (cek_produk_pembelian --retry-failed)",
+                     "cek_produk_pembelian.py", detail_flags + ["--retry-failed", failed_csv])
 
     # Step 5: migrasi ke app (idempotent).
     run_step("5/6 Migrasi pembelian -> app (pembelian/pembelian_detail)",
