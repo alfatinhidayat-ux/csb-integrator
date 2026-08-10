@@ -149,8 +149,10 @@ def load_riwayat_self(conn: pymysql.Connection, produk_ids: set, sampai: date) -
 
 def load_riwayat_hpp(conn: pymysql.Connection, produk_ids: set, sampai: date) -> dict:
     """HPP terakhir yang pernah tercatat sistem (hpp_nilai_satuan > 0) dari
-    lap_kartu_stok_rekap, per (produk, cabang), untuk periode s/d tanggal tertentu.
-    Dipakai sebagai fallback saat API rekap sudah tidak memberi HPP."""
+    lap_kartu_stok_rekap, per (produk, cabang), TANPA batas tanggal (diambil yang
+    terbaru). Dipakai sebagai fallback saat API rekap sudah tidak memberi HPP;
+    tanpa batas tanggal sekaligus jadi forward-fill untuk produk yang baru punya
+    HPP tercatat setelah periode jual."""
     if not produk_ids:
         return {}
     result: dict = {}
@@ -165,15 +167,46 @@ def load_riwayat_hpp(conn: pymysql.Connection, produk_ids: set, sampai: date) ->
             FROM lap_kartu_stok_rekap
             WHERE produk_id IN ({fmt})
               AND hpp_nilai_satuan > 0
-              AND tanggal_akhir <= %s
             ORDER BY tanggal_akhir DESC
             """,
-            (*chunk, sampai),
+            (*chunk,),
         )
         for r in cur.fetchall():
             key = (r["produk_id"], r["cabang_id"])
             if key not in result:
                 result[key] = r["hpp_nilai_satuan"]
+    return result
+
+
+def load_riwayat_pembelian(conn: pymysql.Connection, produk_ids: set) -> dict:
+    """HPP rata-rata dari seluruh pembelian yang pernah selesai (tanpa batas
+    tanggal), per (produk, cabang). Forward-fill untuk produk yang pembeliannya
+    tercatat setelah periode jual."""
+    if not produk_ids:
+        return {}
+    result: dict = {}
+    ids = sorted(produk_ids)
+    cur = conn.cursor()
+    for i in range(0, len(ids), 500):
+        chunk = ids[i:i + 500]
+        fmt = ", ".join(["%s"] * len(chunk))
+        cur.execute(
+            f"""
+            SELECT d.produk_id, p.cabang_id,
+                   SUM(d.qty_dasar_diterima) AS qty_beli,
+                   SUM(d.qty_diterima * COALESCE(d.harga_setelah_diskon, d.harga_satuan, 0)) AS total_biaya_beli
+            FROM pembelian_detail d
+            JOIN pembelian p ON p.id = d.pembelian_id
+            WHERE p.status = 'selesai'
+              AND d.qty_dasar_diterima > 0
+              AND d.produk_id IN ({fmt})
+            GROUP BY d.produk_id, p.cabang_id
+            """,
+            (*chunk,),
+        )
+        for r in cur.fetchall():
+            if r["qty_beli"]:
+                result[(r["produk_id"], r["cabang_id"])] = float(r["total_biaya_beli"]) / float(r["qty_beli"])
     return result
 
 
@@ -201,12 +234,12 @@ def build_rows(records: list[dict], purchase_totals: dict, tanggal_awal: date,
             qty_beli = pt["qty_beli"] if pt else None
             total_biaya_beli = pt["total_biaya_beli"] if pt else None
 
-            if qty_beli:
-                hpp_ma = round(float(total_biaya_beli) / float(qty_beli), 4)
-                sumber = "pembelian"
-            elif rec.get("hpp_nilai_satuan"):
+            if rec.get("hpp_nilai_satuan"):
                 hpp_ma = rec.get("hpp_nilai_satuan")
                 sumber = "hpp_sistem"
+            elif qty_beli:
+                hpp_ma = round(float(total_biaya_beli) / float(qty_beli), 4)
+                sumber = "pembelian"
             elif rec.get("produk_harga_beli_terakhir"):
                 hpp_ma = rec.get("produk_harga_beli_terakhir")
                 sumber = "harga_beli_terakhir"
@@ -322,7 +355,7 @@ def main():
         missing = [
             (i, r["produk_id"], r["cabang_id"])
             for i, r in enumerate(rows)
-            if r["hpp_moving_average"] is None and (r["stok_akhir"] or 0) > 0
+            if r["hpp_moving_average"] is None
         ]
         if conn and missing:
             pids = {pid for _, pid, _ in missing}
@@ -345,6 +378,16 @@ def main():
                         rows[i]["sumber_hpp"] = "riwayat_rekap"
             filled_rekap = sum(1 for i, _, _ in missing if rows[i]["sumber_hpp"] == "riwayat_rekap")
 
+            sisa2 = [m for m in missing if rows[m[0]]["sumber_hpp"] not in ("riwayat", "riwayat_rekap")]
+            if sisa2:
+                riwayat_beli = load_riwayat_pembelian(conn, {pid for _, pid, _ in sisa2})
+                for i, pid, cid in sisa2:
+                    val = riwayat_beli.get((pid, cid))
+                    if val:
+                        rows[i]["hpp_moving_average"] = round(float(val), 4)
+                        rows[i]["sumber_hpp"] = "riwayat_pembelian"
+            filled_beli = sum(1 for i, _, _ in missing if rows[i]["sumber_hpp"] == "riwayat_pembelian")
+
             for i, _, _ in missing:
                 stok = rows[i]["stok_akhir"]
                 hpp = rows[i]["hpp_moving_average"]
@@ -353,8 +396,9 @@ def main():
                         rows[i]["nilai_persediaan"] = round(float(stok) * float(hpp), 2)
                     except (TypeError, ValueError):
                         pass
-            logger.info("Backfill HPP: %d baris dari riwayat %s sendiri, %d dari lap_kartu_stok_rekap, total %d",
-                        filled_self, TABLE, filled_rekap, filled_self + filled_rekap)
+            logger.info("Backfill HPP: %d dari riwayat %s, %d dari lap_kartu_stok_rekap, %d dari pembelian, total %d",
+                        filled_self, TABLE, filled_rekap, filled_beli,
+                        filled_self + filled_rekap + filled_beli)
 
         logger.info("Built %d rows (produk x cabang)", len(rows))
 
