@@ -23,6 +23,16 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--continue-on-error", action="store_true",
                         help="lanjut ke bulan berikutnya walau ada bulan yang gagal")
+    parser.add_argument("--skip-hpp-bulan", action="store_true",
+                        help="jangan jalankan sync_produk_hpp_bulan.py di akhir")
+    parser.add_argument("--hpp-tahun", type=int, default=2026)
+    parser.add_argument("--hpp-token", type=str, default=None,
+                        help="Bearer token hpp_bulan (default: token di sync_produk_hpp_bulan.py)")
+    parser.add_argument("--hpp-periode-awal", type=str, default="2026-01-01")
+    parser.add_argument("--hpp-periode-akhir", type=str, default="2026-08-31")
+    parser.add_argument("--hpp-results-per-page", type=int, default=1000)
+    parser.add_argument("--hpp-semua", action="store_true",
+                        help="isi SEMUA baris HPP kosong (tanpa filter produk terjual)")
     args = parser.parse_args()
 
     mulai_y, mulai_m = (int(x) for x in args.mulai.split("-"))
@@ -63,6 +73,26 @@ def main():
               + ", ".join(f"{y}-{m:02d}" for y, m, _ in failed))
         sys.exit(1)
     print(f"\nSelesai: {len(months)} periode diproses tanpa error.")
+
+    if not args.skip_hpp_bulan:
+        print("\n=== Isi HPP kosong dari API hpp_bulan (sekali jalan, semua bulan) ===", flush=True)
+        cmd = [sys.executable, "sync_produk_hpp_bulan.py", "--env",
+               "--tahun", str(args.hpp_tahun),
+               "--periode-awal", args.hpp_periode_awal,
+               "--periode-akhir", args.hpp_periode_akhir,
+               "--results-per-page", str(args.hpp_results_per_page)]
+        if args.hpp_token:
+            cmd += ["--token", args.hpp_token]
+        if args.hpp_semua:
+            cmd.append("--semua")
+        if args.dry_run:
+            cmd.append("--dry-run")
+        print("CMD:", " ".join(cmd), flush=True)
+        ret = subprocess.run(cmd).returncode
+        if ret != 0:
+            print(f"Gagal isi HPP dari hpp_bulan (exit {ret}).", flush=True)
+            sys.exit(1)
+        print("HPP hpp_bulan selesai.")
 
 
 if __name__ == "__main__":
