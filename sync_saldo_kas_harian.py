@@ -35,6 +35,12 @@ TABLE_REKAP = "brighter_penerimaan_rekap"
 PATH_REKAP = "/transaksi/kas_harian/penerimaan/rekap"
 REKAP_METHODS = ["tunai", "transfer", "card", "qris", "wallet", "piutang"]
 
+# Tabel penyesuaian rekap: DELTA yang ditambahkan di atas nilai API setiap
+# kali sync rekap selesai, agar angka rekap == dashboard Brighter meskipun
+# ada selisih yang tidak tersedia di API. Dikelola lewat file SQL
+# `fin_dash_adjustment_table.sql` (cabang_id + tanggal, kolom metode, aktif).
+TABLE_ADJUSTMENT = "brighter_penerimaan_rekap_adjustment"
+
 # Kolom database (selain cabang_id + synced_at).
 FIELDS = ["tanggal", "kas_awal", "kas_keluar", "kas_masuk", "kas_akhir", "selisih", "saldo"]
 
@@ -68,6 +74,27 @@ CREATE TABLE IF NOT EXISTS `{TABLE_REKAP}` (
     `total` DOUBLE NULL,
     `synced_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`cabang_id`, `tanggal`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+"""
+
+DDL_ADJUSTMENT = f"""
+CREATE TABLE IF NOT EXISTS `{TABLE_ADJUSTMENT}` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `cabang_id` INT NOT NULL,
+    `tanggal` DATE NOT NULL,
+    `tunai` DOUBLE NOT NULL DEFAULT 0,
+    `transfer` DOUBLE NOT NULL DEFAULT 0,
+    `card` DOUBLE NOT NULL DEFAULT 0,
+    `qris` DOUBLE NOT NULL DEFAULT 0,
+    `wallet` DOUBLE NOT NULL DEFAULT 0,
+    `piutang` DOUBLE NOT NULL DEFAULT 0,
+    `total` DOUBLE NOT NULL DEFAULT 0,
+    `keterangan` VARCHAR(255) NULL,
+    `aktif` TINYINT(1) NOT NULL DEFAULT 1,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_adj_cabang_tanggal` (`cabang_id`, `tanggal`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 """
 
@@ -202,6 +229,31 @@ def upsert_rekap_rows(db, rows):
     return n
 
 
+def apply_rekap_adjustments(db):
+    """Apply all ACTIVE deltas from the adjustment table on top of the rekap
+    rows that just got upserted (values reset to API first, so this never
+    double-applies on repeated sync runs)."""
+    cur = db.conn.cursor()
+    cur.execute(DDL_ADJUSTMENT)
+    sql = (
+        f"UPDATE `{TABLE_REKAP}` r "
+        f"JOIN `{TABLE_ADJUSTMENT}` a "
+        f"  ON r.cabang_id = a.cabang_id AND r.tanggal = a.tanggal "
+        "SET r.tunai    = r.tunai + a.tunai, "
+        "    r.transfer = r.transfer + a.transfer, "
+        "    r.card     = r.card + a.card, "
+        "    r.qris     = r.qris + a.qris, "
+        "    r.wallet   = r.wallet + a.wallet, "
+        "    r.piutang  = r.piutang + a.piutang, "
+        "    r.total    = r.total + a.total, "
+        "    r.synced_at = CURRENT_TIMESTAMP "
+        "WHERE a.aktif = 1"
+    )
+    cur.execute(sql)
+    db.conn.commit()
+    return cur.rowcount
+
+
 def upsert_rows(db, cabang_id, rows):
     if not rows:
         return 0
@@ -261,6 +313,7 @@ def main():
     cur = db.conn.cursor()
     cur.execute(DDL)
     cur.execute(DDL_REKAP)
+    cur.execute(DDL_ADJUSTMENT)
     db.conn.commit()
 
     cabang_urls = load_cabang_urls(db)
@@ -337,6 +390,10 @@ def main():
         n_rekap = upsert_rekap_rows(db, rekap_rows)
         if rekap_rows:
             print(f"       -> {len(rekap_rows)} hari rekap di-fetch, {n_rekap} di-upsert ke `{TABLE_REKAP}`")
+        n_adj = apply_rekap_adjustments(db)
+        if n_adj:
+            print(f"       -> {n_adj} baris rekap disesuaikan dari `{TABLE_ADJUSTMENT}` "
+                  f"(delta aktif diterapkan ulang)")
         total_rekap += n_rekap
 
     db.close()
