@@ -1,0 +1,40 @@
+Bagus, ketemu endpoint path yang jelas. Saya ekstrak semua path lengkap untuk modul laporan/dashboard.Endpoint path-nya tidak pakai prefix `/api/` atau versi eksplisit (langsung menempel ke base URL `brighter-api.koffiesoft.com`). Berikut rangkuman lengkap untuk **API terkait Laporan Dashboard**:
+
+## API Laporan Dashboard
+
+BRIGHTER_BASE_URL=https://brighter-kairatu-api.koffiesoft.com
+BRIGHTER_USERNAME=rion
+BRIGHTER_PASSWORD=lovel0rd1
+BRIGHTER_CLIENT_ID=string
+BRIGHTER_CLIENT_SECRET=string
+
+
+### Endpoint utama (kemungkinan besar `GET`, karena semua nama service diawali `Fetch...`)
+
+| Endpoint | Fungsi (dari nama controller/service) |
+|---|---|
+| `laporan/dashboard/rekap_dashboard` | Rekap data dashboard utama |
+| `laporan/dashboard/penerimaan_per_user` | Data penerimaan uang per user |
+| `laporan/dashboard/detail_penjualan` | Detail penjualan |
+| `laporan/dashboard/detail_piutang` | Detail piutang |
+| `laporan/dashboard/detail_hutang` | Detail hutang |
+| `laporan/dashboard/detail_kasbank` | Detail kas & bank |
+| `laporan/dashboard/detail_deposit_pelanggan` | Detail deposit pelanggan |
+| `laporan/dashboard/detail_retur_penjualan` | Detail retur penjualan |
+| `laporan/dashboard/detail_retur_pembelian` | Detail retur pembelian |
+
+### Terkait erat, kemungkinan dipakai juga di layar dashboard (modul `saldo_kas`)
+Ini bukan di bawah path `laporan/dashboard/` tapi controller-nya dipanggil oleh `FetchSaldoKasHariIniController`/`Service` — kemungkinan endpoint-nya ada di modul `saldo_kas` terpisah (nama path pastinya tidak muncul sebagai string statis, mungkin dibentuk dinamis dari base + nama resource). Kandidat nama endpoint berdasarkan nama file:
+- `fetch_kas_harian_rekap`
+- `fetch_kas_penjualan_terakhir`
+- `fetch_kas_sistem_terakhir`
+- `fetch_saldo_kas_by_tanggal`
+
+Ini perlu dikonfirmasi lewat intercept traffic karena nama path-nya tidak eksplisit tertulis sebagai string (kemungkinan dibangun dari konstanta lain).
+
+**Catatan penting:**
+- Semua endpoint di atas **tidak** pakai prefix `/api/` — path-nya langsung digabung ke base URL.
+- Tidak ditemukan versi API (`v1`, `v2`) di path.
+- Sangat kemungkinan pakai auth Bearer token (umum di Flutter+Dio), tapi header/format auth-nya tidak terlihat sebagai string statis — perlu dikonfirmasi lewat intercept.
+
+Mau saya bantu siapkan **script mitmproxy** supaya kamu tinggal jalankan dan langsung capture request asli (headers, query params, body) untuk endpoint-endpoint dashboard ini biar konfirmasi 100%?

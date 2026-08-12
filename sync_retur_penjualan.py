@@ -182,7 +182,6 @@ def fetch_retur_headers(config: Config, auth: AuthManager, cabang_id: int, tangg
     page = 1
     results = []
     seen_ids = set()
-    skipped_no_name = 0
 
     while True:
         params = {
@@ -215,12 +214,6 @@ def fetch_retur_headers(config: Config, auth: AuthManager, cabang_id: int, tangg
                     continue
                 if tanggal_akhir and rec_date_str > tanggal_akhir:
                     continue
-            # Skip retur to customers who are not "Aktif" (inactive/deleted) —
-            # not shown in the app report and inflate the totals (e.g. no-name
-            # CSB/RJ/2601-0004..0007, inactive customer 6204 / SB/RJ/2602-0003).
-            if (rec.get("rjproduk_cust_data") or {}).get("cust_aktif") != "Aktif":
-                skipped_no_name += 1
-                continue
             # Dedupe by id: offset pagination can repeat records when new
             # transactions are inserted mid-scan.
             rid = rec.get("rjproduk_id")
@@ -244,8 +237,6 @@ def fetch_retur_headers(config: Config, auth: AuthManager, cabang_id: int, tangg
         page += 1
 
     client.close()
-    if skipped_no_name:
-        print(f" -> Skipped {skipped_no_name} retur with inactive/unknown customer (matches app report).")
     return results
 
 
