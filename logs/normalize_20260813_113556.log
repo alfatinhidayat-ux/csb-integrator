@@ -1,0 +1,88 @@
+================================================================================
+NORMALIZE CLARIFY MIGRATION
+Mode   : APPLY
+Cabang : 1,2,4,5,7
+Range  : 2026-05-01..2026-05-31
+Log    : /home/csb-integrator/logs/normalize_20260813_113556.log
+================================================================================
+
+[11:35:56] [1/6 Normalize POS payment/rekening/EDC]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:normalize-transactions
+Menormalisasi 15 transaksi migrasi...
+  0/15 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  2/15 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  13%
+ 15/15 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Dinormalisasi: 15 transaksi (0 diubah payment_method).
+Idempotent: proses ulang hanya akan menyentuh data yang belum sesuai (pakai --force untuk memaksa).
+  status: OK rc=0
+
+[11:35:57] [2/6 Reckon POS header kasir/customer]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reckon-headers
+Memulai reckon 141234 data...
+Reckon selesai!
+  status: OK rc=0
+
+[11:36:54] [3/6 Normalize/Landing Retur Penjualan]
+  $ /usr/bin/python3 migrate_retur_to_app.py --yes
+  [detail] 90 baris detail dilewati (tidak ada pos_transaction/items).
+============================================================
+Rencana migrasi retur penjualan -> csb_db.retur_penjualan
+  Header : 191 retur
+  Total  : 258,963,000
+  Customer: 33
+  Detail : 137 baris (dari pos_transaction_items yang cocok)
+============================================================
+  Header baru: 0, Header sudah ada: 191
+
+Selesai. Header baru: 0, Detail ditambahkan: 137
+  status: OK rc=0
+
+[11:36:58] [4/6 Normalize Piutang Legacy]
+  $ /home/csb-integrator/bin/php-csb.sh artisan migrate:legacy-piutang
+Menyiapkan migrasi: 5122 faktur, 5121 pos_transactions sudah ada.
+    0/5122 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  500/5122 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]   9%
+ 1000/5122 [▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░]  19%
+ 1500/5122 [▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░]  29%
+ 2000/5122 [▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░]  39%
+ 2500/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░]  48%
+ 3000/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░]  58%
+ 3500/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░]  68%
+ 4000/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  78%
+ 4500/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░]  87%
+ 5000/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░]  97%
+ 5122/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+=== Ringkasan migrasi piutang ===
+Faktur diproses          : 5,121
+pos_transactions dibuat  : 0
+pos_transactions diubah  : 5,121
+piutang di-upsert        : 5,121
+ledger invoice dibuat    : 0
+Skip duplikat faktur     : 0
+Skip total mendekati 0   : 1
+Tanpa customer terdaftar : 20
+Pelunasan piutang & kas bank belum dimigrasi: sumber legacy (brighter_transaksi_pelunasan_piutang) tidak memiliki tautan ke faktur dan belum ada detail per-faktur.
+  status: OK rc=0
+
+[11:37:47] [5/6 Normalize Pelunasan Piutang Legacy]
+  $ /home/csb-integrator/bin/php-csb.sh artisan backfill:piutang-pelunasan
+Tidak ada piutang paid yang belum punya dokumen pelunasan.
+  status: OK rc=0
+
+[11:37:47] [6/6 Normalize timestamp KasBank legacy]
+  $ /usr/bin/python3 backfill_kasbank_timestamp.py --apply
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=APPLY (commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+APPLY selesai — 0 baris di-update, commit OK.
+  status: OK rc=0
+
+================================================================================
+NORMALIZE SELESAI OK

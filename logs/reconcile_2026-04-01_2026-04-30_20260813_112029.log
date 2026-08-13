@@ -1,0 +1,13 @@
+==============================================================================================================
+REKONSILIASI BRIGHTER VS CLARIFY 2026-04-01..2026-04-30 cabang=[1, 2, 4, 5]
+Log: /home/csb-integrator/logs/reconcile_2026-04-01_2026-04-30_20260813_112029.log
+==============================================================================================================
+[1/4] cb1  2026-04 ref=  1,452,575,236 api_user=  1,452,575,236 system=  1,452,575,236 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+[2/4] cb2  2026-04 ref=  2,023,884,399 api_user=  2,309,852,699 system=  2,023,884,399 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [DIFF]
+     - dash_penerimaan_per_user tidak sama dengan brighter_penerimaan_rekap
+[3/4] cb4  2026-04 ref= -1,613,062,055 api_user= -1,623,312,055 system= -1,613,062,055 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [DIFF]
+     - dash_penerimaan_per_user tidak sama dengan brighter_penerimaan_rekap
+[4/4] cb5  2026-04 ref= -1,395,455,220 api_user= -1,395,455,220 system= -1,395,455,220 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+
+==============================================================================================================
+SELESAI: 2 cabang/bulan perlu perhatian.

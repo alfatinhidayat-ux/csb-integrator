@@ -27,8 +27,10 @@ ACTIVE_SINCE = {7: date(2026, 5, 1)}
 LOG_HANDLE = None
 
 KAS_JENIS_PLUS = (
+    "kas_masuk",
     "kas_masuk_penerimaan_lain",
     "kas_masuk_pelunasan_piutang_karyawan",
+    "deposit_pelanggan",
 )
 KAS_JENIS_MINUS = (
     "kas_keluar",
@@ -139,11 +141,21 @@ def audit_month(cur, cid: int, window: MonthWindow) -> dict:
                     THEN JSON_EXTRACT(rekap_json, '$.total_rp') + 0
                 WHEN jenis_dashboard = 'pelunasan_piutang_penjualan'
                     THEN JSON_EXTRACT(rekap_json, '$.fpiutang_bayar') + 0
-                WHEN jenis_dashboard IN ('kas_masuk_penerimaan_lain', 'kas_masuk_pelunasan_piutang_karyawan')
+                WHEN jenis_dashboard IN ('kas_masuk', 'kas_masuk_penerimaan_lain', 'kas_masuk_pelunasan_piutang_karyawan')
                     THEN JSON_EXTRACT(rekap_json, '$.nominal') + 0
+                WHEN jenis_dashboard = 'deposit_pelanggan'
+                    THEN (
+                        COALESCE(JSON_EXTRACT(rekap_json, '$.tunai_rp') + 0, JSON_EXTRACT(rekap_json, '$.total_tunai_rp') + 0, 0)
+                        + COALESCE(JSON_EXTRACT(rekap_json, '$.transfer_rp') + 0, JSON_EXTRACT(rekap_json, '$.total_transfer_rp') + 0, 0)
+                        + COALESCE(JSON_EXTRACT(rekap_json, '$.card_rp') + 0, JSON_EXTRACT(rekap_json, '$.total_card_rp') + 0, 0)
+                        + COALESCE(JSON_EXTRACT(rekap_json, '$.qris_rp') + 0, 0)
+                        + COALESCE(JSON_EXTRACT(rekap_json, '$.total_qris_barcode_rp') + 0, 0)
+                        + COALESCE(JSON_EXTRACT(rekap_json, '$.total_qris_scan_rp') + 0, 0)
+                        + COALESCE(JSON_EXTRACT(rekap_json, '$.deposit_rp') + 0, JSON_EXTRACT(rekap_json, '$.total_wallet_rp') + 0, 0)
+                    )
                 WHEN jenis_dashboard = 'retur_jual'
                     THEN -(JSON_EXTRACT(rekap_json, '$.rjproduk_total_rp') + 0)
-                WHEN jenis_dashboard IN ('kas_keluar', 'kas_keluar_pengeluaran_lain', 'kas_keluar_pinjaman_karyawan', 'pelunasan_hutang_pembelian')
+                WHEN jenis_dashboard IN ('kas_keluar', 'kas_keluar_pengeluaran_lain', 'kas_keluar_pinjaman_karyawan', 'kas_keluar_pengeluaran_gaji_karyawan', 'pelunasan_hutang_pembelian')
                     THEN -(JSON_EXTRACT(rekap_json, '$.nominal') + 0)
                 ELSE 0
             END
@@ -227,7 +239,16 @@ def audit_month(cur, cid: int, window: MonthWindow) -> dict:
         """,
         (cid, month),
     )
-    system_cash = pos + pelunasan_piutang + kas_masuk - retur - kas_keluar - hutang_supplier
+    deposit = one(
+        cur,
+        """
+        SELECT COALESCE(SUM(COALESCE(jumlah_rp, 0)), 0) AS v
+        FROM dash_detail_deposit_pelanggan
+        WHERE cabang_id = %s AND bulan = %s
+        """,
+        (cid, month),
+    )
+    system_cash = pos + pelunasan_piutang + kas_masuk + deposit - retur - kas_keluar - hutang_supplier
 
     missing_pos = one_int(
         cur,
@@ -284,6 +305,7 @@ def audit_month(cur, cid: int, window: MonthWindow) -> dict:
             "kas_masuk": kas_masuk,
             "kas_keluar": kas_keluar,
             "pelunasan_hutang_supplier": hutang_supplier,
+            "deposit_pelanggan": deposit,
         },
     }
 
@@ -387,8 +409,9 @@ def main() -> int:
                     emit(
                         "     "
                         f"pos={c['pos']:,.0f} pel_piut={c['pelunasan_piutang']:,.0f} "
-                        f"kas_masuk={c['kas_masuk']:,.0f} retur={c['retur']:,.0f} "
-                        f"kas_keluar={c['kas_keluar']:,.0f} hut_sup={c['pelunasan_hutang_supplier']:,.0f}"
+                        f"kas_masuk={c['kas_masuk']:,.0f} deposit={c['deposit_pelanggan']:,.0f} "
+                        f"retur={c['retur']:,.0f} kas_keluar={c['kas_keluar']:,.0f} "
+                        f"hut_sup={c['pelunasan_hutang_supplier']:,.0f}"
                     )
                 if reasons:
                     bad_rows.append((row, reasons))

@@ -1,0 +1,23 @@
+==============================================================================================================
+REKONSILIASI BRIGHTER VS CLARIFY 2026-01-01..2026-02-28 cabang=[1, 2, 4, 5]
+Log: /home/csb-integrator/logs/reconcile_2026-01-01_2026-02-28_20260813_080314.log
+==============================================================================================================
+[1/8] cb1  2026-01 ref=  2,515,702,751 api_user=  2,515,702,751 system=  2,515,702,751 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=1,239,273,151 pel_piut=1,385,974,100 kas_masuk=80,863,000 deposit=0 retur=14,429,500 kas_keluar=155,518,000 hut_sup=20,460,000
+[2/8] cb2  2026-01 ref=  2,950,377,850 api_user=  2,950,377,850 system=  2,950,377,850 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=3,153,660,250 pel_piut=924,347,600 kas_masuk=0 deposit=0 retur=4,495,000 kas_keluar=250,000 hut_sup=1,122,885,000
+[3/8] cb4  2026-01 ref=    528,617,305 api_user=    528,617,305 system=    528,617,305 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=1,745,657,200 pel_piut=161,307,000 kas_masuk=0 deposit=0 retur=16,349,000 kas_keluar=1,000,000 hut_sup=1,360,997,895
+[4/8] cb5  2026-01 ref=  3,401,158,259 api_user=  3,401,158,259 system=  3,401,158,259 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=3,820,778,350 pel_piut=635,254,300 kas_masuk=0 deposit=0 retur=543,000 kas_keluar=60,312,500 hut_sup=994,018,891
+[5/8] cb1  2026-02 ref=  2,455,401,661 api_user=  2,455,401,661 system=  2,455,401,661 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=1,240,584,849 pel_piut=1,587,060,300 kas_masuk=158,843,000 deposit=0 retur=2,430,000 kas_keluar=389,985,000 hut_sup=138,671,488
+[6/8] cb2  2026-02 ref=  3,430,701,408 api_user=  3,430,701,408 system=  3,430,701,408 d_sys=            -0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=2,701,484,650 pel_piut=1,964,942,225 kas_masuk=0 deposit=0 retur=2,395,000 kas_keluar=0 hut_sup=1,233,330,467
+[7/8] cb4  2026-02 ref=    395,447,098 api_user=    395,447,098 system=    395,447,098 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=1,584,334,900 pel_piut=274,893,050 kas_masuk=0 deposit=0 retur=16,000 kas_keluar=34,650,000 hut_sup=1,429,114,852
+[8/8] cb5  2026-02 ref=  1,404,706,272 api_user=  1,404,706,272 system=  1,404,706,272 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=3,764,215,600 pel_piut=606,541,740 kas_masuk=0 deposit=0 retur=15,673,500 kas_keluar=10,000,000 hut_sup=2,940,377,568
+
+==============================================================================================================
+SELESAI: semua cocok dalam tolerance.

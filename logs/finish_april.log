@@ -1,0 +1,7 @@
+[2026-08-13 10:21:07] == FINISH APRIL MULAI ==
+[2026-08-13 10:21:08] SP refresh lama sudah selesai.
+[2026-08-13 10:21:08] REFRESH SP: /usr/bin/python3 run_migration_feb_apr.py --bulan 2026-04 --cabang-ids 1,2,4,5 --apply --skip-migrate --skip-normalize --skip-lp-mirror --skip-reconcile
+[2026-08-13 10:39:54] REFRESH SP rc=0
+[2026-08-13 10:39:54] REKON: /usr/bin/python3 reconcile_brighter_clarify.py --tanggal-awal 2026-04-01 --tanggal-akhir 2026-04-30 --cabang-ids 1,2,4,5 --show-components
+[2026-08-13 10:39:54] REKON rc=1
+[2026-08-13 10:39:54] == FINISH APRIL SELESAI refresh_rc=0 rekon_rc=1 ==

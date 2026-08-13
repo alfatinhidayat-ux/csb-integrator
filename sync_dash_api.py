@@ -290,18 +290,36 @@ SPEC = [
 ]
 
 
+def _halve_penjualan_kasir1(rekap):
+    """Koreksi anomali sumber Brighter: endpoint penerimaan_per_user double-count
+    penjualan user `Kasir1` (nilai total_rp & total_piutang_rp persis 2x nilai
+    benar di pos_transactions / brighter_pos status Tertutup, lihat AGENTS.md).
+    Berlaku konsisten untuk cb2 & cb7 pada semua bulan final. Seluruh komponen
+    total_* ikut dibagi 2 agar JSON tetap konsisten."""
+    if not isinstance(rekap, dict):
+        return rekap
+    out = dict(rekap)
+    for key in list(out.keys()):
+        if key.startswith("total_") and isinstance(out[key], (int, float)):
+            out[key] = out[key] / 2.0
+    return out
+
+
 def _flatten_pu(cabang_id, bulan, item):
     """penerimaan_per_user: data berbentuk [{username, detail:[{jenis, rekap}]}]."""
     rows = []
     username = item.get("username")
     for det in item.get("detail") or []:
+        rekap = det.get("rekap") or {}
+        if username == "Kasir1" and det.get("jenis_dashboard") == "penjualan":
+            rekap = _halve_penjualan_kasir1(rekap)
         rows.append({
             "cabang_id": cabang_id,
             "bulan": bulan,
             "username": username,
             "jenis_dashboard": det.get("jenis_dashboard"),
             "jenis_dashboard_str": det.get("jenis_dashboard_str"),
-            "rekap_json": json.dumps(det.get("rekap") or {}, ensure_ascii=False),
+            "rekap_json": json.dumps(rekap, ensure_ascii=False),
         })
     return rows
 

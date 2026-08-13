@@ -1,0 +1,105 @@
+== MONITOR MULAI 2026-08-13 08:13:57 ==
+   log     : /home/csb-integrator/logs/run_migration_feb_apr_20260813_095254.log
+   pid     : 995982
+[2026-08-13 08:13:57] ALIVE | step=113/135 Landing POS cb5 2026-03-12 | STOP: MIGRASI 2026-03 gagal rc=1
+[2026-08-13 08:13:57] == TERHENTI DENGAN MASALAH — STOP: MIGRASI 2026-03 gagal rc=1 ==
+== MONITOR BERHENTI ==
+== MONITOR MULAI 2026-08-13 08:14:13 ==
+   log     : logs/run_migration_feb_apr_20260813_081029.log
+   pid     : 995982
+[2026-08-13 08:14:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:15:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:16:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:17:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:18:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:19:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:20:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:21:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:22:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:23:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:24:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:25:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:26:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:27:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:28:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:29:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:30:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:31:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:32:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:33:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:34:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:35:13] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:36:14] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:37:14] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:38:14] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:39:14] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:40:14] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:41:14] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:42:14] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:43:14] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:44:14] ALIVE | step=1/131 2026-04 dash_* dan rekap dashboard | normal
+[2026-08-13 08:45:14] ALIVE | step=2/131 2026-04 POS staging brighter_pos | normal
+[2026-08-13 08:46:14] ALIVE | step=2/131 2026-04 POS staging brighter_pos | normal
+[2026-08-13 08:47:14] ALIVE | step=2/131 2026-04 POS staging brighter_pos | normal
+[2026-08-13 08:48:14] ALIVE | step=2/131 2026-04 POS staging brighter_pos | normal
+[2026-08-13 08:49:14] ALIVE | step=2/131 2026-04 POS staging brighter_pos | normal
+[2026-08-13 08:50:14] ALIVE | step=2/131 2026-04 POS staging brighter_pos | normal
+[2026-08-13 08:51:14] ALIVE | step=2/131 2026-04 POS staging brighter_pos | normal
+[2026-08-13 08:52:14] ALIVE | step=2/131 2026-04 POS staging brighter_pos | normal
+[2026-08-13 08:53:14] ALIVE | step=? | normal
+[2026-08-13 08:54:14] ALIVE | step=? | normal
+[2026-08-13 08:55:14] ALIVE | step=? | normal
+[2026-08-13 08:56:14] ALIVE | step=? | normal
+[2026-08-13 08:57:14] ALIVE | step=? | normal
+[2026-08-13 08:58:14] ALIVE | step=? | normal
+[2026-08-13 08:59:14] ALIVE | step=? | normal
+[2026-08-13 09:00:14] ALIVE | step=? | normal
+[2026-08-13 09:01:14] ALIVE | step=? | normal
+[2026-08-13 09:02:14] ALIVE | step=? | normal
+[2026-08-13 09:03:14] ALIVE | step=? | normal
+[2026-08-13 09:04:14] ALIVE | step=? | normal
+[2026-08-13 09:05:14] ALIVE | step=? | normal
+[2026-08-13 09:06:14] ALIVE | step=? | normal
+[2026-08-13 09:07:14] ALIVE | step=? | normal
+[2026-08-13 09:08:14] ALIVE | step=? | normal
+[2026-08-13 09:09:14] ALIVE | step=? | normal
+[2026-08-13 09:10:14] ALIVE | step=? | normal
+[2026-08-13 09:11:14] ALIVE | step=? | normal
+[2026-08-13 09:12:14] ALIVE | step=? | normal
+[2026-08-13 09:13:14] ALIVE | step=? | normal
+[2026-08-13 09:14:14] ALIVE | step=? | normal
+[2026-08-13 09:15:14] ALIVE | step=? | normal
+[2026-08-13 09:16:14] ALIVE | step=? | normal
+[2026-08-13 09:17:14] ALIVE | step=? | normal
+[2026-08-13 09:18:14] ALIVE | step=? | normal
+[2026-08-13 09:19:14] ALIVE | step=? | normal
+[2026-08-13 09:20:14] ALIVE | step=? | normal
+[2026-08-13 09:21:14] ALIVE | step=? | normal
+[2026-08-13 09:22:14] ALIVE | step=? | normal
+[2026-08-13 09:23:14] ALIVE | step=? | normal
+[2026-08-13 09:24:14] ALIVE | step=? | normal
+[2026-08-13 09:25:14] ALIVE | step=? | normal
+[2026-08-13 09:26:14] ALIVE | step=? | normal
+[2026-08-13 09:27:14] ALIVE | step=? | normal
+[2026-08-13 09:28:14] ALIVE | step=? | normal
+[2026-08-13 09:29:14] ALIVE | step=? | normal
+[2026-08-13 09:30:14] ALIVE | step=? | normal
+[2026-08-13 09:31:14] ALIVE | step=? | normal
+[2026-08-13 09:32:14] ALIVE | step=? | normal
+[2026-08-13 09:33:14] ALIVE | step=? | normal
+[2026-08-13 09:34:14] ALIVE | step=? | normal
+[2026-08-13 09:35:14] ALIVE | step=? | normal
+[2026-08-13 09:36:14] ALIVE | step=? | normal
+[2026-08-13 09:37:14] ALIVE | step=3/131 2026-04 Retur staging | normal
+[2026-08-13 09:38:14] ALIVE | step=3/131 2026-04 Retur staging | normal
+[2026-08-13 09:39:14] ALIVE | step=3/131 2026-04 Retur staging | normal
+[2026-08-13 09:40:14] ALIVE | step=4/131 2026-04 Rekap penerimaan harian | normal
+[2026-08-13 09:41:14] ALIVE | step=8/131 Upsert brighter_rekap_bulanan_dashboard dari dash_* | normal
+[2026-08-13 09:42:14] ALIVE | step=73/131 Landing POS cb4 2026-04-05 | normal
+[2026-08-13 09:43:14] ALIVE | step=113/131 Landing POS cb5 2026-04-15 | normal
+[2026-08-13 09:44:14] ALIVE | step=119/131 Landing POS cb5 2026-04-21 | normal
+[2026-08-13 09:45:14] ALIVE | step=119/131 Landing POS cb5 2026-04-21 | normal
+[2026-08-13 09:46:14] ALIVE | step=124/131 Landing POS cb5 2026-04-26 | normal
+[2026-08-13 09:47:14] DEAD | step=128/131 Landing POS cb5 2026-04-30 | STOP: NORMALIZE 2026-04 gagal rc=1
+[2026-08-13 09:47:14] == TERHENTI DENGAN MASALAH — STOP: NORMALIZE 2026-04 gagal rc=1 ==
+== MONITOR BERHENTI ==

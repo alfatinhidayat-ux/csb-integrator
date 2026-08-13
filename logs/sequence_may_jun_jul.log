@@ -1,0 +1,4 @@
+[2026-08-13 08:17:25] == SEQ MULAI: months=['2026-05', '2026-06', '2026-07'] cabang=1,2,4,5,7 wait_pid=995982 ==
+[2026-08-13 08:17:25] Menunggu April (PID 995982) selesai...
+[2026-08-13 09:46:55] April sudah selesai.
+[2026-08-13 09:46:55] START 2026-05: /usr/bin/python3 run_migration_feb_apr.py --bulan 2026-05 --cabang-ids 1,2,4,5,7 --log-file /home/csb-integrator/logs/run_migration_2026-05.log --apply

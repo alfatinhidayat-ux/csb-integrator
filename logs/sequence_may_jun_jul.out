@@ -1,0 +1,2668 @@
+[2026-08-13 08:17:25] == SEQ MULAI: months=['2026-05', '2026-06', '2026-07'] cabang=1,2,4,5,7 wait_pid=995982 ==
+[2026-08-13 08:17:25] Menunggu April (PID 995982) selesai...
+[2026-08-13 09:46:55] April sudah selesai.
+[2026-08-13 09:46:55] START 2026-05: /usr/bin/python3 run_migration_feb_apr.py --bulan 2026-05 --cabang-ids 1,2,4,5,7 --log-file /home/csb-integrator/logs/run_migration_2026-05.log --apply
+RUN MIGRASI FEBRUARI-APRIL 2026
+Mode   : APPLY
+Cabang : 1,2,4,5,7
+Bulan  : 2026-05
+Log    : /home/csb-integrator/logs/run_migration_2026-05.log
+
+####################################################################################################
+[1/1] BULAN 2026-05 (2026-05-01..2026-05-31)
+####################################################################################################
+
+====================================================================================================
+MIGRASI 2026-05
+CMD: /usr/bin/python3 migrate_brighter_to_clarify.py --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7 --apply
+====================================================================================================
+================================================================================
+MIGRASI BRIGHTER -> CLARIFY
+Mode    : APPLY
+Range   : 2026-05-01..2026-05-31
+Cabang  : [1, 2, 4, 5, 7]
+Bulan   : ['2026-05']
+Log     : /home/csb-integrator/logs/migrate_2026-05-01_2026-05-31_20260813_094656.log
+================================================================================
+
+[09:46:56] [1/166 2026-05 dash_* dan rekap dashboard]
+  $ /usr/bin/python3 sync_dash_api.py --env --bulan 2026-05 --cabang-ids 1,2,4,5,7
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-05-01 .. 2026-05-31
+Cabang: [1, 2, 4, 5, 7]
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+  cb1 2026-05 rekap_dashboard          9 baris -> dash_rekap_dashboard
+  cb1 2026-05 penerimaan_per_user      11 baris -> dash_penerimaan_per_user
+  cb1 2026-05 detail_penjualan         2370 baris -> dash_detail_penjualan
+  cb1 2026-05 detail_piutang           80 baris -> dash_detail_piutang
+  cb1 2026-05 detail_hutang            5 baris -> dash_detail_hutang
+  cb1 2026-05 detail_deposit_pelanggan 1 baris -> dash_detail_deposit_pelanggan
+  cb2 2026-05 rekap_dashboard          10 baris -> dash_rekap_dashboard
+  cb2 2026-05 penerimaan_per_user      15 baris -> dash_penerimaan_per_user
+  cb2 2026-05 detail_penjualan         4158 baris -> dash_detail_penjualan
+  cb2 2026-05 detail_piutang           62 baris -> dash_detail_piutang
+  cb2 2026-05 detail_hutang            10 baris -> dash_detail_hutang
+  cb2 2026-05 detail_retur_penjualan   2 baris -> dash_detail_retur_penjualan
+  cb4 2026-05 rekap_dashboard          11 baris -> dash_rekap_dashboard
+  cb4 2026-05 penerimaan_per_user      15 baris -> dash_penerimaan_per_user
+  cb4 2026-05 detail_penjualan         2239 baris -> dash_detail_penjualan
+  cb4 2026-05 detail_piutang           34 baris -> dash_detail_piutang
+  cb4 2026-05 detail_hutang            14 baris -> dash_detail_hutang
+  cb4 2026-05 detail_retur_penjualan   3 baris -> dash_detail_retur_penjualan
+  cb5 2026-05 rekap_dashboard          10 baris -> dash_rekap_dashboard
+  cb5 2026-05 penerimaan_per_user      14 baris -> dash_penerimaan_per_user
+  cb5 2026-05 detail_penjualan         6536 baris -> dash_detail_penjualan
+  cb5 2026-05 detail_piutang           49 baris -> dash_detail_piutang
+  cb5 2026-05 detail_hutang            33 baris -> dash_detail_hutang
+  cb5 2026-05 detail_retur_penjualan   19 baris -> dash_detail_retur_penjualan
+  cb7 2026-05 rekap_dashboard          7 baris -> dash_rekap_dashboard
+  cb7 2026-05 penerimaan_per_user      10 baris -> dash_penerimaan_per_user
+  cb7 2026-05 detail_penjualan         2325 baris -> dash_detail_penjualan
+  cb7 2026-05 detail_hutang            10 baris -> dash_detail_hutang
+  cb7 2026-05 detail_retur_penjualan   3 baris -> dash_detail_retur_penjualan
+
+=======================================================
+COMPLETE - total baris per tabel:
+  dash_rekap_dashboard                     47
+  dash_penerimaan_per_user                 65
+  dash_detail_penjualan                17,628
+  dash_detail_piutang                     225
+  dash_detail_hutang                       72
+  dash_detail_deposit_pelanggan             1
+  dash_detail_retur_penjualan              27
+=======================================================
+  status: OK rc=0
+
+[09:47:42] [2/166 2026-05 POS staging brighter_pos]
+  $ /usr/bin/python3 sync_pos_rekap.py --env --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7 --workers 5 --force
+Rentang 2026-05-01..2026-05-31, cabang [1, 2, 4, 5, 7]
+    Upsert brighter_pos: 76/76 rows
+    Upsert brighter_pos_detail: 152/152 rows
+  cb1 2026-05-01: 76 nota, 76 ketemu, 76 header, 152 detail, gross=34,800,700
+    Upsert brighter_pos: 89/89 rows
+    Upsert brighter_pos_detail: 187/187 rows
+  cb1 2026-05-02: 89 nota, 89 ketemu, 89 header, 187 detail, gross=59,650,400
+    Upsert brighter_pos: 80/80 rows
+    Upsert brighter_pos_detail: 136/136 rows
+  cb1 2026-05-03: 80 nota, 80 ketemu, 80 header, 136 detail, gross=166,501,500
+    Upsert brighter_pos: 58/58 rows
+    Upsert brighter_pos_detail: 129/129 rows
+  cb1 2026-05-04: 58 nota, 58 ketemu, 58 header, 129 detail, gross=49,047,000
+    Upsert brighter_pos: 92/92 rows
+    Upsert brighter_pos_detail: 175/175 rows
+  cb1 2026-05-05: 92 nota, 92 ketemu, 92 header, 175 detail, gross=89,257,500
+    Upsert brighter_pos: 84/84 rows
+    Upsert brighter_pos_detail: 160/160 rows
+  cb1 2026-05-06: 84 nota, 84 ketemu, 84 header, 160 detail, gross=59,782,900
+    Upsert brighter_pos: 103/103 rows
+    Upsert brighter_pos_detail: 171/171 rows
+  cb1 2026-05-07: 103 nota, 103 ketemu, 103 header, 171 detail, gross=79,463,800
+    Upsert brighter_pos: 82/82 rows
+    Upsert brighter_pos_detail: 156/156 rows
+  cb1 2026-05-08: 82 nota, 82 ketemu, 82 header, 156 detail, gross=99,861,500
+    Upsert brighter_pos: 77/77 rows
+    Upsert brighter_pos_detail: 138/138 rows
+  cb1 2026-05-09: 77 nota, 77 ketemu, 77 header, 138 detail, gross=54,107,000
+    Upsert brighter_pos: 53/53 rows
+    Upsert brighter_pos_detail: 106/106 rows
+  cb1 2026-05-10: 53 nota, 53 ketemu, 53 header, 106 detail, gross=62,881,200
+    Upsert brighter_pos: 70/70 rows
+    Upsert brighter_pos_detail: 126/126 rows
+  cb1 2026-05-11: 70 nota, 70 ketemu, 70 header, 126 detail, gross=84,282,000
+    Upsert brighter_pos: 67/67 rows
+    Upsert brighter_pos_detail: 117/117 rows
+  cb1 2026-05-12: 67 nota, 67 ketemu, 67 header, 117 detail, gross=91,635,500
+    Upsert brighter_pos: 85/85 rows
+    Upsert brighter_pos_detail: 166/166 rows
+  cb1 2026-05-13: 85 nota, 85 ketemu, 85 header, 166 detail, gross=67,545,000
+    Upsert brighter_pos: 80/80 rows
+    Upsert brighter_pos_detail: 131/131 rows
+  cb1 2026-05-14: 80 nota, 80 ketemu, 80 header, 131 detail, gross=127,366,750
+    Upsert brighter_pos: 74/74 rows
+    Upsert brighter_pos_detail: 156/156 rows
+  cb1 2026-05-15: 74 nota, 74 ketemu, 74 header, 156 detail, gross=44,242,000
+    Upsert brighter_pos: 74/74 rows
+    Upsert brighter_pos_detail: 153/153 rows
+  cb1 2026-05-16: 74 nota, 74 ketemu, 74 header, 153 detail, gross=51,604,020
+    Upsert brighter_pos: 76/76 rows
+    Upsert brighter_pos_detail: 132/132 rows
+  cb1 2026-05-17: 76 nota, 76 ketemu, 76 header, 132 detail, gross=27,825,000
+    Upsert brighter_pos: 100/100 rows
+    Upsert brighter_pos_detail: 194/194 rows
+  cb1 2026-05-18: 100 nota, 100 ketemu, 100 header, 194 detail, gross=100,193,000
+    Upsert brighter_pos: 61/61 rows
+    Upsert brighter_pos_detail: 112/112 rows
+  cb1 2026-05-19: 61 nota, 61 ketemu, 61 header, 112 detail, gross=51,526,500
+    Upsert brighter_pos: 67/67 rows
+    Upsert brighter_pos_detail: 111/111 rows
+  cb1 2026-05-20: 67 nota, 67 ketemu, 67 header, 111 detail, gross=40,786,500
+    Upsert brighter_pos: 84/84 rows
+    Upsert brighter_pos_detail: 168/168 rows
+  cb1 2026-05-21: 84 nota, 84 ketemu, 84 header, 168 detail, gross=43,310,000
+    Upsert brighter_pos: 73/73 rows
+    Upsert brighter_pos_detail: 139/139 rows
+  cb1 2026-05-22: 73 nota, 73 ketemu, 73 header, 139 detail, gross=44,059,500
+    Upsert brighter_pos: 85/85 rows
+    Upsert brighter_pos_detail: 162/162 rows
+  cb1 2026-05-23: 85 nota, 85 ketemu, 85 header, 162 detail, gross=65,988,000
+    Upsert brighter_pos: 95/95 rows
+    Upsert brighter_pos_detail: 225/225 rows
+  cb1 2026-05-24: 95 nota, 95 ketemu, 95 header, 225 detail, gross=119,552,750
+    Upsert brighter_pos: 80/80 rows
+    Upsert brighter_pos_detail: 142/142 rows
+  cb1 2026-05-25: 80 nota, 80 ketemu, 80 header, 142 detail, gross=33,737,000
+    Upsert brighter_pos: 80/80 rows
+    Upsert brighter_pos_detail: 160/160 rows
+  cb1 2026-05-26: 80 nota, 80 ketemu, 80 header, 160 detail, gross=67,846,000
+  cb1 2026-05-27: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+    Upsert brighter_pos: 91/91 rows
+    Upsert brighter_pos_detail: 181/181 rows
+  cb1 2026-05-28: 91 nota, 91 ketemu, 91 header, 181 detail, gross=56,191,300
+    Upsert brighter_pos: 57/57 rows
+    Upsert brighter_pos_detail: 112/112 rows
+  cb1 2026-05-29: 57 nota, 57 ketemu, 57 header, 112 detail, gross=50,736,500
+    Upsert brighter_pos: 100/100 rows
+    Upsert brighter_pos_detail: 213/213 rows
+  cb1 2026-05-30: 100 nota, 100 ketemu, 100 header, 213 detail, gross=159,893,500
+    Upsert brighter_pos: 77/77 rows
+    Upsert brighter_pos_detail: 174/174 rows
+  cb1 2026-05-31: 77 nota, 77 ketemu, 77 header, 174 detail, gross=47,110,000
+    Upsert brighter_pos: 138/138 rows
+    Upsert brighter_pos_detail: 236/236 rows
+  cb2 2026-05-01: 138 nota, 138 ketemu, 138 header, 236 detail, gross=110,799,700
+    Upsert brighter_pos: 131/131 rows
+    Upsert brighter_pos_detail: 255/255 rows
+  cb2 2026-05-02: 131 nota, 131 ketemu, 131 header, 255 detail, gross=138,453,960
+    Upsert brighter_pos: 135/135 rows
+    Upsert brighter_pos_detail: 242/242 rows
+  cb2 2026-05-03: 135 nota, 135 ketemu, 135 header, 242 detail, gross=132,676,100
+    Upsert brighter_pos: 130/130 rows
+    Upsert brighter_pos_detail: 256/256 rows
+  cb2 2026-05-04: 130 nota, 130 ketemu, 130 header, 256 detail, gross=115,660,380
+    Upsert brighter_pos: 130/130 rows
+    Upsert brighter_pos_detail: 225/225 rows
+  cb2 2026-05-05: 130 nota, 130 ketemu, 130 header, 225 detail, gross=81,870,900
+    Upsert brighter_pos: 137/137 rows
+    Upsert brighter_pos_detail: 233/233 rows
+  cb2 2026-05-06: 137 nota, 137 ketemu, 137 header, 233 detail, gross=99,740,500
+    Upsert brighter_pos: 137/137 rows
+    Upsert brighter_pos_detail: 311/311 rows
+  cb2 2026-05-07: 137 nota, 137 ketemu, 137 header, 311 detail, gross=118,394,510
+    Upsert brighter_pos: 158/158 rows
+    Upsert brighter_pos_detail: 261/261 rows
+  cb2 2026-05-08: 158 nota, 158 ketemu, 158 header, 261 detail, gross=72,798,500
+    Upsert brighter_pos: 155/155 rows
+    Upsert brighter_pos_detail: 261/261 rows
+  cb2 2026-05-09: 155 nota, 155 ketemu, 155 header, 261 detail, gross=117,993,800
+    Upsert brighter_pos: 134/134 rows
+    Upsert brighter_pos_detail: 239/239 rows
+  cb2 2026-05-10: 134 nota, 134 ketemu, 134 header, 239 detail, gross=104,387,000
+    Upsert brighter_pos: 151/151 rows
+    Upsert brighter_pos_detail: 273/273 rows
+  cb2 2026-05-11: 151 nota, 151 ketemu, 151 header, 273 detail, gross=169,594,600
+    Upsert brighter_pos: 108/108 rows
+    Upsert brighter_pos_detail: 180/180 rows
+  cb2 2026-05-12: 108 nota, 108 ketemu, 108 header, 180 detail, gross=66,995,000
+    Upsert brighter_pos: 161/161 rows
+    Upsert brighter_pos_detail: 257/257 rows
+  cb2 2026-05-13: 161 nota, 161 ketemu, 161 header, 257 detail, gross=100,290,500
+    Upsert brighter_pos: 159/159 rows
+    Upsert brighter_pos_detail: 263/263 rows
+  cb2 2026-05-14: 159 nota, 159 ketemu, 159 header, 263 detail, gross=158,020,500
+    Upsert brighter_pos: 154/154 rows
+    Upsert brighter_pos_detail: 274/274 rows
+  cb2 2026-05-15: 154 nota, 154 ketemu, 154 header, 274 detail, gross=90,218,200
+    Upsert brighter_pos: 170/170 rows
+    Upsert brighter_pos_detail: 317/317 rows
+  cb2 2026-05-16: 170 nota, 170 ketemu, 170 header, 317 detail, gross=201,626,500
+    Upsert brighter_pos: 158/158 rows
+    Upsert brighter_pos_detail: 293/293 rows
+  cb2 2026-05-17: 158 nota, 158 ketemu, 158 header, 293 detail, gross=117,035,100
+    Upsert brighter_pos: 119/119 rows
+    Upsert brighter_pos_detail: 215/215 rows
+  cb2 2026-05-18: 119 nota, 119 ketemu, 119 header, 215 detail, gross=87,639,300
+    Upsert brighter_pos: 120/120 rows
+    Upsert brighter_pos_detail: 190/190 rows
+  cb2 2026-05-19: 120 nota, 120 ketemu, 120 header, 190 detail, gross=67,030,500
+    Upsert brighter_pos: 136/136 rows
+    Upsert brighter_pos_detail: 210/210 rows
+  cb2 2026-05-20: 136 nota, 136 ketemu, 136 header, 210 detail, gross=93,666,000
+    Upsert brighter_pos: 132/132 rows
+    Upsert brighter_pos_detail: 239/239 rows
+  cb2 2026-05-21: 132 nota, 132 ketemu, 132 header, 239 detail, gross=100,765,000
+    Upsert brighter_pos: 140/140 rows
+    Upsert brighter_pos_detail: 280/280 rows
+  cb2 2026-05-22: 140 nota, 140 ketemu, 140 header, 280 detail, gross=168,965,000
+    Upsert brighter_pos: 143/143 rows
+    Upsert brighter_pos_detail: 271/271 rows
+  cb2 2026-05-23: 143 nota, 143 ketemu, 143 header, 271 detail, gross=69,865,500
+    Upsert brighter_pos: 113/113 rows
+    Upsert brighter_pos_detail: 218/218 rows
+  cb2 2026-05-24: 113 nota, 113 ketemu, 113 header, 218 detail, gross=99,023,500
+    Upsert brighter_pos: 121/121 rows
+    Upsert brighter_pos_detail: 201/201 rows
+  cb2 2026-05-25: 121 nota, 121 ketemu, 121 header, 201 detail, gross=83,549,000
+    Upsert brighter_pos: 143/143 rows
+    Upsert brighter_pos_detail: 221/221 rows
+  cb2 2026-05-26: 143 nota, 143 ketemu, 143 header, 221 detail, gross=49,735,500
+  cb2 2026-05-27: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+    Upsert brighter_pos: 113/113 rows
+    Upsert brighter_pos_detail: 190/190 rows
+  cb2 2026-05-28: 113 nota, 113 ketemu, 113 header, 190 detail, gross=106,383,000
+    Upsert brighter_pos: 138/138 rows
+    Upsert brighter_pos_detail: 238/238 rows
+  cb2 2026-05-29: 138 nota, 138 ketemu, 138 header, 238 detail, gross=98,328,000
+    Upsert brighter_pos: 155/155 rows
+    Upsert brighter_pos_detail: 284/284 rows
+  cb2 2026-05-30: 155 nota, 155 ketemu, 155 header, 284 detail, gross=151,044,500
+    Upsert brighter_pos: 139/139 rows
+    Upsert brighter_pos_detail: 266/266 rows
+  cb2 2026-05-31: 139 nota, 139 ketemu, 139 header, 266 detail, gross=126,573,500
+    Upsert brighter_pos: 64/64 rows
+    Upsert brighter_pos_detail: 127/127 rows
+  cb4 2026-05-01: 64 nota, 64 ketemu, 64 header, 127 detail, gross=42,024,500
+    Upsert brighter_pos: 73/73 rows
+    Upsert brighter_pos_detail: 144/144 rows
+  cb4 2026-05-02: 73 nota, 73 ketemu, 73 header, 144 detail, gross=32,269,000
+    Upsert brighter_pos: 74/74 rows
+    Upsert brighter_pos_detail: 126/126 rows
+  cb4 2026-05-03: 74 nota, 74 ketemu, 74 header, 126 detail, gross=38,811,500
+    Upsert brighter_pos: 70/70 rows
+    Upsert brighter_pos_detail: 122/122 rows
+  cb4 2026-05-04: 70 nota, 70 ketemu, 70 header, 122 detail, gross=52,591,500
+    Upsert brighter_pos: 73/73 rows
+    Upsert brighter_pos_detail: 147/147 rows
+  cb4 2026-05-05: 73 nota, 73 ketemu, 73 header, 147 detail, gross=80,863,400
+    Upsert brighter_pos: 84/84 rows
+    Upsert brighter_pos_detail: 157/157 rows
+  cb4 2026-05-06: 84 nota, 84 ketemu, 84 header, 157 detail, gross=46,423,000
+    Upsert brighter_pos: 65/65 rows
+    Upsert brighter_pos_detail: 112/112 rows
+  cb4 2026-05-07: 65 nota, 65 ketemu, 65 header, 112 detail, gross=31,904,000
+    Upsert brighter_pos: 77/77 rows
+    Upsert brighter_pos_detail: 147/147 rows
+  cb4 2026-05-08: 77 nota, 77 ketemu, 77 header, 147 detail, gross=73,809,000
+    Upsert brighter_pos: 75/75 rows
+    Upsert brighter_pos_detail: 147/147 rows
+  cb4 2026-05-09: 75 nota, 75 ketemu, 75 header, 147 detail, gross=113,606,000
+    Upsert brighter_pos: 49/49 rows
+    Upsert brighter_pos_detail: 76/76 rows
+  cb4 2026-05-10: 49 nota, 49 ketemu, 49 header, 76 detail, gross=18,953,000
+    Upsert brighter_pos: 82/82 rows
+    Upsert brighter_pos_detail: 154/154 rows
+  cb4 2026-05-11: 82 nota, 82 ketemu, 82 header, 154 detail, gross=69,603,000
+    Upsert brighter_pos: 77/77 rows
+    Upsert brighter_pos_detail: 164/164 rows
+  cb4 2026-05-12: 77 nota, 77 ketemu, 77 header, 164 detail, gross=93,031,000
+    Upsert brighter_pos: 63/63 rows
+    Upsert brighter_pos_detail: 136/136 rows
+  cb4 2026-05-13: 63 nota, 63 ketemu, 63 header, 136 detail, gross=68,162,500
+    Upsert brighter_pos: 78/78 rows
+    Upsert brighter_pos_detail: 120/120 rows
+  cb4 2026-05-14: 78 nota, 78 ketemu, 78 header, 120 detail, gross=86,894,000
+    Upsert brighter_pos: 98/98 rows
+    Upsert brighter_pos_detail: 214/214 rows
+  cb4 2026-05-15: 98 nota, 98 ketemu, 98 header, 214 detail, gross=72,285,500
+    Upsert brighter_pos: 111/111 rows
+    Upsert brighter_pos_detail: 228/228 rows
+  cb4 2026-05-16: 111 nota, 111 ketemu, 111 header, 228 detail, gross=128,367,500
+    Upsert brighter_pos: 90/90 rows
+    Upsert brighter_pos_detail: 144/144 rows
+  cb4 2026-05-17: 90 nota, 90 ketemu, 90 header, 144 detail, gross=44,320,500
+    Upsert brighter_pos: 67/67 rows
+    Upsert brighter_pos_detail: 140/140 rows
+  cb4 2026-05-18: 67 nota, 67 ketemu, 67 header, 140 detail, gross=29,252,500
+    Upsert brighter_pos: 70/70 rows
+    Upsert brighter_pos_detail: 142/142 rows
+  cb4 2026-05-19: 70 nota, 70 ketemu, 70 header, 142 detail, gross=116,140,000
+    Upsert brighter_pos: 73/73 rows
+    Upsert brighter_pos_detail: 126/126 rows
+  cb4 2026-05-20: 73 nota, 73 ketemu, 73 header, 126 detail, gross=69,216,500
+    Upsert brighter_pos: 82/82 rows
+    Upsert brighter_pos_detail: 152/152 rows
+  cb4 2026-05-21: 82 nota, 82 ketemu, 82 header, 152 detail, gross=53,986,400
+    Upsert brighter_pos: 64/64 rows
+    Upsert brighter_pos_detail: 147/147 rows
+  cb4 2026-05-22: 64 nota, 64 ketemu, 64 header, 147 detail, gross=111,784,200
+    Upsert brighter_pos: 73/73 rows
+    Upsert brighter_pos_detail: 131/131 rows
+  cb4 2026-05-23: 73 nota, 73 ketemu, 73 header, 131 detail, gross=54,391,500
+    Upsert brighter_pos: 89/89 rows
+    Upsert brighter_pos_detail: 181/181 rows
+  cb4 2026-05-24: 89 nota, 89 ketemu, 89 header, 181 detail, gross=157,989,500
+    Upsert brighter_pos: 75/75 rows
+    Upsert brighter_pos_detail: 186/186 rows
+  cb4 2026-05-25: 75 nota, 75 ketemu, 75 header, 186 detail, gross=44,481,500
+    Upsert brighter_pos: 66/66 rows
+    Upsert brighter_pos_detail: 127/127 rows
+  cb4 2026-05-26: 66 nota, 66 ketemu, 66 header, 127 detail, gross=89,233,000
+  cb4 2026-05-27: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+    Upsert brighter_pos: 98/98 rows
+    Upsert brighter_pos_detail: 180/180 rows
+  cb4 2026-05-28: 98 nota, 98 ketemu, 98 header, 180 detail, gross=177,875,500
+    Upsert brighter_pos: 55/55 rows
+    Upsert brighter_pos_detail: 111/111 rows
+  cb4 2026-05-29: 55 nota, 55 ketemu, 55 header, 111 detail, gross=53,910,000
+    Upsert brighter_pos: 58/58 rows
+    Upsert brighter_pos_detail: 115/115 rows
+  cb4 2026-05-30: 58 nota, 58 ketemu, 58 header, 115 detail, gross=50,174,100
+    Upsert brighter_pos: 66/66 rows
+    Upsert brighter_pos_detail: 145/145 rows
+  cb4 2026-05-31: 66 nota, 66 ketemu, 66 header, 145 detail, gross=54,640,500
+    Upsert brighter_pos: 247/247 rows
+    Upsert brighter_pos_detail: 500/502 rows
+    Upsert brighter_pos_detail: 502/502 rows
+  cb5 2026-05-01: 247 nota, 247 ketemu, 247 header, 502 detail, gross=173,606,899
+    Upsert brighter_pos: 251/251 rows
+    Upsert brighter_pos_detail: 500/519 rows
+    Upsert brighter_pos_detail: 519/519 rows
+  cb5 2026-05-02: 251 nota, 251 ketemu, 251 header, 519 detail, gross=124,893,000
+    Upsert brighter_pos: 143/143 rows
+    Upsert brighter_pos_detail: 282/282 rows
+  cb5 2026-05-03: 143 nota, 143 ketemu, 143 header, 282 detail, gross=106,807,000
+    Upsert brighter_pos: 234/234 rows
+    Upsert brighter_pos_detail: 476/476 rows
+  cb5 2026-05-04: 234 nota, 234 ketemu, 234 header, 476 detail, gross=116,585,000
+    Upsert brighter_pos: 193/193 rows
+    Upsert brighter_pos_detail: 418/418 rows
+  cb5 2026-05-05: 193 nota, 193 ketemu, 193 header, 418 detail, gross=139,245,360
+    Upsert brighter_pos: 206/206 rows
+    Upsert brighter_pos_detail: 399/399 rows
+  cb5 2026-05-06: 206 nota, 206 ketemu, 206 header, 399 detail, gross=139,908,380
+    Upsert brighter_pos: 237/237 rows
+    Upsert brighter_pos_detail: 450/450 rows
+  cb5 2026-05-07: 237 nota, 237 ketemu, 237 header, 450 detail, gross=109,550,300
+    Upsert brighter_pos: 207/207 rows
+    Upsert brighter_pos_detail: 453/453 rows
+  cb5 2026-05-08: 207 nota, 207 ketemu, 207 header, 453 detail, gross=149,586,820
+    Upsert brighter_pos: 258/258 rows
+    Upsert brighter_pos_detail: 500/550 rows
+    Upsert brighter_pos_detail: 550/550 rows
+  cb5 2026-05-09: 258 nota, 258 ketemu, 258 header, 550 detail, gross=166,664,500
+    Upsert brighter_pos: 144/144 rows
+    Upsert brighter_pos_detail: 308/308 rows
+  cb5 2026-05-10: 144 nota, 144 ketemu, 144 header, 308 detail, gross=62,739,750
+    Upsert brighter_pos: 228/228 rows
+    Upsert brighter_pos_detail: 440/440 rows
+  cb5 2026-05-11: 228 nota, 228 ketemu, 228 header, 440 detail, gross=126,970,500
+    Upsert brighter_pos: 244/244 rows
+    Upsert brighter_pos_detail: 447/447 rows
+  cb5 2026-05-12: 244 nota, 244 ketemu, 244 header, 447 detail, gross=119,705,200
+    Upsert brighter_pos: 239/239 rows
+    Upsert brighter_pos_detail: 441/441 rows
+  cb5 2026-05-13: 239 nota, 239 ketemu, 239 header, 441 detail, gross=136,258,000
+    Upsert brighter_pos: 222/222 rows
+    Upsert brighter_pos_detail: 469/469 rows
+  cb5 2026-05-14: 222 nota, 222 ketemu, 222 header, 469 detail, gross=153,738,250
+    Upsert brighter_pos: 228/228 rows
+    Upsert brighter_pos_detail: 484/484 rows
+  cb5 2026-05-15: 228 nota, 228 ketemu, 228 header, 484 detail, gross=131,369,100
+    Upsert brighter_pos: 252/252 rows
+    Upsert brighter_pos_detail: 453/453 rows
+  cb5 2026-05-16: 252 nota, 252 ketemu, 252 header, 453 detail, gross=157,098,500
+    Upsert brighter_pos: 150/150 rows
+    Upsert brighter_pos_detail: 283/283 rows
+  cb5 2026-05-17: 150 nota, 150 ketemu, 150 header, 283 detail, gross=74,975,000
+    Upsert brighter_pos: 213/213 rows
+    Upsert brighter_pos_detail: 379/379 rows
+  cb5 2026-05-18: 213 nota, 213 ketemu, 213 header, 379 detail, gross=104,632,000
+    Upsert brighter_pos: 250/250 rows
+    Upsert brighter_pos_detail: 500/543 rows
+    Upsert brighter_pos_detail: 543/543 rows
+  cb5 2026-05-19: 250 nota, 250 ketemu, 250 header, 543 detail, gross=150,219,000
+    Upsert brighter_pos: 209/209 rows
+    Upsert brighter_pos_detail: 433/433 rows
+  cb5 2026-05-20: 209 nota, 209 ketemu, 209 header, 433 detail, gross=142,637,500
+    Upsert brighter_pos: 234/234 rows
+    Upsert brighter_pos_detail: 479/479 rows
+  cb5 2026-05-21: 234 nota, 234 ketemu, 234 header, 479 detail, gross=155,770,000
+    Upsert brighter_pos: 203/203 rows
+    Upsert brighter_pos_detail: 384/384 rows
+  cb5 2026-05-22: 203 nota, 203 ketemu, 203 header, 384 detail, gross=145,038,000
+    Upsert brighter_pos: 235/235 rows
+    Upsert brighter_pos_detail: 500/533 rows
+    Upsert brighter_pos_detail: 533/533 rows
+  cb5 2026-05-23: 235 nota, 235 ketemu, 235 header, 533 detail, gross=237,775,500
+    Upsert brighter_pos: 155/155 rows
+    Upsert brighter_pos_detail: 297/297 rows
+  cb5 2026-05-24: 155 nota, 155 ketemu, 155 header, 297 detail, gross=99,525,000
+    Upsert brighter_pos: 254/254 rows
+    Upsert brighter_pos_detail: 473/473 rows
+  cb5 2026-05-25: 254 nota, 254 ketemu, 254 header, 473 detail, gross=122,437,800
+    Upsert brighter_pos: 220/220 rows
+    Upsert brighter_pos_detail: 431/431 rows
+  cb5 2026-05-26: 220 nota, 220 ketemu, 220 header, 431 detail, gross=92,505,950
+    Upsert brighter_pos: 111/111 rows
+    Upsert brighter_pos_detail: 238/238 rows
+  cb5 2026-05-27: 111 nota, 111 ketemu, 111 header, 238 detail, gross=55,085,500
+    Upsert brighter_pos: 205/205 rows
+    Upsert brighter_pos_detail: 398/398 rows
+  cb5 2026-05-28: 205 nota, 205 ketemu, 205 header, 398 detail, gross=137,829,750
+    Upsert brighter_pos: 201/201 rows
+    Upsert brighter_pos_detail: 422/422 rows
+  cb5 2026-05-29: 201 nota, 201 ketemu, 201 header, 422 detail, gross=166,246,000
+    Upsert brighter_pos: 235/235 rows
+    Upsert brighter_pos_detail: 445/445 rows
+  cb5 2026-05-30: 235 nota, 235 ketemu, 235 header, 445 detail, gross=154,883,000
+    Upsert brighter_pos: 128/128 rows
+    Upsert brighter_pos_detail: 260/260 rows
+  cb5 2026-05-31: 128 nota, 128 ketemu, 128 header, 260 detail, gross=69,977,500
+  cb7 2026-05-01: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-02: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-03: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-04: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-05: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-06: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-07: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-08: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-09: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-10: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-11: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-12: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb7 2026-05-13: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+    Upsert brighter_pos: 4/4 rows
+    Upsert brighter_pos_detail: 11/11 rows
+  cb7 2026-05-14: 4 nota, 4 ketemu, 4 header, 11 detail, gross=1,672,500
+    Upsert brighter_pos: 246/246 rows
+    Upsert brighter_pos_detail: 500/575 rows
+    Upsert brighter_pos_detail: 575/575 rows
+  cb7 2026-05-15: 246 nota, 246 ketemu, 246 header, 575 detail, gross=183,452,200
+    Upsert brighter_pos: 192/192 rows
+    Upsert brighter_pos_detail: 414/414 rows
+  cb7 2026-05-16: 192 nota, 192 ketemu, 192 header, 414 detail, gross=134,521,000
+    Upsert brighter_pos: 85/85 rows
+    Upsert brighter_pos_detail: 161/161 rows
+  cb7 2026-05-17: 85 nota, 85 ketemu, 85 header, 161 detail, gross=33,583,300
+    Upsert brighter_pos: 170/170 rows
+    Upsert brighter_pos_detail: 369/369 rows
+  cb7 2026-05-18: 170 nota, 170 ketemu, 170 header, 369 detail, gross=88,389,800
+    Upsert brighter_pos: 158/158 rows
+    Upsert brighter_pos_detail: 258/258 rows
+  cb7 2026-05-19: 158 nota, 158 ketemu, 158 header, 258 detail, gross=114,509,900
+    Upsert brighter_pos: 172/172 rows
+    Upsert brighter_pos_detail: 319/319 rows
+  cb7 2026-05-20: 172 nota, 172 ketemu, 172 header, 319 detail, gross=91,249,400
+    Upsert brighter_pos: 141/141 rows
+    Upsert brighter_pos_detail: 275/275 rows
+  cb7 2026-05-21: 141 nota, 141 ketemu, 141 header, 275 detail, gross=91,426,000
+    Upsert brighter_pos: 158/158 rows
+    Upsert brighter_pos_detail: 351/351 rows
+  cb7 2026-05-22: 158 nota, 158 ketemu, 158 header, 351 detail, gross=124,543,500
+    Upsert brighter_pos: 158/158 rows
+    Upsert brighter_pos_detail: 284/284 rows
+  cb7 2026-05-23: 158 nota, 158 ketemu, 158 header, 284 detail, gross=106,056,000
+    Upsert brighter_pos: 47/47 rows
+    Upsert brighter_pos_detail: 107/107 rows
+  cb7 2026-05-24: 47 nota, 47 ketemu, 47 header, 107 detail, gross=13,013,400
+    Upsert brighter_pos: 189/189 rows
+    Upsert brighter_pos_detail: 350/350 rows
+  cb7 2026-05-25: 189 nota, 189 ketemu, 189 header, 350 detail, gross=81,848,000
+    Upsert brighter_pos: 150/150 rows
+    Upsert brighter_pos_detail: 279/279 rows
+  cb7 2026-05-26: 150 nota, 150 ketemu, 150 header, 279 detail, gross=99,146,000
+    Upsert brighter_pos: 70/70 rows
+    Upsert brighter_pos_detail: 125/125 rows
+  cb7 2026-05-27: 70 nota, 70 ketemu, 70 header, 125 detail, gross=41,734,000
+    Upsert brighter_pos: 108/108 rows
+    Upsert brighter_pos_detail: 212/212 rows
+  cb7 2026-05-28: 108 nota, 108 ketemu, 108 header, 212 detail, gross=38,889,500
+    Upsert brighter_pos: 108/108 rows
+    Upsert brighter_pos_detail: 226/226 rows
+  cb7 2026-05-29: 108 nota, 108 ketemu, 108 header, 226 detail, gross=125,881,798
+    Upsert brighter_pos: 112/112 rows
+    Upsert brighter_pos_detail: 213/213 rows
+  cb7 2026-05-30: 112 nota, 112 ketemu, 112 header, 213 detail, gross=107,252,000
+    Upsert brighter_pos: 57/57 rows
+    Upsert brighter_pos_detail: 136/136 rows
+  cb7 2026-05-31: 57 nota, 57 ketemu, 57 header, 136 detail, gross=99,989,500
+  cb1: 31 hari, 2370 nota, 2370 header, 4584 detail, gross=2,130,784,320
+  cb2: 31 hari, 4158 nota, 4158 header, 7399 detail, gross=3,299,124,050
+  cb4: 31 hari, 2239 nota, 2239 header, 4348 detail, gross=2,156,994,100
+  cb5: 31 hari, 6536 nota, 6536 header, 13089 detail, gross=4,024,264,059
+  cb7: 31 hari, 2325 nota, 2325 header, 4665 detail, gross=1,577,157,798
+  status: OK rc=0
+
+[11:26:06] [3/166 2026-05 Retur staging]
+  $ /usr/bin/python3 sync_retur_penjualan.py --env --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7 --workers 5
+Date range filter: 2026-05-01 -> 2026-05-31
+Ensuring tables exist (brighter_retur_penjualan, brighter_retur_penjualan_detail)...
+Tables ready.
+Cabangs to sync: [1, 2, 4, 5, 7]
+
+--- Cabang 1 | 2026-05-01 -> 2026-05-31 ---
+ -> Fetching retur headers for Cabang 1, page 1...
+ -> Found 0 retur headers in range.
+
+--- Cabang 2 | 2026-05-01 -> 2026-05-31 ---
+ -> Fetching retur headers for Cabang 2, page 1...
+ -> Found 2 retur headers in range.
+ -> Fetching details for 2 transactions...
+    Detail fetch progress: 2/2
+ -> Upserting 2 headers...
+    Upsert brighter_retur_penjualan: 2/2 rows
+ -> Upserting 2 items...
+    Upsert brighter_retur_penjualan_detail: 2/2 rows
+Done Cabang 2
+
+--- Cabang 4 | 2026-05-01 -> 2026-05-31 ---
+ -> Fetching retur headers for Cabang 4, page 1...
+ -> Found 3 retur headers in range.
+ -> Fetching details for 3 transactions...
+    Detail fetch progress: 3/3
+ -> Upserting 3 headers...
+    Upsert brighter_retur_penjualan: 3/3 rows
+ -> Upserting 3 items...
+    Upsert brighter_retur_penjualan_detail: 3/3 rows
+Done Cabang 4
+
+--- Cabang 5 | 2026-05-01 -> 2026-05-31 ---
+ -> Fetching retur headers for Cabang 5, page 1...
+ -> Fetching retur headers for Cabang 5, page 2...
+ -> Found 19 retur headers in range.
+ -> Fetching details for 19 transactions...
+    Detail fetch progress: 19/19
+ -> Upserting 19 headers...
+    Upsert brighter_retur_penjualan: 19/19 rows
+ -> Upserting 20 items...
+    Upsert brighter_retur_penjualan_detail: 20/20 rows
+Done Cabang 5
+
+--- Cabang 7 | 2026-05-01 -> 2026-05-31 ---
+ -> Fetching retur headers for Cabang 7, page 1...
+ -> Found 3 retur headers in range.
+ -> Fetching details for 3 transactions...
+    Detail fetch progress: 3/3
+ -> Upserting 3 headers...
+    Upsert brighter_retur_penjualan: 3/3 rows
+ -> Upserting 4 items...
+    Upsert brighter_retur_penjualan_detail: 4/4 rows
+Done Cabang 7
+
+==================================================
+ALL RETUR PENJUALAN SYNC COMPLETE
+Total Retur Headers synced: 27
+Total Retur Details synced: 29
+==================================================
+  status: OK rc=0
+
+[11:26:12] [4/166 2026-05 Rekap penerimaan harian]
+  $ /usr/bin/python3 sync_saldo_kas_harian.py --env --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+Rentang: 2026-05-01 .. 2026-05-31
+Cabang: [1, 2, 4, 5, 7]
+
+--- Cabang 1 ---
+       -> 30 hari saldo di-fetch, 30 di-upsert ke `brighter_saldo_kas_harian`
+       -> 30 hari rekap di-fetch, 30 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 2 ---
+       -> 30 hari saldo di-fetch, 30 di-upsert ke `brighter_saldo_kas_harian`
+       -> 30 hari rekap di-fetch, 30 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 4 ---
+       -> 30 hari saldo di-fetch, 30 di-upsert ke `brighter_saldo_kas_harian`
+       -> 30 hari rekap di-fetch, 30 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 5 ---
+       -> 31 hari saldo di-fetch, 31 di-upsert ke `brighter_saldo_kas_harian`
+       -> 31 hari rekap di-fetch, 31 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 7 ---
+       -> 18 hari saldo di-fetch, 18 di-upsert ke `brighter_saldo_kas_harian`
+       -> 21 hari rekap di-fetch, 21 di-upsert ke `brighter_penerimaan_rekap`
+
+==================================================
+COMPLETE: 139 baris saldo -> `brighter_saldo_kas_harian`
+          142 baris rekap penerimaan -> `brighter_penerimaan_rekap`
+==================================================
+  status: OK rc=0
+
+[11:28:37] [5/166 2026-05 KasBank -> Clarify]
+  $ /usr/bin/python3 backfill_kasbank_all.py --env --bulan 2026-05 --cabang-ids 1,2,4,5,7 --apply
+
+============================================================
+[1. KAS MASUK -> kas_bank] python /usr/bin/python3 backfill_kasbank_masuk.py --env --bulan 2026-05 --cabang-ids 1,2,4,5,7 --apply
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-05 | cabang=1,2,4,5,7 | mode=APPLY (commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 376
+APPLY selesai — data telah di-commit ke DB.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python /usr/bin/python3 backfill_kasbank_keluar.py --env --bulan 2026-05 --cabang-ids 1,2,4,5,7 --apply
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-05 | cabang=1,2,4,5,7 | mode=APPLY (commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 317
+APPLY selesai — data telah di-commit ke DB.
+
+============================================================
+[3. TIMESTAMP created/approved] python /usr/bin/python3 backfill_kasbank_timestamp.py --apply
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=APPLY (commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+APPLY selesai — 0 baris di-update, commit OK.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[11:28:40] [6/166 Pelunasan piutang staging]
+  $ /usr/bin/python3 sync_pelunasan.py --env --cabang-ids 1,2,4,5,7
+--- Cabang 1 ---
+       -> 991 records (upsert 991, orphan deleted 0)
+--- Cabang 2 ---
+       -> 1186 records (upsert 1186, orphan deleted 0)
+--- Cabang 4 ---
+       -> 322 records (upsert 322, orphan deleted 0)
+--- Cabang 5 ---
+       -> 472 records (upsert 472, orphan deleted 0)
+--- Cabang 7 ---
+       -> 65 records (upsert 65, orphan deleted 0)
+==================================================
+PELUNASAN PIUTANG SYNC COMPLETE: 3036 records
+==================================================
+  status: OK rc=0
+
+[11:28:57] [7/166 Finance Brighter pembelian/hutang/piutang]
+  $ /usr/bin/python3 sync_finance.py --env --cabang-ids 1,2,4,5,7 --workers 5
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+Cabangs to sync: [1, 2, 4, 5, 7]
+   cabang 1 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 2 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 4 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 5 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 7 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+
+[0/7] Master Supplier (upsert per server, ke tabel `supplier`)...
+       -> https://brighter-kairatu-api.koffiesoft.com : 425 supplier (upsert 425)
+
+--- Cabang 1 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 209 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 49 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 204 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 25 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=98, items=408, media=50 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 991 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 1366 records
+       -> semua piutang sudah punya nama
+Done Cabang 1
+
+--- Cabang 2 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 536 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 90 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 568 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 39 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=180, items=1136, media=78 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 1186 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 2315 records
+       -> 2 record tanpa nama - jalankan backfill nama...
+Login API berhasil
+
+Ditemukan 2 record tanpa nama (2 cust_id unik)
+
+  cust_id 8814 ... Traceback (most recent call last):
+  File "/home/csb-integrator/backfill_piutang_cust_nama.py", line 282, in <module>
+    main()
+  File "/home/csb-integrator/backfill_piutang_cust_nama.py", line 246, in main
+    cols = fallback_from_master_customer(cur, cust_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/csb-integrator/backfill_piutang_cust_nama.py", line 105, in fallback_from_master_customer
+    cur.execute(
+  File "/usr/lib/python3/dist-packages/pymysql/cursors.py", line 148, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/pymysql/cursors.py", line 310, in _query
+    conn.query(q)
+  File "/usr/lib/python3/dist-packages/pymysql/connections.py", line 548, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/pymysql/connections.py", line 775, in _read_query_result
+    result.read()
+  File "/usr/lib/python3/dist-packages/pymysql/connections.py", line 1156, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/pymysql/connections.py", line 725, in _read_packet
+    packet.raise_for_error()
+  File "/usr/lib/python3/dist-packages/pymysql/protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/usr/lib/python3/dist-packages/pymysql/err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'cust_notelp' in 'field list'")
+       -> backfill nama gagal: Command '['/usr/bin/python3', 'backfill_piutang_cust_nama.py', '--env', '--cabang-ids', '2']' returned non-zero exit status 1.
+Done Cabang 2
+
+--- Cabang 4 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 354 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 106 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 344 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 37 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=212, items=688, media=74 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 322 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 564 records
+       -> semua piutang sudah punya nama
+Done Cabang 4
+
+--- Cabang 5 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 1505 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 342 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 1281 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 150 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=684, items=2562, media=300 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 472 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 668 records
+       -> 2 record tanpa nama - jalankan backfill nama...
+Login API berhasil
+
+Ditemukan 1 record tanpa nama (1 cust_id unik)
+
+  cust_id 9321 ... Traceback (most recent call last):
+  File "/home/csb-integrator/backfill_piutang_cust_nama.py", line 282, in <module>
+    main()
+  File "/home/csb-integrator/backfill_piutang_cust_nama.py", line 246, in main
+    cols = fallback_from_master_customer(cur, cust_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/csb-integrator/backfill_piutang_cust_nama.py", line 105, in fallback_from_master_customer
+    cur.execute(
+  File "/usr/lib/python3/dist-packages/pymysql/cursors.py", line 148, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/pymysql/cursors.py", line 310, in _query
+    conn.query(q)
+  File "/usr/lib/python3/dist-packages/pymysql/connections.py", line 548, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/pymysql/connections.py", line 775, in _read_query_result
+    result.read()
+  File "/usr/lib/python3/dist-packages/pymysql/connections.py", line 1156, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/pymysql/connections.py", line 725, in _read_packet
+    packet.raise_for_error()
+  File "/usr/lib/python3/dist-packages/pymysql/protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/usr/lib/python3/dist-packages/pymysql/err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1054, "Unknown column 'cust_notelp' in 'field list'")
+       -> backfill nama gagal: Command '['/usr/bin/python3', 'backfill_piutang_cust_nama.py', '--env', '--cabang-ids', '5']' returned non-zero exit status 1.
+Done Cabang 5
+
+--- Cabang 7 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 734 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 70 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 541 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 51 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=138, items=1065, media=100 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 65 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 209 records
+       -> semua piutang sudah punya nama
+Done Cabang 7
+
+==================================================
+FINANCE SYNC COMPLETE
+  supplier                       -> 425 records (upsert per server)
+  pembelian                      -> 3338 records
+  pelunasan_hutang               -> 657 records
+  pelunasan_hutang_detail        -> 2938 records
+  pelunasan_hutang_foto          -> 302 records
+  pelunasan_piutang              -> 3036 records
+  piutang_customer_detail        -> 5122 records
+==================================================
+  status: OK rc=0
+
+[11:32:52] [8/166 Upsert brighter_rekap_bulanan_dashboard dari dash_*]
+  range=2026-05-01..2026-05-31 cabang_aktif={'2026-05': [1, 2, 4, 5, 7]}
+  upsert cb1 2026-05: penjualan=2,130,784,320 retur=0 cash_in=1,765,700,840
+  upsert cb2 2026-05: penjualan=3,299,124,050 retur=4,484,000 cash_in=641,247,155
+  upsert cb4 2026-05: penjualan=2,156,994,100 retur=2,426,000 cash_in=-2,260,745,967
+  upsert cb5 2026-05: penjualan=4,024,264,059 retur=12,210,000 cash_in=-1,227,346,808
+  upsert cb7 2026-05: penjualan=1,577,157,798 retur=4,729,000 cash_in=-643,004,130
+  status: OK
+
+[11:32:52] [9/166 Landing POS cb1 2026-05-01]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-01 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 79 baris brighter_pos...
+  0/79 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/79 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 79/79 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 79 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:32:53] [10/166 Landing POS cb1 2026-05-02]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-02 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 92 baris brighter_pos...
+  0/92 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 10/92 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 92/92 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 92 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:32:54] [11/166 Landing POS cb1 2026-05-03]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-03 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 81 baris brighter_pos...
+  0/81 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/81 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  11%
+ 81/81 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 81 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:32:55] [12/166 Landing POS cb1 2026-05-04]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-04 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 59 baris brighter_pos...
+  0/59 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  6/59 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 59/59 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 59 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:32:56] [13/166 Landing POS cb1 2026-05-05]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-05 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 95 baris brighter_pos...
+  0/95 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 10/95 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 95/95 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 95 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:32:57] [14/166 Landing POS cb1 2026-05-06]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-06 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 86 baris brighter_pos...
+  0/86 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/86 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 86/86 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 86 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:32:58] [15/166 Landing POS cb1 2026-05-07]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-07 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 105 baris brighter_pos...
+   0/105 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  11/105 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 105/105 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 105 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:32:59] [16/166 Landing POS cb1 2026-05-08]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-08 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 88 baris brighter_pos...
+  0/88 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/88 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 88 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+
+ 88/88 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+  status: OK rc=0
+
+[11:33:00] [17/166 Landing POS cb1 2026-05-09]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-09 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 78 baris brighter_pos...
+  0/78 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/78 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 78/78 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 78 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:01] [18/166 Landing POS cb1 2026-05-10]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-10 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 55 baris brighter_pos...
+  0/55 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  6/55 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 55/55 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 55 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:03] [19/166 Landing POS cb1 2026-05-11]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-11 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 72 baris brighter_pos...
+  0/72 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 72 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+
+  8/72 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  11%
+ 72/72 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+  status: OK rc=0
+
+[11:33:03] [20/166 Landing POS cb1 2026-05-12]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-12 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 68 baris brighter_pos...
+  0/68 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/68 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 68/68 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 68 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:04] [21/166 Landing POS cb1 2026-05-13]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-13 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 89 baris brighter_pos...
+  0/89 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/89 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 89/89 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 89 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:05] [22/166 Landing POS cb1 2026-05-14]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-14 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 82 baris brighter_pos...
+  0/82 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/82 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 82/82 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 82 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:06] [23/166 Landing POS cb1 2026-05-15]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-15 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 79 baris brighter_pos...
+  0/79 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/79 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 79/79 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 79 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:08] [24/166 Landing POS cb1 2026-05-16]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-16 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 76 baris brighter_pos...
+  0/76 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/76 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 76/76 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 76 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:09] [25/166 Landing POS cb1 2026-05-17]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-17 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 77 baris brighter_pos...
+  0/77 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/77 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 77/77 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 77 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:09] [26/166 Landing POS cb1 2026-05-18]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-18 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 101 baris brighter_pos...
+   0/101 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  11/101 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 101/101 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 101 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:11] [27/166 Landing POS cb1 2026-05-19]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-19 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 62 baris brighter_pos...
+  0/62 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/62 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  11%
+ 62/62 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 62 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:12] [28/166 Landing POS cb1 2026-05-20]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-20 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 68 baris brighter_pos...
+  0/68 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/68 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 68/68 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 68 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:13] [29/166 Landing POS cb1 2026-05-21]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-21 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 88 baris brighter_pos...
+  0/88 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/88 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 88 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+
+ 88/88 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+  status: OK rc=0
+
+[11:33:14] [30/166 Landing POS cb1 2026-05-22]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-22 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 73 baris brighter_pos...
+  0/73 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/73 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 73/73 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 73 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:15] [31/166 Landing POS cb1 2026-05-23]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-23 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 87 baris brighter_pos...
+  0/87 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/87 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 87/87 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 87 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:16] [32/166 Landing POS cb1 2026-05-24]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-24 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 100 baris brighter_pos...
+   0/100 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  10/100 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 100/100 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 100 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:17] [33/166 Landing POS cb1 2026-05-25]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-25 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 82 baris brighter_pos...
+  0/82 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/82 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 82/82 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 82 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:18] [34/166 Landing POS cb1 2026-05-26]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-26 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 88 baris brighter_pos...
+  0/88 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/88 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 88/88 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 88 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:19] [35/166 Landing POS cb1 2026-05-27]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-27 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:33:19] [36/166 Landing POS cb1 2026-05-28]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-28 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 95 baris brighter_pos...
+  0/95 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 10/95 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 95/95 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 95 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:20] [37/166 Landing POS cb1 2026-05-29]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-29 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 59 baris brighter_pos...
+  0/59 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  6/59 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 59/59 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 59 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:21] [38/166 Landing POS cb1 2026-05-30]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-30 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 105 baris brighter_pos...
+   0/105 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  11/105 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 105 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+
+ 105/105 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+  status: OK rc=0
+
+[11:33:22] [39/166 Landing POS cb1 2026-05-31]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 1 --date 2026-05-31 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 78 baris brighter_pos...
+  0/78 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 78 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+
+  8/78 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 78/78 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+  status: OK rc=0
+
+[11:33:23] [40/166 Landing POS cb2 2026-05-01]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-01 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 139 baris brighter_pos...
+   0/139 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/139 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 139/139 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 139 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:23] [41/166 Landing POS cb2 2026-05-02]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-02 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 135 baris brighter_pos...
+   0/135 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/135 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 135/135 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 135 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:24] [42/166 Landing POS cb2 2026-05-03]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-03 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 136 baris brighter_pos...
+   0/136 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/136 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 136/136 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 136 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:25] [43/166 Landing POS cb2 2026-05-04]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-04 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 132 baris brighter_pos...
+   0/132 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/132 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 132/132 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 132 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:26] [44/166 Landing POS cb2 2026-05-05]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-05 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 135 baris brighter_pos...
+   0/135 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/135 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 135/135 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 135 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:26] [45/166 Landing POS cb2 2026-05-06]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-06 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 141 baris brighter_pos...
+   0/141 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  15/141 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 141/141 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 141 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:27] [46/166 Landing POS cb2 2026-05-07]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-07 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 140 baris brighter_pos...
+   0/140 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/140 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 140/140 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 140 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:28] [47/166 Landing POS cb2 2026-05-08]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-08 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 161 baris brighter_pos...
+   0/161 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  17/161 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 161/161 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 161 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:29] [48/166 Landing POS cb2 2026-05-09]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-09 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 162 baris brighter_pos...
+   0/162 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  17/162 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 162/162 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 162 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:30] [49/166 Landing POS cb2 2026-05-10]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-10 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 137 baris brighter_pos...
+   0/137 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/137 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 137/137 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 137 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:31] [50/166 Landing POS cb2 2026-05-11]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-11 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 154 baris brighter_pos...
+   0/154 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/154 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 154/154 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 154 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:32] [51/166 Landing POS cb2 2026-05-12]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-12 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 110 baris brighter_pos...
+   0/110 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  11/110 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 110/110 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 110 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:33] [52/166 Landing POS cb2 2026-05-13]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-13 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 163 baris brighter_pos...
+   0/163 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  17/163 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 163/163 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 163 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:34] [53/166 Landing POS cb2 2026-05-14]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-14 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 160 baris brighter_pos...
+   0/160 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/160 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 160/160 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 160 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:34] [54/166 Landing POS cb2 2026-05-15]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-15 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 156 baris brighter_pos...
+   0/156 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/156 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 156/156 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 156 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:35] [55/166 Landing POS cb2 2026-05-16]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-16 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 175 baris brighter_pos...
+   0/175 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  18/175 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 175/175 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 175 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:36] [56/166 Landing POS cb2 2026-05-17]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-17 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 161 baris brighter_pos...
+   0/161 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  17/161 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+
+ 161/161 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 161 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:37] [57/166 Landing POS cb2 2026-05-18]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-18 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 121 baris brighter_pos...
+   0/121 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  13/121 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 121/121 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 121 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:38] [58/166 Landing POS cb2 2026-05-19]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-19 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 123 baris brighter_pos...
+   0/123 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  13/123 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 123/123 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 123 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:39] [59/166 Landing POS cb2 2026-05-20]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-20 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 138 baris brighter_pos...
+   0/138 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/138 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 138/138 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 138 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:40] [60/166 Landing POS cb2 2026-05-21]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-21 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 134 baris brighter_pos...
+   0/134 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/134 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 134/134 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 134 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:41] [61/166 Landing POS cb2 2026-05-22]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-22 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 143 baris brighter_pos...
+   0/143 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  15/143 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 143/143 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 143 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:42] [62/166 Landing POS cb2 2026-05-23]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-23 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 145 baris brighter_pos...
+   0/145 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  15/145 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 145/145 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 145 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:43] [63/166 Landing POS cb2 2026-05-24]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-24 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 116 baris brighter_pos...
+   0/116 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  12/116 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 116/116 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 116 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:43] [64/166 Landing POS cb2 2026-05-25]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-25 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 127 baris brighter_pos...
+   0/127 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  13/127 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 127/127 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 127 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:44] [65/166 Landing POS cb2 2026-05-26]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-26 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 144 baris brighter_pos...
+   0/144 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  15/144 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 144/144 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 144 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:45] [66/166 Landing POS cb2 2026-05-27]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-27 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:33:46] [67/166 Landing POS cb2 2026-05-28]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-28 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 114 baris brighter_pos...
+   0/114 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  12/114 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 114/114 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 114 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:47] [68/166 Landing POS cb2 2026-05-29]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-29 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 140 baris brighter_pos...
+   0/140 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/140 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 140/140 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 140 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:48] [69/166 Landing POS cb2 2026-05-30]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-30 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 160 baris brighter_pos...
+   0/160 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/160 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 160/160 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 160 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:49] [70/166 Landing POS cb2 2026-05-31]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 2 --date 2026-05-31 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 143 baris brighter_pos...
+   0/143 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  15/143 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 143/143 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 143 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:50] [71/166 Landing POS cb4 2026-05-01]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-01 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 64 baris brighter_pos...
+  0/64 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/64 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 64/64 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 64 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:51] [72/166 Landing POS cb4 2026-05-02]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-02 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 73 baris brighter_pos...
+  0/73 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/73 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 73/73 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 73 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:52] [73/166 Landing POS cb4 2026-05-03]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-03 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 75 baris brighter_pos...
+  0/75 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/75 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 75/75 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 75 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:53] [74/166 Landing POS cb4 2026-05-04]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-04 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 71 baris brighter_pos...
+  0/71 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/71 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  11%
+ 71/71 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 71 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:53] [75/166 Landing POS cb4 2026-05-05]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-05 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 76 baris brighter_pos...
+  0/76 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/76 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 76/76 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 76 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:54] [76/166 Landing POS cb4 2026-05-06]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-06 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 85 baris brighter_pos...
+  0/85 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/85 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 85/85 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 85 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:55] [77/166 Landing POS cb4 2026-05-07]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-07 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 65 baris brighter_pos...
+  0/65 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/65 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 65/65 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 65 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:56] [78/166 Landing POS cb4 2026-05-08]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-08 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 80 baris brighter_pos...
+  0/80 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/80 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 80/80 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 80 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:57] [79/166 Landing POS cb4 2026-05-09]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-09 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 75 baris brighter_pos...
+  0/75 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/75 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 75/75 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 75 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:58] [80/166 Landing POS cb4 2026-05-10]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-10 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 50 baris brighter_pos...
+  0/50 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  5/50 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 50/50 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 50 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:33:59] [81/166 Landing POS cb4 2026-05-11]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-11 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 83 baris brighter_pos...
+  0/83 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/83 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 83/83 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 83 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:00] [82/166 Landing POS cb4 2026-05-12]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-12 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 82 baris brighter_pos...
+  0/82 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/82 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 82/82 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 82 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:01] [83/166 Landing POS cb4 2026-05-13]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-13 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 65 baris brighter_pos...
+  0/65 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/65 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 65/65 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 65 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:02] [84/166 Landing POS cb4 2026-05-14]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-14 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 81 baris brighter_pos...
+  0/81 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/81 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  11%
+ 81/81 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 81 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:03] [85/166 Landing POS cb4 2026-05-15]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-15 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 99 baris brighter_pos...
+  0/99 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 10/99 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 99/99 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 99 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:04] [86/166 Landing POS cb4 2026-05-16]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-16 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 113 baris brighter_pos...
+   0/113 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  12/113 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 113/113 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 113 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:06] [87/166 Landing POS cb4 2026-05-17]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-17 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 93 baris brighter_pos...
+  0/93 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 10/93 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 93/93 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 93 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:08] [88/166 Landing POS cb4 2026-05-18]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-18 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 69 baris brighter_pos...
+  0/69 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/69 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 69/69 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 69 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:09] [89/166 Landing POS cb4 2026-05-19]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-19 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 70 baris brighter_pos...
+  0/70 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/70 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 70/70 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 70 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:10] [90/166 Landing POS cb4 2026-05-20]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-20 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 74 baris brighter_pos...
+  0/74 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/74 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 74/74 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 74 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:10] [91/166 Landing POS cb4 2026-05-21]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-21 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 84 baris brighter_pos...
+  0/84 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/84 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 84/84 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 84 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:12] [92/166 Landing POS cb4 2026-05-22]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-22 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 66 baris brighter_pos...
+  0/66 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/66 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 66/66 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 66 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:13] [93/166 Landing POS cb4 2026-05-23]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-23 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 73 baris brighter_pos...
+  0/73 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/73 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 73/73 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 73 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:14] [94/166 Landing POS cb4 2026-05-24]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-24 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 91 baris brighter_pos...
+  0/91 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 10/91 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 91/91 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 91 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:15] [95/166 Landing POS cb4 2026-05-25]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-25 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 75 baris brighter_pos...
+  0/75 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/75 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 75/75 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 75 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:16] [96/166 Landing POS cb4 2026-05-26]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-26 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 66 baris brighter_pos...
+  0/66 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/66 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 66 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+
+ 66/66 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+  status: OK rc=0
+
+[11:34:16] [97/166 Landing POS cb4 2026-05-27]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-27 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:17] [98/166 Landing POS cb4 2026-05-28]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-28 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 101 baris brighter_pos...
+   0/101 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  11/101 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 101/101 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 101 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:18] [99/166 Landing POS cb4 2026-05-29]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-29 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 56 baris brighter_pos...
+  0/56 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  6/56 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 56/56 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 56 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:19] [100/166 Landing POS cb4 2026-05-30]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-30 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 61 baris brighter_pos...
+  0/61 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/61 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  11%
+ 61/61 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 61 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:19] [101/166 Landing POS cb4 2026-05-31]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 4 --date 2026-05-31 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 68 baris brighter_pos...
+  0/68 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/68 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 68/68 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 68 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:20] [102/166 Landing POS cb5 2026-05-01]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-01 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 253 baris brighter_pos...
+   0/253 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  26/253 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 253/253 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 1 | Dilewati (sudah punya items): 252 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:21] [103/166 Landing POS cb5 2026-05-02]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-02 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 253 baris brighter_pos...
+   0/253 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  26/253 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 253/253 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 253 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:22] [104/166 Landing POS cb5 2026-05-03]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-03 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 146 baris brighter_pos...
+   0/146 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  15/146 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 146/146 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 146 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:23] [105/166 Landing POS cb5 2026-05-04]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-04 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 234 baris brighter_pos...
+   0/234 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  24/234 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 234/234 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 234 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:24] [106/166 Landing POS cb5 2026-05-05]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-05 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 193 baris brighter_pos...
+   0/193 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  20/193 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 193/193 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 1 | Dilewati (sudah punya items): 192 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:24] [107/166 Landing POS cb5 2026-05-06]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-06 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 210 baris brighter_pos...
+   0/210 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  21/210 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 1 | Dilewati (sudah punya items): 209 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+
+ 210/210 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+  status: OK rc=0
+
+[11:34:25] [108/166 Landing POS cb5 2026-05-07]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-07 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 237 baris brighter_pos...
+   0/237 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  24/237 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 237/237 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 237 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:26] [109/166 Landing POS cb5 2026-05-08]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-08 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 208 baris brighter_pos...
+   0/208 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  21/208 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 208/208 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 1 | Dilewati (sudah punya items): 207 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:27] [110/166 Landing POS cb5 2026-05-09]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-09 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 259 baris brighter_pos...
+   0/259 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  26/259 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 259/259 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 259 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:28] [111/166 Landing POS cb5 2026-05-10]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-10 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 145 baris brighter_pos...
+   0/145 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  15/145 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 145/145 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 145 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:29] [112/166 Landing POS cb5 2026-05-11]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-11 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 230 baris brighter_pos...
+   0/230 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  23/230 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 230/230 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 230 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:29] [113/166 Landing POS cb5 2026-05-12]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-12 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 245 baris brighter_pos...
+   0/245 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  25/245 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 245/245 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 245 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:30] [114/166 Landing POS cb5 2026-05-13]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-13 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 242 baris brighter_pos...
+   0/242 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  25/242 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 242/242 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 242 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:31] [115/166 Landing POS cb5 2026-05-14]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-14 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 224 baris brighter_pos...
+   0/224 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  23/224 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 224/224 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 224 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:32] [116/166 Landing POS cb5 2026-05-15]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-15 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 231 baris brighter_pos...
+   0/231 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  24/231 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 231/231 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 231 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:33] [117/166 Landing POS cb5 2026-05-16]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-16 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 256 baris brighter_pos...
+   0/256 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  26/256 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 256/256 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 256 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:34] [118/166 Landing POS cb5 2026-05-17]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-17 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 151 baris brighter_pos...
+   0/151 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/151 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 151/151 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 151 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:35] [119/166 Landing POS cb5 2026-05-18]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-18 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 215 baris brighter_pos...
+   0/215 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  22/215 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 215/215 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 215 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:36] [120/166 Landing POS cb5 2026-05-19]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-19 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 256 baris brighter_pos...
+   0/256 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  26/256 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 256/256 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 256 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:36] [121/166 Landing POS cb5 2026-05-20]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-20 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 213 baris brighter_pos...
+   0/213 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  22/213 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 213/213 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 213 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:37] [122/166 Landing POS cb5 2026-05-21]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-21 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 238 baris brighter_pos...
+   0/238 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  24/238 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 238/238 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 238 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:38] [123/166 Landing POS cb5 2026-05-22]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-22 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 208 baris brighter_pos...
+   0/208 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  21/208 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 208/208 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 208 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:39] [124/166 Landing POS cb5 2026-05-23]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-23 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 242 baris brighter_pos...
+   0/242 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  25/242 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 242/242 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 242 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:40] [125/166 Landing POS cb5 2026-05-24]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-24 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 157 baris brighter_pos...
+   0/157 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/157 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 157/157 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 157 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:40] [126/166 Landing POS cb5 2026-05-25]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-25 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 257 baris brighter_pos...
+   0/257 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  26/257 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 257/257 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 257 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:41] [127/166 Landing POS cb5 2026-05-26]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-26 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 220 baris brighter_pos...
+   0/220 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  22/220 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 220/220 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 220 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:42] [128/166 Landing POS cb5 2026-05-27]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-27 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 111 baris brighter_pos...
+   0/111 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  12/111 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 111/111 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 111 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:43] [129/166 Landing POS cb5 2026-05-28]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-28 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 205 baris brighter_pos...
+   0/205 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  21/205 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 205/205 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 205 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:43] [130/166 Landing POS cb5 2026-05-29]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-29 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 202 baris brighter_pos...
+   0/202 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  21/202 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 202 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+
+ 202/202 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+  status: OK rc=0
+
+[11:34:44] [131/166 Landing POS cb5 2026-05-30]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-30 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 239 baris brighter_pos...
+   0/239 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  24/239 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 239/239 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 239 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:45] [132/166 Landing POS cb5 2026-05-31]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 5 --date 2026-05-31 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 132 baris brighter_pos...
+   0/132 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  14/132 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 132/132 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 132 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:46] [133/166 Landing POS cb7 2026-05-01]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-01 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:46] [134/166 Landing POS cb7 2026-05-02]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-02 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:47] [135/166 Landing POS cb7 2026-05-03]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-03 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:48] [136/166 Landing POS cb7 2026-05-04]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-04 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:48] [137/166 Landing POS cb7 2026-05-05]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-05 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:49] [138/166 Landing POS cb7 2026-05-06]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-06 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:50] [139/166 Landing POS cb7 2026-05-07]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-07 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:50] [140/166 Landing POS cb7 2026-05-08]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-08 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:51] [141/166 Landing POS cb7 2026-05-09]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-09 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 1 baris brighter_pos...
+ 0/1 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 1/1 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 1 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:52] [142/166 Landing POS cb7 2026-05-10]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-10 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:52] [143/166 Landing POS cb7 2026-05-11]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-11 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:53] [144/166 Landing POS cb7 2026-05-12]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-12 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:54] [145/166 Landing POS cb7 2026-05-13]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-13 --refresh
+Tidak ada baris brighter_pos untuk diproses.
+  status: OK rc=0
+
+[11:34:54] [146/166 Landing POS cb7 2026-05-14]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-14 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 4 baris brighter_pos...
+ 0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 1/4 [▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░]  25%
+ 4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 4 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:55] [147/166 Landing POS cb7 2026-05-15]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-15 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 249 baris brighter_pos...
+   0/249 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  25/249 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 249/249 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 249 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:56] [148/166 Landing POS cb7 2026-05-16]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-16 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 194 baris brighter_pos...
+   0/194 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  20/194 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 194/194 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 194 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:57] [149/166 Landing POS cb7 2026-05-17]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-17 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 87 baris brighter_pos...
+  0/87 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  9/87 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 87/87 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 87 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:58] [150/166 Landing POS cb7 2026-05-18]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-18 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 170 baris brighter_pos...
+   0/170 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  17/170 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 170 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+
+ 170/170 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+  status: OK rc=0
+
+[11:34:58] [151/166 Landing POS cb7 2026-05-19]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-19 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 158 baris brighter_pos...
+   0/158 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/158 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 158/158 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 158 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:34:59] [152/166 Landing POS cb7 2026-05-20]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-20 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 176 baris brighter_pos...
+   0/176 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  18/176 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 176/176 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 176 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:00] [153/166 Landing POS cb7 2026-05-21]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-21 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 142 baris brighter_pos...
+   0/142 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  15/142 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 142/142 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 142 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:01] [154/166 Landing POS cb7 2026-05-22]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-22 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 158 baris brighter_pos...
+   0/158 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/158 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 158/158 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 158 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:02] [155/166 Landing POS cb7 2026-05-23]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-23 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 160 baris brighter_pos...
+   0/160 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/160 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 160/160 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 160 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:03] [156/166 Landing POS cb7 2026-05-24]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-24 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 47 baris brighter_pos...
+  0/47 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  5/47 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 47/47 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 47 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:04] [157/166 Landing POS cb7 2026-05-25]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-25 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 191 baris brighter_pos...
+   0/191 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  20/191 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 191/191 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 191 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:05] [158/166 Landing POS cb7 2026-05-26]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-26 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 153 baris brighter_pos...
+   0/153 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  16/153 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 153/153 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 153 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:06] [159/166 Landing POS cb7 2026-05-27]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-27 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 72 baris brighter_pos...
+  0/72 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  8/72 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  11%
+ 72/72 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 72 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:06] [160/166 Landing POS cb7 2026-05-28]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-28 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 108 baris brighter_pos...
+   0/108 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  11/108 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 108/108 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 108 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:07] [161/166 Landing POS cb7 2026-05-29]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-29 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 109 baris brighter_pos...
+   0/109 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  11/109 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 109/109 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 109 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:08] [162/166 Landing POS cb7 2026-05-30]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-30 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 113 baris brighter_pos...
+   0/113 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  12/113 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 113/113 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 113 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:09] [163/166 Landing POS cb7 2026-05-31]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reconcile-missing --cabang 7 --date 2026-05-31 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 58 baris brighter_pos...
+  0/58 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  6/58 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]  10%
+ 58/58 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 58 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[11:35:10] [164/166 Landing Retur -> Clarify]
+  $ /usr/bin/python3 migrate_retur_to_app.py --yes
+  [detail] 90 baris detail dilewati (tidak ada pos_transaction/items).
+============================================================
+Rencana migrasi retur penjualan -> csb_db.retur_penjualan
+  Header : 191 retur
+  Total  : 258,963,000
+  Customer: 33
+  Detail : 137 baris (dari pos_transaction_items yang cocok)
+============================================================
+  Header baru: 0, Header sudah ada: 191
+
+Selesai. Header baru: 0, Detail ditambahkan: 137
+  status: OK rc=0
+
+[11:35:14] [165/166 Landing Piutang -> Clarify]
+  $ /home/csb-integrator/bin/php-csb.sh artisan migrate:legacy-piutang
+Menyiapkan migrasi: 5122 faktur, 5106 pos_transactions sudah ada.
+    0/5122 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  500/5122 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]   9%
+ 1000/5122 [▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░]  19%
+ 1500/5122 [▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░]  29%
+ 2000/5122 [▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░]  39%
+ 2500/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░]  48%
+ 3000/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░]  58%
+ 3500/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░]  68%
+ 4000/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  78%
+ 4500/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░]  87%
+ 5000/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░]  97%
+ 5122/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+=== Ringkasan migrasi piutang ===
+Faktur diproses          : 5,121
+pos_transactions dibuat  : 15
+pos_transactions diubah  : 5,106
+piutang di-upsert        : 5,121
+ledger invoice dibuat    : 16
+Skip duplikat faktur     : 0
+Skip total mendekati 0   : 1
+Tanpa customer terdaftar : 20
+Pelunasan piutang & kas bank belum dimigrasi: sumber legacy (brighter_transaksi_pelunasan_piutang) tidak memiliki tautan ke faktur dan belum ada detail per-faktur.
+  status: OK rc=0
+
+[11:35:56] [166/166 Landing Pelunasan Piutang -> Clarify]
+  $ /home/csb-integrator/bin/php-csb.sh artisan backfill:piutang-pelunasan
+Memproses 14 piutang paid dari 3 customer.
+ 0/3 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 3/3 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+=== Ringkasan backfill pelunasan piutang ===
+Piutang paid diproses     : 14
+Dokumen pelunasan dibuat  : 3
+Item pelunasan dibuat     : 14
+Cabang terlibat           : 2
+  status: OK rc=0
+
+================================================================================
+SELESAI OK
+
+====================================================================================================
+NORMALIZE 2026-05
+CMD: /usr/bin/python3 normalize_clarify_migration.py --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7 --apply
+====================================================================================================
+================================================================================
+NORMALIZE CLARIFY MIGRATION
+Mode   : APPLY
+Cabang : 1,2,4,5,7
+Range  : 2026-05-01..2026-05-31
+Log    : /home/csb-integrator/logs/normalize_20260813_113556.log
+================================================================================
+
+[11:35:56] [1/6 Normalize POS payment/rekening/EDC]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:normalize-transactions
+Menormalisasi 15 transaksi migrasi...
+  0/15 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  2/15 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  13%
+ 15/15 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+Dinormalisasi: 15 transaksi (0 diubah payment_method).
+Idempotent: proses ulang hanya akan menyentuh data yang belum sesuai (pakai --force untuk memaksa).
+  status: OK rc=0
+
+[11:35:57] [2/6 Reckon POS header kasir/customer]
+  $ /home/csb-integrator/bin/php-csb.sh artisan pos:reckon-headers
+Memulai reckon 141234 data...
+Reckon selesai!
+  status: OK rc=0
+
+[11:36:54] [3/6 Normalize/Landing Retur Penjualan]
+  $ /usr/bin/python3 migrate_retur_to_app.py --yes
+  [detail] 90 baris detail dilewati (tidak ada pos_transaction/items).
+============================================================
+Rencana migrasi retur penjualan -> csb_db.retur_penjualan
+  Header : 191 retur
+  Total  : 258,963,000
+  Customer: 33
+  Detail : 137 baris (dari pos_transaction_items yang cocok)
+============================================================
+  Header baru: 0, Header sudah ada: 191
+
+Selesai. Header baru: 0, Detail ditambahkan: 137
+  status: OK rc=0
+
+[11:36:58] [4/6 Normalize Piutang Legacy]
+  $ /home/csb-integrator/bin/php-csb.sh artisan migrate:legacy-piutang
+Menyiapkan migrasi: 5122 faktur, 5121 pos_transactions sudah ada.
+    0/5122 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  500/5122 [▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░]   9%
+ 1000/5122 [▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░]  19%
+ 1500/5122 [▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░]  29%
+ 2000/5122 [▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░]  39%
+ 2500/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░]  48%
+ 3000/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░]  58%
+ 3500/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░]  68%
+ 4000/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  78%
+ 4500/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░]  87%
+ 5000/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░]  97%
+ 5122/5122 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+=== Ringkasan migrasi piutang ===
+Faktur diproses          : 5,121
+pos_transactions dibuat  : 0
+pos_transactions diubah  : 5,121
+piutang di-upsert        : 5,121
+ledger invoice dibuat    : 0
+Skip duplikat faktur     : 0
+Skip total mendekati 0   : 1
+Tanpa customer terdaftar : 20
+Pelunasan piutang & kas bank belum dimigrasi: sumber legacy (brighter_transaksi_pelunasan_piutang) tidak memiliki tautan ke faktur dan belum ada detail per-faktur.
+  status: OK rc=0
+
+[11:37:47] [5/6 Normalize Pelunasan Piutang Legacy]
+  $ /home/csb-integrator/bin/php-csb.sh artisan backfill:piutang-pelunasan
+Tidak ada piutang paid yang belum punya dokumen pelunasan.
+  status: OK rc=0
+
+[11:37:47] [6/6 Normalize timestamp KasBank legacy]
+  $ /usr/bin/python3 backfill_kasbank_timestamp.py --apply
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=APPLY (commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+APPLY selesai — 0 baris di-update, commit OK.
+  status: OK rc=0
+
+================================================================================
+NORMALIZE SELESAI OK
+
+====================================================================================================
+MIRROR LP PIUTANG 2026-05
+CMD: /usr/bin/python3 reconcile_piutang_pelunasan_headers.py --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7 --apply
+====================================================================================================
+====================================================================================================
+MIRROR LP BRIGHTER 2026-05-01..2026-05-31 cabang=[1, 2, 4, 5, 7] mode=APPLY
+Header Brighter: 225
+====================================================================================================
+Header baru      : 180
+Header update    : 45
+Fallback nonaktif: 1
+OK
+
+====================================================================================================
+REFRESH SP SUMMARY 2026-05 cabang=[1, 2, 4, 5, 7] mode=APPLY
+====================================================================================================
+- cabang 1 SB: harian
+- cabang 1 SB: target
+- cabang 2 CSB: harian
+- cabang 2 CSB: target
+- cabang 4 MDR: harian
+- cabang 4 MDR: target
