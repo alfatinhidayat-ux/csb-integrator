@@ -305,6 +305,48 @@ def _halve_penjualan_kasir1(rekap):
     return out
 
 
+# Nilai benar komponen per_user Juni 2026 cb2 (diverifikasi ke aplikasi Brighter
+# & rekap_dashboard sebagai otoritas). Key = (username, jenis_dashboard), value =
+# dict field rekap yang harus dioverride agar total sama dengan rekap.
+_JUNI_CB2_PU_FIX = {
+    ("kasir", "kas_keluar"): {
+        "nominal": 1_550_100_000.0, "tunai_rp": 1_550_100_000.0, "transfer_rp": 0.0,
+    },
+    ("kasir", "kas_keluar_pengeluaran_lain"): {
+        "nominal": 163_558_500.0, "tunai_rp": 163_558_500.0, "transfer_rp": 0.0,
+    },
+    ("kasir1", "kas_keluar_pinjaman_karyawan"): {
+        "nominal": 15_650_000.0, "tunai_rp": 15_650_000.0, "transfer_rp": 0.0,
+    },
+    ("kasir", "pelunasan_piutang_penjualan"): {
+        "fpiutang_bayar": 766_137_980.0, "tunai_rp": 101_087_980.0, "transfer_rp": 665_050_000.0,
+    },
+    ("kasir", "kas_masuk_penerimaan_lain"): {
+        "nominal": 14_804_000.0, "tunai_rp": 14_744_000.0, "transfer_rp": 60_000.0,
+    },
+    ("kasir", "retur_jual"): {
+        "rjproduk_total_rp": 7_508_000.0, "tunai_rp": 7_508_000.0, "transfer_rp": 0.0,
+    },
+}
+
+
+def _fix_pu_juni_cb2(rekap, username, jenis_dashboard):
+    """Koreksi anomali sumber Brighter Juni 2026 cb2: endpoint penerimaan_per_user
+    menggembungkan beberapa komponen (kas keluar kasir1 double-count +745.098.000,
+    pelunasan piutang +129.359.180, kas masuk +6.390.000, retur +76.000) sehingga
+    api_user selisih vs rekap_dashboard (otoritas). Nilai benar diverifikasi ke
+    aplikasi Brighter (Kas Tunai Belakang 1.550.100.000, pelunasan 766.137.980).
+    Berlaku hanya untuk cb2 Juni 2026."""
+    if not isinstance(rekap, dict):
+        return rekap
+    fix = _JUNI_CB2_PU_FIX.get((username, jenis_dashboard))
+    if not fix:
+        return rekap
+    out = dict(rekap)
+    out.update(fix)
+    return out
+
+
 def _flatten_pu(cabang_id, bulan, item):
     """penerimaan_per_user: data berbentuk [{username, detail:[{jenis, rekap}]}]."""
     rows = []
@@ -313,6 +355,8 @@ def _flatten_pu(cabang_id, bulan, item):
         rekap = det.get("rekap") or {}
         if username == "Kasir1" and det.get("jenis_dashboard") == "penjualan":
             rekap = _halve_penjualan_kasir1(rekap)
+        if cabang_id == 2 and str(bulan).startswith("2026-06"):
+            rekap = _fix_pu_juni_cb2(rekap, username, det.get("jenis_dashboard"))
         rows.append({
             "cabang_id": cabang_id,
             "bulan": bulan,
