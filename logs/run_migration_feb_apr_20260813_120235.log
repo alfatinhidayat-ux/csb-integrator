@@ -1,0 +1,29 @@
+RUN MIGRASI FEBRUARI-APRIL 2026
+Mode   : APPLY
+Cabang : 1,2,4,5,7
+Bulan  : 2026-05
+Log    : /home/csb-integrator/logs/run_migration_feb_apr_20260813_120235.log
+
+####################################################################################################
+[1/1] BULAN 2026-05 (2026-05-01..2026-05-31)
+####################################################################################################
+
+====================================================================================================
+REFRESH SP SUMMARY 2026-05 cabang=[1, 2, 4, 5, 7] mode=APPLY
+====================================================================================================
+- cabang 1 SB: harian
+- cabang 1 SB: target
+- cabang 2 CSB: harian
+- cabang 2 CSB: target
+- cabang 4 MDR: harian
+- cabang 4 MDR: target
+- cabang 5 KRT: harian
+- cabang 5 KRT: target
+- cabang 7 PRU: harian
+- cabang 7 PRU: target
+- snapshot bulanan/top/akun
+Refresh SP: OK
+
+====================================================================================================
+SELESAI: semua bulan yang dipilih selesai tanpa rc error.
+====================================================================================================

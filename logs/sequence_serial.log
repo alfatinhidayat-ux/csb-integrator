@@ -1,2 +1,22 @@
 [2026-08-13 10:38:58] == SERIAL RUNNER MULAI (5->6->7, tiap bulan wajib finish) ==
 [2026-08-13 10:38:58] Menunggu wrapper 2026-05 selesai...
+[2026-08-13 12:02:34] Wrapper 2026-05 sudah selesai.
+[2026-08-13 12:02:34] == FINISH 2026-05 ==
+[2026-08-13 12:02:34] MIRROR LP 2026-05: /usr/bin/python3 reconcile_piutang_pelunasan_headers.py --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7 --apply
+[2026-08-13 12:02:34] MIRROR LP 2026-05 rc=0
+[2026-08-13 12:02:34] REFRESH SP 2026-05: /usr/bin/python3 run_migration_feb_apr.py --bulan 2026-05 --cabang-ids 1,2,4,5,7 --apply --skip-migrate --skip-normalize --skip-lp-mirror --skip-reconcile
+[2026-08-13 12:25:06] REFRESH SP 2026-05 rc=0
+[2026-08-13 12:25:06] REKON 2026-05: /usr/bin/python3 reconcile_brighter_clarify.py --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7 --show-components
+[2026-08-13 12:25:06] REKON 2026-05 rc=0
+[2026-08-13 12:25:06] == FINISH 2026-05 SELESAI ==
+[2026-08-13 12:25:06] WRAPPER 2026-06: /usr/bin/python3 run_migration_feb_apr.py --bulan 2026-06 --cabang-ids 1,2,4,5,7 --log-file /home/csb-integrator/logs/run_migration_2026-06.log --apply
+[2026-08-13 14:53:14] WRAPPER 2026-06 rc=1
+[2026-08-13 14:53:14] == FINISH 2026-06 ==
+[2026-08-13 14:53:14] MIRROR LP 2026-06: /usr/bin/python3 reconcile_piutang_pelunasan_headers.py --tanggal-awal 2026-06-01 --tanggal-akhir 2026-06-30 --cabang-ids 1,2,4,5,7 --apply
+[2026-08-13 14:53:14] MIRROR LP 2026-06 rc=0
+[2026-08-13 14:53:14] REFRESH SP 2026-06: /usr/bin/python3 run_migration_feb_apr.py --bulan 2026-06 --cabang-ids 1,2,4,5,7 --apply --skip-migrate --skip-normalize --skip-lp-mirror --skip-reconcile
+[2026-08-13 15:25:47] REFRESH SP 2026-06 rc=0
+[2026-08-13 15:25:47] REKON 2026-06: /usr/bin/python3 reconcile_brighter_clarify.py --tanggal-awal 2026-06-01 --tanggal-akhir 2026-06-30 --cabang-ids 1,2,4,5,7 --show-components
+[2026-08-13 15:25:48] REKON 2026-06 rc=1
+[2026-08-13 15:25:48] == FINISH 2026-06 SELESAI ==
+[2026-08-13 15:25:48] WRAPPER 2026-07: /usr/bin/python3 run_migration_feb_apr.py --bulan 2026-07 --cabang-ids 1,2,4,5,7 --log-file /home/csb-integrator/logs/run_migration_2026-07.log --apply

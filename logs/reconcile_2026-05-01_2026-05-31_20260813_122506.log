@@ -1,0 +1,17 @@
+==============================================================================================================
+REKONSILIASI BRIGHTER VS CLARIFY 2026-05-01..2026-05-31 cabang=[1, 2, 4, 5, 7]
+Log: /home/csb-integrator/logs/reconcile_2026-05-01_2026-05-31_20260813_122506.log
+==============================================================================================================
+[1/5] cb1  2026-05 ref=  1,765,700,840 api_user=  1,765,700,840 system=  1,765,700,840 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=1,269,763,578 pel_piut=686,396,742 kas_masuk=21,732,000 deposit=53,500,000 retur=0 kas_keluar=114,221,000 hut_sup=151,470,480
+[2/5] cb2  2026-05 ref=    641,247,155 api_user=    641,247,155 system=    641,247,155 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=2,200,293,010 pel_piut=1,536,675,449 kas_masuk=42,023,000 deposit=0 retur=4,484,000 kas_keluar=1,588,726,000 hut_sup=1,544,534,304
+[3/5] cb4  2026-05 ref= -2,260,745,967 api_user= -2,260,745,967 system= -2,260,745,967 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=1,703,878,000 pel_piut=530,622,500 kas_masuk=90,491,000 deposit=0 retur=2,426,000 kas_keluar=1,306,784,000 hut_sup=3,276,527,467
+[4/5] cb5  2026-05 ref= -1,227,346,808 api_user= -1,227,346,808 system= -1,227,346,808 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=3,605,150,059 pel_piut=325,667,000 kas_masuk=38,146,800 deposit=0 retur=12,210,000 kas_keluar=2,468,606,000 hut_sup=2,715,494,667
+[5/5] cb7  2026-05 ref=   -643,004,130 api_user=   -643,004,130 system=   -643,004,130 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=1,572,287,798 pel_piut=0 kas_masuk=34,325,000 deposit=0 retur=4,729,000 kas_keluar=941,933,000 hut_sup=1,302,954,928
+
+==============================================================================================================
+SELESAI: semua cocok dalam tolerance.
