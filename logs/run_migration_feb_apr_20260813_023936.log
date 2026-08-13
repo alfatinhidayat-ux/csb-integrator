@@ -1,0 +1,26 @@
+RUN MIGRASI FEBRUARI-APRIL 2026
+Mode   : DRY-RUN
+Cabang : 1,2,4,5
+Bulan  : 2026-02
+Log    : D:\CSB Project\csb-integrator\logs\run_migration_feb_apr_20260813_023936.log
+
+####################################################################################################
+[1/1] BULAN 2026-02 (2026-02-01..2026-02-28)
+####################################################################################################
+
+====================================================================================================
+REFRESH SP SUMMARY 2026-02 cabang=[1, 2, 4, 5] mode=DRY-RUN
+====================================================================================================
+DRY-RUN: CALL sp_fin_dash_backfill_harian('2026-02-01', '2026-02-28', <kode cabang 1>)
+DRY-RUN: CALL sp_fin_dash_fill_target_period(1, '2026-02-28')
+DRY-RUN: CALL sp_fin_dash_backfill_harian('2026-02-01', '2026-02-28', <kode cabang 2>)
+DRY-RUN: CALL sp_fin_dash_fill_target_period(2, '2026-02-28')
+DRY-RUN: CALL sp_fin_dash_backfill_harian('2026-02-01', '2026-02-28', <kode cabang 4>)
+DRY-RUN: CALL sp_fin_dash_fill_target_period(4, '2026-02-28')
+DRY-RUN: CALL sp_fin_dash_backfill_harian('2026-02-01', '2026-02-28', <kode cabang 5>)
+DRY-RUN: CALL sp_fin_dash_fill_target_period(5, '2026-02-28')
+DRY-RUN: CALL sp_fin_dash_backfill_snapshot('2026-02-01', '2026-02-01')
+
+====================================================================================================
+SELESAI: semua bulan yang dipilih selesai tanpa rc error.
+====================================================================================================

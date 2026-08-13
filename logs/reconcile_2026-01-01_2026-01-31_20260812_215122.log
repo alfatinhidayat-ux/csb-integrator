@@ -1,0 +1,11 @@
+==============================================================================================================
+REKONSILIASI BRIGHTER VS CLARIFY 2026-01-01..2026-01-31 cabang=[1]
+Log: D:\CSB Project\csb-integrator\logs\reconcile_2026-01-01_2026-01-31_20260812_215122.log
+==============================================================================================================
+[1/1] cb1  2026-01 ref=  2,515,702,751 api_user=  2,515,702,751 system=  1,176,791,151 d_sys=-1,338,911,600 miss(pos/ret/piu)=0/0/194 [DIFF]
+     pos=1,239,273,151 pel_piut=47,062,500 kas_masuk=80,863,000 retur=14,429,500 kas_keluar=155,518,000 hut_sup=20,460,000
+     - Clarify cash-in belum sama dengan rekap Brighter
+     - 194 pelunasan piutang belum landing ke piutang_pelunasan
+
+==============================================================================================================
+SELESAI: 1 cabang/bulan perlu perhatian.

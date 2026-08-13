@@ -1,0 +1,2036 @@
+================================================================================
+MIGRASI BRIGHTER -> CLARIFY
+Mode    : APPLY
+Range   : 2026-02-01..2026-02-28
+Cabang  : [1, 2, 4, 5]
+Bulan   : ['2026-02']
+Log     : D:\CSB Project\csb-integrator\logs\migrate_2026-02-01_2026-02-28_20260813_024019.log
+================================================================================
+
+[02:40:20] [1/123 2026-02 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-02 --cabang-ids 1,2,4,5
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-02-01 .. 2026-02-28
+Cabang: [1, 2, 4, 5]
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+  cb1 2026-02 rekap_dashboard          9 baris -> dash_rekap_dashboard
+  cb1 2026-02 penerimaan_per_user      16 baris -> dash_penerimaan_per_user
+  cb1 2026-02 detail_penjualan         3173 baris -> dash_detail_penjualan
+  cb1 2026-02 detail_piutang           173 baris -> dash_detail_piutang
+  cb1 2026-02 detail_hutang            3 baris -> dash_detail_hutang
+  cb1 2026-02 detail_retur_penjualan   4 baris -> dash_detail_retur_penjualan
+  cb2 2026-02 rekap_dashboard          4 baris -> dash_rekap_dashboard
+  cb2 2026-02 penerimaan_per_user      4 baris -> dash_penerimaan_per_user
+  cb2 2026-02 detail_penjualan         5698 baris -> dash_detail_penjualan
+  cb2 2026-02 detail_piutang           243 baris -> dash_detail_piutang
+  cb2 2026-02 detail_hutang            7 baris -> dash_detail_hutang
+  cb2 2026-02 detail_retur_penjualan   3 baris -> dash_detail_retur_penjualan
+  cb4 2026-02 rekap_dashboard          5 baris -> dash_rekap_dashboard
+  cb4 2026-02 penerimaan_per_user      5 baris -> dash_penerimaan_per_user
+  cb4 2026-02 detail_penjualan         2760 baris -> dash_detail_penjualan
+  cb4 2026-02 detail_piutang           56 baris -> dash_detail_piutang
+  cb4 2026-02 detail_hutang            17 baris -> dash_detail_hutang
+  cb4 2026-02 detail_retur_penjualan   1 baris -> dash_detail_retur_penjualan
+  cb5 2026-02 rekap_dashboard          5 baris -> dash_rekap_dashboard
+  cb5 2026-02 penerimaan_per_user      6 baris -> dash_penerimaan_per_user
+  cb5 2026-02 detail_penjualan         7156 baris -> dash_detail_penjualan
+  cb5 2026-02 detail_piutang           66 baris -> dash_detail_piutang
+  cb5 2026-02 detail_hutang            33 baris -> dash_detail_hutang
+  cb5 2026-02 detail_retur_penjualan   12 baris -> dash_detail_retur_penjualan
+
+=======================================================
+COMPLETE - total baris per tabel:
+  dash_rekap_dashboard                     23
+  dash_penerimaan_per_user                 31
+  dash_detail_penjualan                18,787
+  dash_detail_piutang                     538
+  dash_detail_hutang                       60
+  dash_detail_deposit_pelanggan             0
+  dash_detail_retur_penjualan              20
+=======================================================
+  status: OK rc=0
+
+[02:41:06] [2/123 2026-02 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-02-01 --tanggal-akhir 2026-02-28 --cabang-ids 1,2,4,5 --workers 5 --force
+Rentang 2026-02-01..2026-02-28, cabang [1, 2, 4, 5]
+    Upsert brighter_pos: 102/102 rows
+    Upsert brighter_pos_detail: 170/170 rows
+  cb1 2026-02-01: 102 nota, 102 ketemu, 102 header, 170 detail, gross=49,559,600
+    Upsert brighter_pos: 113/113 rows
+    Upsert brighter_pos_detail: 206/206 rows
+  cb1 2026-02-02: 113 nota, 113 ketemu, 113 header, 206 detail, gross=90,728,500
+    Upsert brighter_pos: 118/118 rows
+    Upsert brighter_pos_detail: 264/264 rows
+  cb1 2026-02-03: 118 nota, 118 ketemu, 118 header, 264 detail, gross=144,607,300
+    Upsert brighter_pos: 105/105 rows
+    Upsert brighter_pos_detail: 201/201 rows
+  cb1 2026-02-04: 105 nota, 105 ketemu, 105 header, 201 detail, gross=82,616,500
+    Upsert brighter_pos: 129/129 rows
+    Upsert brighter_pos_detail: 269/269 rows
+  cb1 2026-02-05: 129 nota, 129 ketemu, 129 header, 269 detail, gross=129,221,550
+    Upsert brighter_pos: 97/97 rows
+    Upsert brighter_pos_detail: 216/216 rows
+  cb1 2026-02-06: 97 nota, 97 ketemu, 97 header, 216 detail, gross=58,890,500
+    Upsert brighter_pos: 98/98 rows
+    Upsert brighter_pos_detail: 189/189 rows
+  cb1 2026-02-07: 98 nota, 98 ketemu, 98 header, 189 detail, gross=82,844,000
+    Upsert brighter_pos: 108/108 rows
+    Upsert brighter_pos_detail: 231/231 rows
+  cb1 2026-02-08: 108 nota, 108 ketemu, 108 header, 231 detail, gross=42,851,500
+    Upsert brighter_pos: 125/125 rows
+    Upsert brighter_pos_detail: 241/241 rows
+  cb1 2026-02-09: 125 nota, 125 ketemu, 125 header, 241 detail, gross=264,358,350
+    Upsert brighter_pos: 101/101 rows
+    Upsert brighter_pos_detail: 180/180 rows
+  cb1 2026-02-10: 101 nota, 101 ketemu, 101 header, 180 detail, gross=107,687,000
+    Upsert brighter_pos: 83/83 rows
+    Upsert brighter_pos_detail: 154/154 rows
+  cb1 2026-02-11: 83 nota, 83 ketemu, 83 header, 154 detail, gross=31,403,750
+    Upsert brighter_pos: 112/112 rows
+    Upsert brighter_pos_detail: 228/228 rows
+  cb1 2026-02-12: 112 nota, 112 ketemu, 112 header, 228 detail, gross=69,110,450
+    Upsert brighter_pos: 106/106 rows
+    Upsert brighter_pos_detail: 236/236 rows
+  cb1 2026-02-13: 106 nota, 106 ketemu, 106 header, 236 detail, gross=73,238,000
+    Upsert brighter_pos: 135/135 rows
+    Upsert brighter_pos_detail: 273/273 rows
+  cb1 2026-02-14: 135 nota, 135 ketemu, 135 header, 273 detail, gross=88,403,000
+    Upsert brighter_pos: 142/142 rows
+    Upsert brighter_pos_detail: 291/291 rows
+  cb1 2026-02-15: 142 nota, 142 ketemu, 142 header, 291 detail, gross=114,229,650
+    Upsert brighter_pos: 140/140 rows
+    Upsert brighter_pos_detail: 343/343 rows
+  cb1 2026-02-16: 140 nota, 140 ketemu, 140 header, 343 detail, gross=104,073,800
+    Upsert brighter_pos: 142/142 rows
+    Upsert brighter_pos_detail: 295/295 rows
+  cb1 2026-02-17: 142 nota, 142 ketemu, 142 header, 295 detail, gross=50,334,900
+    Upsert brighter_pos: 148/148 rows
+    Upsert brighter_pos_detail: 280/280 rows
+  cb1 2026-02-18: 148 nota, 148 ketemu, 148 header, 280 detail, gross=70,652,950
+    Upsert brighter_pos: 112/112 rows
+    Upsert brighter_pos_detail: 250/250 rows
+  cb1 2026-02-19: 112 nota, 112 ketemu, 112 header, 250 detail, gross=63,761,500
+    Upsert brighter_pos: 82/82 rows
+    Upsert brighter_pos_detail: 153/153 rows
+  cb1 2026-02-20: 82 nota, 82 ketemu, 82 header, 153 detail, gross=70,871,500
+    Upsert brighter_pos: 106/106 rows
+    Upsert brighter_pos_detail: 246/246 rows
+  cb1 2026-02-21: 106 nota, 106 ketemu, 106 header, 246 detail, gross=69,120,800
+    Upsert brighter_pos: 114/114 rows
+    Upsert brighter_pos_detail: 214/214 rows
+  cb1 2026-02-22: 114 nota, 114 ketemu, 114 header, 214 detail, gross=39,505,600
+    Upsert brighter_pos: 136/136 rows
+    Upsert brighter_pos_detail: 241/241 rows
+  cb1 2026-02-23: 136 nota, 136 ketemu, 136 header, 241 detail, gross=120,736,400
+    Upsert brighter_pos: 102/102 rows
+    Upsert brighter_pos_detail: 247/247 rows
+  cb1 2026-02-24: 102 nota, 102 ketemu, 102 header, 247 detail, gross=50,244,500
+    Upsert brighter_pos: 91/91 rows
+    Upsert brighter_pos_detail: 192/192 rows
+  cb1 2026-02-25: 91 nota, 91 ketemu, 91 header, 192 detail, gross=109,245,500
+    Upsert brighter_pos: 88/88 rows
+    Upsert brighter_pos_detail: 226/226 rows
+  cb1 2026-02-26: 88 nota, 88 ketemu, 88 header, 226 detail, gross=51,286,000
+    Upsert brighter_pos: 122/122 rows
+    Upsert brighter_pos_detail: 249/249 rows
+  cb1 2026-02-27: 122 nota, 122 ketemu, 122 header, 249 detail, gross=42,449,800
+    Upsert brighter_pos: 116/116 rows
+    Upsert brighter_pos_detail: 202/202 rows
+  cb1 2026-02-28: 116 nota, 116 ketemu, 116 header, 202 detail, gross=38,709,549
+    Upsert brighter_pos: 113/113 rows
+    Upsert brighter_pos_detail: 230/230 rows
+  cb2 2026-02-01: 113 nota, 113 ketemu, 113 header, 230 detail, gross=70,237,800
+    Upsert brighter_pos: 195/195 rows
+    Upsert brighter_pos_detail: 375/375 rows
+  cb2 2026-02-02: 195 nota, 195 ketemu, 195 header, 375 detail, gross=157,951,000
+    Upsert brighter_pos: 201/201 rows
+    Upsert brighter_pos_detail: 372/372 rows
+  cb2 2026-02-03: 201 nota, 201 ketemu, 201 header, 372 detail, gross=140,519,500
+    Upsert brighter_pos: 206/206 rows
+    Upsert brighter_pos_detail: 380/380 rows
+  cb2 2026-02-04: 206 nota, 206 ketemu, 206 header, 380 detail, gross=229,963,500
+    Upsert brighter_pos: 195/195 rows
+    Upsert brighter_pos_detail: 344/344 rows
+  cb2 2026-02-05: 195 nota, 195 ketemu, 195 header, 344 detail, gross=156,952,500
+    Upsert brighter_pos: 239/239 rows
+    Upsert brighter_pos_detail: 450/450 rows
+  cb2 2026-02-06: 239 nota, 239 ketemu, 239 header, 450 detail, gross=200,290,400
+    Upsert brighter_pos: 231/231 rows
+    Upsert brighter_pos_detail: 410/410 rows
+  cb2 2026-02-07: 231 nota, 231 ketemu, 231 header, 410 detail, gross=226,318,000
+    Upsert brighter_pos: 238/238 rows
+    Upsert brighter_pos_detail: 453/453 rows
+  cb2 2026-02-08: 238 nota, 238 ketemu, 238 header, 453 detail, gross=196,422,500
+    Upsert brighter_pos: 194/194 rows
+    Upsert brighter_pos_detail: 377/377 rows
+  cb2 2026-02-09: 194 nota, 194 ketemu, 194 header, 377 detail, gross=415,291,500
+    Upsert brighter_pos: 221/221 rows
+    Upsert brighter_pos_detail: 464/464 rows
+  cb2 2026-02-10: 221 nota, 221 ketemu, 221 header, 464 detail, gross=438,091,400
+    Upsert brighter_pos: 231/231 rows
+    Upsert brighter_pos_detail: 411/411 rows
+  cb2 2026-02-11: 231 nota, 231 ketemu, 231 header, 411 detail, gross=461,263,000
+    Upsert brighter_pos: 286/286 rows
+    Upsert brighter_pos_detail: 477/477 rows
+  cb2 2026-02-12: 286 nota, 286 ketemu, 286 header, 477 detail, gross=217,729,500
+    Upsert brighter_pos: 214/214 rows
+    Upsert brighter_pos_detail: 415/415 rows
+  cb2 2026-02-13: 214 nota, 214 ketemu, 214 header, 415 detail, gross=216,868,625
+    Upsert brighter_pos: 324/324 rows
+    Upsert brighter_pos_detail: 500/599 rows
+    Upsert brighter_pos_detail: 599/599 rows
+  cb2 2026-02-14: 324 nota, 324 ketemu, 324 header, 599 detail, gross=226,900,000
+    Upsert brighter_pos: 311/311 rows
+    Upsert brighter_pos_detail: 500/564 rows
+    Upsert brighter_pos_detail: 564/564 rows
+  cb2 2026-02-15: 311 nota, 311 ketemu, 311 header, 564 detail, gross=171,589,800
+    Upsert brighter_pos: 299/299 rows
+    Upsert brighter_pos_detail: 500/531 rows
+    Upsert brighter_pos_detail: 531/531 rows
+  cb2 2026-02-16: 299 nota, 299 ketemu, 299 header, 531 detail, gross=184,914,100
+    Upsert brighter_pos: 259/259 rows
+    Upsert brighter_pos_detail: 454/454 rows
+  cb2 2026-02-17: 259 nota, 259 ketemu, 259 header, 454 detail, gross=91,214,350
+    Upsert brighter_pos: 233/233 rows
+    Upsert brighter_pos_detail: 401/401 rows
+  cb2 2026-02-18: 233 nota, 233 ketemu, 233 header, 401 detail, gross=58,680,500
+    Upsert brighter_pos: 115/115 rows
+    Upsert brighter_pos_detail: 194/194 rows
+  cb2 2026-02-19: 115 nota, 115 ketemu, 115 header, 194 detail, gross=30,008,000
+    Upsert brighter_pos: 119/119 rows
+    Upsert brighter_pos_detail: 184/184 rows
+  cb2 2026-02-20: 119 nota, 119 ketemu, 119 header, 184 detail, gross=86,085,000
+    Upsert brighter_pos: 159/159 rows
+    Upsert brighter_pos_detail: 266/266 rows
+  cb2 2026-02-21: 159 nota, 159 ketemu, 159 header, 266 detail, gross=100,623,000
+    Upsert brighter_pos: 137/137 rows
+    Upsert brighter_pos_detail: 214/214 rows
+  cb2 2026-02-22: 137 nota, 137 ketemu, 137 header, 214 detail, gross=96,686,000
+    Upsert brighter_pos: 152/152 rows
+    Upsert brighter_pos_detail: 247/247 rows
+  cb2 2026-02-23: 152 nota, 152 ketemu, 152 header, 247 detail, gross=179,526,500
+    Upsert brighter_pos: 156/156 rows
+    Upsert brighter_pos_detail: 263/263 rows
+  cb2 2026-02-24: 156 nota, 156 ketemu, 156 header, 263 detail, gross=164,855,000
+    Upsert brighter_pos: 174/174 rows
+    Upsert brighter_pos_detail: 268/268 rows
+  cb2 2026-02-25: 174 nota, 174 ketemu, 174 header, 268 detail, gross=138,390,000
+    Upsert brighter_pos: 149/149 rows
+    Upsert brighter_pos_detail: 242/242 rows
+  cb2 2026-02-26: 149 nota, 149 ketemu, 149 header, 242 detail, gross=85,475,500
+    Upsert brighter_pos: 150/150 rows
+    Upsert brighter_pos_detail: 233/233 rows
+  cb2 2026-02-27: 150 nota, 150 ketemu, 150 header, 233 detail, gross=62,908,000
+    Upsert brighter_pos: 197/197 rows
+    Upsert brighter_pos_detail: 362/362 rows
+  cb2 2026-02-28: 197 nota, 197 ketemu, 197 header, 362 detail, gross=179,003,600
+    Upsert brighter_pos: 69/69 rows
+    Upsert brighter_pos_detail: 150/150 rows
+  cb4 2026-02-01: 69 nota, 69 ketemu, 69 header, 150 detail, gross=31,531,900
+    Upsert brighter_pos: 101/101 rows
+    Upsert brighter_pos_detail: 160/160 rows
+  cb4 2026-02-02: 101 nota, 101 ketemu, 101 header, 160 detail, gross=91,889,000
+    Upsert brighter_pos: 94/94 rows
+    Upsert brighter_pos_detail: 195/195 rows
+  cb4 2026-02-03: 94 nota, 94 ketemu, 94 header, 195 detail, gross=45,535,000
+    Upsert brighter_pos: 84/84 rows
+    Upsert brighter_pos_detail: 177/177 rows
+  cb4 2026-02-04: 84 nota, 84 ketemu, 84 header, 177 detail, gross=69,402,900
+    Upsert brighter_pos: 105/105 rows
+    Upsert brighter_pos_detail: 196/196 rows
+  cb4 2026-02-05: 105 nota, 105 ketemu, 105 header, 196 detail, gross=89,112,500
+    Upsert brighter_pos: 109/109 rows
+    Upsert brighter_pos_detail: 205/205 rows
+  cb4 2026-02-06: 109 nota, 109 ketemu, 109 header, 205 detail, gross=93,420,750
+    Upsert brighter_pos: 85/85 rows
+    Upsert brighter_pos_detail: 185/185 rows
+  cb4 2026-02-07: 85 nota, 85 ketemu, 85 header, 185 detail, gross=209,015,000
+    Upsert brighter_pos: 119/119 rows
+    Upsert brighter_pos_detail: 252/252 rows
+  cb4 2026-02-08: 119 nota, 119 ketemu, 119 header, 252 detail, gross=70,564,500
+    Upsert brighter_pos: 82/82 rows
+    Upsert brighter_pos_detail: 190/190 rows
+  cb4 2026-02-09: 82 nota, 82 ketemu, 82 header, 190 detail, gross=68,804,600
+    Upsert brighter_pos: 117/117 rows
+    Upsert brighter_pos_detail: 227/227 rows
+  cb4 2026-02-10: 117 nota, 117 ketemu, 117 header, 227 detail, gross=63,729,500
+    Upsert brighter_pos: 106/106 rows
+    Upsert brighter_pos_detail: 227/227 rows
+  cb4 2026-02-11: 106 nota, 106 ketemu, 106 header, 227 detail, gross=55,868,100
+    Upsert brighter_pos: 96/96 rows
+    Upsert brighter_pos_detail: 242/242 rows
+  cb4 2026-02-12: 96 nota, 96 ketemu, 96 header, 242 detail, gross=124,434,100
+    Upsert brighter_pos: 112/112 rows
+    Upsert brighter_pos_detail: 254/254 rows
+  cb4 2026-02-13: 112 nota, 112 ketemu, 112 header, 254 detail, gross=96,607,800
+    Upsert brighter_pos: 111/111 rows
+    Upsert brighter_pos_detail: 233/233 rows
+  cb4 2026-02-14: 111 nota, 111 ketemu, 111 header, 233 detail, gross=90,119,500
+    Upsert brighter_pos: 156/156 rows
+    Upsert brighter_pos_detail: 331/331 rows
+  cb4 2026-02-15: 156 nota, 156 ketemu, 156 header, 331 detail, gross=79,816,750
+    Upsert brighter_pos: 163/163 rows
+    Upsert brighter_pos_detail: 311/311 rows
+  cb4 2026-02-16: 163 nota, 163 ketemu, 163 header, 311 detail, gross=72,389,100
+    Upsert brighter_pos: 122/122 rows
+    Upsert brighter_pos_detail: 224/224 rows
+  cb4 2026-02-17: 122 nota, 122 ketemu, 122 header, 224 detail, gross=39,908,750
+    Upsert brighter_pos: 126/126 rows
+    Upsert brighter_pos_detail: 262/262 rows
+  cb4 2026-02-18: 126 nota, 126 ketemu, 126 header, 262 detail, gross=70,752,250
+    Upsert brighter_pos: 59/59 rows
+    Upsert brighter_pos_detail: 106/106 rows
+  cb4 2026-02-19: 59 nota, 59 ketemu, 59 header, 106 detail, gross=19,689,000
+    Upsert brighter_pos: 86/86 rows
+    Upsert brighter_pos_detail: 157/157 rows
+  cb4 2026-02-20: 86 nota, 86 ketemu, 86 header, 157 detail, gross=61,760,750
+    Upsert brighter_pos: 75/75 rows
+    Upsert brighter_pos_detail: 170/170 rows
+  cb4 2026-02-21: 75 nota, 75 ketemu, 75 header, 170 detail, gross=71,728,850
+    Upsert brighter_pos: 71/71 rows
+    Upsert brighter_pos_detail: 115/115 rows
+  cb4 2026-02-22: 71 nota, 71 ketemu, 71 header, 115 detail, gross=28,249,000
+    Upsert brighter_pos: 89/89 rows
+    Upsert brighter_pos_detail: 160/160 rows
+  cb4 2026-02-23: 89 nota, 89 ketemu, 89 header, 160 detail, gross=47,203,500
+    Upsert brighter_pos: 93/93 rows
+    Upsert brighter_pos_detail: 203/203 rows
+  cb4 2026-02-24: 93 nota, 93 ketemu, 93 header, 203 detail, gross=74,327,600
+    Upsert brighter_pos: 59/59 rows
+    Upsert brighter_pos_detail: 126/126 rows
+  cb4 2026-02-25: 59 nota, 59 ketemu, 59 header, 126 detail, gross=49,378,150
+    Upsert brighter_pos: 73/73 rows
+    Upsert brighter_pos_detail: 165/165 rows
+  cb4 2026-02-26: 73 nota, 73 ketemu, 73 header, 165 detail, gross=44,411,500
+    Upsert brighter_pos: 91/91 rows
+    Upsert brighter_pos_detail: 214/214 rows
+  cb4 2026-02-27: 91 nota, 91 ketemu, 91 header, 214 detail, gross=115,464,900
+    Upsert brighter_pos: 107/107 rows
+    Upsert brighter_pos_detail: 186/186 rows
+  cb4 2026-02-28: 107 nota, 107 ketemu, 107 header, 186 detail, gross=36,047,000
+    Upsert brighter_pos: 167/167 rows
+    Upsert brighter_pos_detail: 283/283 rows
+  cb5 2026-02-01: 167 nota, 167 ketemu, 167 header, 283 detail, gross=54,378,750
+    Upsert brighter_pos: 279/279 rows
+    Upsert brighter_pos_detail: 500/593 rows
+    Upsert brighter_pos_detail: 593/593 rows
+  cb5 2026-02-02: 279 nota, 279 ketemu, 279 header, 593 detail, gross=144,226,000
+    Upsert brighter_pos: 266/266 rows
+    Upsert brighter_pos_detail: 500/525 rows
+    Upsert brighter_pos_detail: 525/525 rows
+  cb5 2026-02-03: 266 nota, 266 ketemu, 266 header, 525 detail, gross=110,255,550
+    Upsert brighter_pos: 248/248 rows
+    Upsert brighter_pos_detail: 483/483 rows
+  cb5 2026-02-04: 248 nota, 248 ketemu, 248 header, 483 detail, gross=130,685,500
+    Upsert brighter_pos: 245/245 rows
+    Upsert brighter_pos_detail: 479/479 rows
+  cb5 2026-02-05: 245 nota, 245 ketemu, 245 header, 479 detail, gross=105,830,400
+    Upsert brighter_pos: 244/244 rows
+    Upsert brighter_pos_detail: 490/490 rows
+  cb5 2026-02-06: 244 nota, 244 ketemu, 244 header, 490 detail, gross=149,521,000
+    Upsert brighter_pos: 288/288 rows
+    Upsert brighter_pos_detail: 500/581 rows
+    Upsert brighter_pos_detail: 581/581 rows
+  cb5 2026-02-07: 288 nota, 288 ketemu, 288 header, 581 detail, gross=141,519,300
+    Upsert brighter_pos: 174/174 rows
+    Upsert brighter_pos_detail: 338/338 rows
+  cb5 2026-02-08: 174 nota, 174 ketemu, 174 header, 338 detail, gross=65,088,000
+    Upsert brighter_pos: 302/302 rows
+    Upsert brighter_pos_detail: 500/658 rows
+    Upsert brighter_pos_detail: 658/658 rows
+  cb5 2026-02-09: 302 nota, 302 ketemu, 302 header, 658 detail, gross=181,965,250
+    Upsert brighter_pos: 236/236 rows
+    Upsert brighter_pos_detail: 500/512 rows
+    Upsert brighter_pos_detail: 512/512 rows
+  cb5 2026-02-10: 236 nota, 236 ketemu, 236 header, 512 detail, gross=154,248,200
+    Upsert brighter_pos: 320/320 rows
+    Upsert brighter_pos_detail: 500/622 rows
+    Upsert brighter_pos_detail: 622/622 rows
+  cb5 2026-02-11: 320 nota, 320 ketemu, 320 header, 622 detail, gross=193,786,500
+    Upsert brighter_pos: 287/287 rows
+    Upsert brighter_pos_detail: 500/656 rows
+    Upsert brighter_pos_detail: 656/656 rows
+  cb5 2026-02-12: 287 nota, 287 ketemu, 287 header, 656 detail, gross=172,305,500
+    Upsert brighter_pos: 252/252 rows
+    Upsert brighter_pos_detail: 500/511 rows
+    Upsert brighter_pos_detail: 511/511 rows
+  cb5 2026-02-13: 252 nota, 252 ketemu, 252 header, 511 detail, gross=113,438,700
+    Upsert brighter_pos: 302/302 rows
+    Upsert brighter_pos_detail: 500/615 rows
+    Upsert brighter_pos_detail: 615/615 rows
+  cb5 2026-02-14: 302 nota, 302 ketemu, 302 header, 615 detail, gross=156,195,000
+    Upsert brighter_pos: 170/170 rows
+    Upsert brighter_pos_detail: 404/404 rows
+  cb5 2026-02-15: 170 nota, 170 ketemu, 170 header, 404 detail, gross=95,828,350
+    Upsert brighter_pos: 342/342 rows
+    Upsert brighter_pos_detail: 500/706 rows
+    Upsert brighter_pos_detail: 706/706 rows
+  cb5 2026-02-16: 342 nota, 342 ketemu, 342 header, 706 detail, gross=163,620,750
+    Upsert brighter_pos: 357/357 rows
+    Upsert brighter_pos_detail: 500/670 rows
+    Upsert brighter_pos_detail: 670/670 rows
+  cb5 2026-02-17: 357 nota, 357 ketemu, 357 header, 670 detail, gross=139,938,500
+    Upsert brighter_pos: 316/316 rows
+    Upsert brighter_pos_detail: 500/703 rows
+    Upsert brighter_pos_detail: 703/703 rows
+  cb5 2026-02-18: 316 nota, 316 ketemu, 316 header, 703 detail, gross=148,518,700
+    Upsert brighter_pos: 260/260 rows
+    Upsert brighter_pos_detail: 500/560 rows
+    Upsert brighter_pos_detail: 560/560 rows
+  cb5 2026-02-19: 260 nota, 260 ketemu, 260 header, 560 detail, gross=124,071,800
+    Upsert brighter_pos: 289/289 rows
+    Upsert brighter_pos_detail: 500/636 rows
+    Upsert brighter_pos_detail: 636/636 rows
+  cb5 2026-02-20: 289 nota, 289 ketemu, 289 header, 636 detail, gross=219,411,150
+    Upsert brighter_pos: 262/262 rows
+    Upsert brighter_pos_detail: 500/541 rows
+    Upsert brighter_pos_detail: 541/541 rows
+  cb5 2026-02-21: 262 nota, 262 ketemu, 262 header, 541 detail, gross=270,088,200
+    Upsert brighter_pos: 161/161 rows
+    Upsert brighter_pos_detail: 333/333 rows
+  cb5 2026-02-22: 161 nota, 161 ketemu, 161 header, 333 detail, gross=140,036,000
+    Upsert brighter_pos: 200/200 rows
+    Upsert brighter_pos_detail: 367/367 rows
+  cb5 2026-02-23: 200 nota, 200 ketemu, 200 header, 367 detail, gross=118,859,000
+    Upsert brighter_pos: 217/217 rows
+    Upsert brighter_pos_detail: 430/430 rows
+  cb5 2026-02-24: 217 nota, 217 ketemu, 217 header, 430 detail, gross=169,885,250
+    Upsert brighter_pos: 225/225 rows
+    Upsert brighter_pos_detail: 430/430 rows
+  cb5 2026-02-25: 225 nota, 225 ketemu, 225 header, 430 detail, gross=108,123,170
+    Upsert brighter_pos: 187/187 rows
+    Upsert brighter_pos_detail: 380/380 rows
+  cb5 2026-02-26: 187 nota, 187 ketemu, 187 header, 380 detail, gross=101,477,000
+    Upsert brighter_pos: 294/294 rows
+    Upsert brighter_pos_detail: 500/588 rows
+    Upsert brighter_pos_detail: 588/588 rows
+  cb5 2026-02-27: 294 nota, 294 ketemu, 294 header, 588 detail, gross=114,340,000
+    Upsert brighter_pos: 266/266 rows
+    Upsert brighter_pos_detail: 500/580 rows
+    Upsert brighter_pos_detail: 580/580 rows
+  cb5 2026-02-28: 266 nota, 266 ketemu, 266 header, 580 detail, gross=165,245,500
+  cb1: 28 hari, 3173 nota, 3173 header, 6487 detail, gross=2,310,742,449
+  cb2: 28 hari, 5698 nota, 5698 header, 10180 detail, gross=4,984,758,575
+  cb4: 28 hari, 2760 nota, 2760 header, 5623 detail, gross=2,011,162,250
+  cb5: 28 hari, 7156 nota, 7156 header, 14674 detail, gross=3,952,887,020
+  status: OK rc=0
+
+[04:53:52] [3/123 2026-02 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-02-01 --tanggal-akhir 2026-02-28 --cabang-ids 1,2,4,5 --workers 5
+Date range filter: 2026-02-01 -> 2026-02-28
+Ensuring tables exist (brighter_retur_penjualan, brighter_retur_penjualan_detail)...
+Tables ready.
+Cabangs to sync: [1, 2, 4, 5]
+
+--- Cabang 1 | 2026-02-01 -> 2026-02-28 ---
+ -> Fetching retur headers for Cabang 1, page 1...
+ -> Found 4 retur headers in range.
+ -> Fetching details for 4 transactions...
+    Detail fetch progress: 4/4
+ -> Upserting 4 headers...
+    Upsert brighter_retur_penjualan: 4/4 rows
+ -> Upserting 4 items...
+    Upsert brighter_retur_penjualan_detail: 4/4 rows
+Done Cabang 1
+
+--- Cabang 2 | 2026-02-01 -> 2026-02-28 ---
+ -> Fetching retur headers for Cabang 2, page 1...
+ -> Found 3 retur headers in range.
+ -> Fetching details for 3 transactions...
+    Detail fetch progress: 3/3
+ -> Upserting 3 headers...
+    Upsert brighter_retur_penjualan: 3/3 rows
+ -> Upserting 3 items...
+    Upsert brighter_retur_penjualan_detail: 3/3 rows
+Done Cabang 2
+
+--- Cabang 4 | 2026-02-01 -> 2026-02-28 ---
+ -> Fetching retur headers for Cabang 4, page 1...
+ -> Found 1 retur headers in range.
+ -> Fetching details for 1 transactions...
+    Detail fetch progress: 1/1
+ -> Upserting 1 headers...
+    Upsert brighter_retur_penjualan: 1/1 rows
+ -> Upserting 1 items...
+    Upsert brighter_retur_penjualan_detail: 1/1 rows
+Done Cabang 4
+
+--- Cabang 5 | 2026-02-01 -> 2026-02-28 ---
+ -> Fetching retur headers for Cabang 5, page 1...
+ -> Fetching retur headers for Cabang 5, page 2...
+ -> Found 12 retur headers in range.
+ -> Fetching details for 12 transactions...
+    Detail fetch progress: 12/12
+ -> Upserting 12 headers...
+    Upsert brighter_retur_penjualan: 12/12 rows
+ -> Upserting 13 items...
+    Upsert brighter_retur_penjualan_detail: 13/13 rows
+Done Cabang 5
+
+==================================================
+ALL RETUR PENJUALAN SYNC COMPLETE
+Total Retur Headers synced: 20
+Total Retur Details synced: 21
+==================================================
+  status: OK rc=0
+
+[04:54:01] [4/123 2026-02 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-02-01 --tanggal-akhir 2026-02-28 --cabang-ids 1,2,4,5
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+Rentang: 2026-02-01 .. 2026-02-28
+Cabang: [1, 2, 4, 5]
+
+--- Cabang 1 ---
+       -> tidak ada data di rentang ini (API mengembalikan kosong/404)
+       -> 28 hari rekap di-fetch, 28 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 2 ---
+       -> tidak ada data di rentang ini (API mengembalikan kosong/404)
+       -> 28 hari rekap di-fetch, 28 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 4 ---
+       -> tidak ada data di rentang ini (API mengembalikan kosong/404)
+       -> 28 hari rekap di-fetch, 28 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 5 ---
+       -> tidak ada data di rentang ini (API mengembalikan kosong/404)
+       -> 28 hari rekap di-fetch, 28 di-upsert ke `brighter_penerimaan_rekap`
+
+==================================================
+COMPLETE: 0 baris saldo -> `brighter_saldo_kas_harian`
+          112 baris rekap penerimaan -> `brighter_penerimaan_rekap`
+==================================================
+  status: OK rc=0
+
+[04:57:02] [5/123 2026-02 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-02 --cabang-ids 1,2,4,5 --apply
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-02 --cabang-ids 1,2,4,5 --apply
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-02 | cabang=1,2,4,5 | mode=APPLY (commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 20
+APPLY selesai — data telah di-commit ke DB.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-02 --cabang-ids 1,2,4,5 --apply
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-02 | cabang=1,2,4,5 | mode=APPLY (commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 94
+APPLY selesai — data telah di-commit ke DB.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py --apply
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=APPLY (commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+APPLY selesai — 0 baris di-update, commit OK.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[04:57:09] [6/123 Pelunasan piutang staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pelunasan.py --env --cabang-ids 1,2,4,5
+--- Cabang 1 ---
+       -> 981 records (upsert 981, orphan deleted 0)
+--- Cabang 2 ---
+       -> 1186 records (upsert 1186, orphan deleted 0)
+--- Cabang 4 ---
+       -> 320 records (upsert 320, orphan deleted 0)
+--- Cabang 5 ---
+       -> 472 records (upsert 472, orphan deleted 0)
+==================================================
+PELUNASAN PIUTANG SYNC COMPLETE: 2959 records
+==================================================
+  status: OK rc=0
+
+[04:57:26] [7/123 Finance Brighter pembelian/hutang/piutang]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_finance.py --env --cabang-ids 1,2,4,5 --workers 5
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+Cabangs to sync: [1, 2, 4, 5]
+   cabang 1 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 2 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 4 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 5 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+
+[0/7] Master Supplier (upsert per server, ke tabel `supplier`)...
+       -> https://brighter-kairatu-api.koffiesoft.com : 424 supplier (upsert 424)
+
+--- Cabang 1 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 208 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 49 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 204 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 25 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=98, items=408, media=50 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 981 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 1355 records
+       -> semua piutang sudah punya nama
+Done Cabang 1
+
+--- Cabang 2 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 536 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 90 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 568 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 39 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=180, items=1136, media=78 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 1186 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 2309 records
+       -> 2 record tanpa nama - jalankan backfill nama...
+Login API berhasil
+
+Ditemukan 2 record tanpa nama (2 cust_id unik)
+
+  cust_id 8814 ... Traceback (most recent call last):
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 282, in <module>
+    main()
+    ~~~~^^
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 246, in main
+    cols = fallback_from_master_customer(cur, cust_id)
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 105, in fallback_from_master_customer
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<8 lines>...
+        (cust_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 847, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+pymysql.err.OperationalError: (1054, "Unknown column 'cust_notelp' in 'field list'")
+       -> backfill nama gagal: Command '['C:\\Users\\alfat\\AppData\\Local\\Programs\\Python\\Python314\\python.exe', 'backfill_piutang_cust_nama.py', '--env', '--cabang-ids', '2']' returned non-zero exit status 1.
+Done Cabang 2
+
+--- Cabang 4 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 354 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 106 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 344 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 37 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=212, items=688, media=74 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 320 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 563 records
+       -> semua piutang sudah punya nama
+Done Cabang 4
+
+--- Cabang 5 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 1494 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 341 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 1280 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 149 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=682, items=2560, media=298 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 472 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 666 records
+       -> 2 record tanpa nama - jalankan backfill nama...
+Login API berhasil
+
+Ditemukan 1 record tanpa nama (1 cust_id unik)
+
+  cust_id 9321 ... Traceback (most recent call last):
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 282, in <module>
+    main()
+    ~~~~^^
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 246, in main
+    cols = fallback_from_master_customer(cur, cust_id)
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 105, in fallback_from_master_customer
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<8 lines>...
+        (cust_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 847, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+pymysql.err.OperationalError: (1054, "Unknown column 'cust_notelp' in 'field list'")
+       -> backfill nama gagal: Command '['C:\\Users\\alfat\\AppData\\Local\\Programs\\Python\\Python314\\python.exe', 'backfill_piutang_cust_nama.py', '--env', '--cabang-ids', '5']' returned non-zero exit status 1.
+Done Cabang 5
+
+==================================================
+FINANCE SYNC COMPLETE
+  supplier                       -> 424 records (upsert per server)
+  pembelian                      -> 2592 records
+  pelunasan_hutang               -> 586 records
+  pelunasan_hutang_detail        -> 2396 records
+  pelunasan_hutang_foto          -> 250 records
+  pelunasan_piutang              -> 2959 records
+  piutang_customer_detail        -> 4893 records
+==================================================
+  status: OK rc=0
+
+[05:02:52] [8/123 Upsert brighter_rekap_bulanan_dashboard dari dash_*]
+  range=2026-02-01..2026-02-28 cabang_aktif={'2026-02': [1, 2, 4, 5]}
+  upsert cb1 2026-02: penjualan=2,310,742,449 retur=2,430,000 cash_in=2,455,401,661
+  upsert cb2 2026-02: penjualan=4,984,758,575 retur=2,395,000 cash_in=3,430,701,408
+  upsert cb4 2026-02: penjualan=2,011,162,250 retur=16,000 cash_in=395,447,098
+  upsert cb5 2026-02: penjualan=3,952,887,020 retur=15,673,500 cash_in=1,404,706,272
+  status: OK
+
+[05:02:53] [9/123 Landing POS cb1 2026-02-01]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-01 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 103 baris brighter_pos...
+   0/103 [>---------------------------]   0%
+  11/103 [==>-------------------------]  10%
+ 103/103 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 103 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:02:56] [10/123 Landing POS cb1 2026-02-02]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-02 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 117 baris brighter_pos...
+   0/117 [>---------------------------]   0%
+  12/117 [==>-------------------------]  10%
+ 117/117 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 117 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:02:59] [11/123 Landing POS cb1 2026-02-03]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-03 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 118 baris brighter_pos...
+   0/118 [>---------------------------]   0%
+  12/118 [==>-------------------------]  10%
+ 118/118 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 118 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:02] [12/123 Landing POS cb1 2026-02-04]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-04 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 110 baris brighter_pos...
+   0/110 [>---------------------------]   0%
+  11/110 [==>-------------------------]  10%
+ 110/110 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 110 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:05] [13/123 Landing POS cb1 2026-02-05]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-05 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 130 baris brighter_pos...
+   0/130 [>---------------------------]   0%
+  13/130 [==>-------------------------]  10%
+ 130/130 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 130 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:08] [14/123 Landing POS cb1 2026-02-06]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-06 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 97 baris brighter_pos...
+  0/97 [>---------------------------]   0%
+ 10/97 [==>-------------------------]  10%
+ 97/97 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 97 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:10] [15/123 Landing POS cb1 2026-02-07]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-07 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 99 baris brighter_pos...
+  0/99 [>---------------------------]   0%
+ 10/99 [==>-------------------------]  10%
+ 99/99 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 99 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:13] [16/123 Landing POS cb1 2026-02-08]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-08 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 110 baris brighter_pos...
+   0/110 [>---------------------------]   0%
+  11/110 [==>-------------------------]  10%
+ 110/110 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 110 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:16] [17/123 Landing POS cb1 2026-02-09]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-09 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 125 baris brighter_pos...
+   0/125 [>---------------------------]   0%
+  13/125 [==>-------------------------]  10%
+ 125/125 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 125 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:19] [18/123 Landing POS cb1 2026-02-10]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-10 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 104 baris brighter_pos...
+   0/104 [>---------------------------]   0%
+  11/104 [==>-------------------------]  10%
+ 104/104 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 104 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:21] [19/123 Landing POS cb1 2026-02-11]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-11 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 86 baris brighter_pos...
+  0/86 [>---------------------------]   0%
+  9/86 [==>-------------------------]  10%
+ 86/86 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 86 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:24] [20/123 Landing POS cb1 2026-02-12]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-12 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 116 baris brighter_pos...
+   0/116 [>---------------------------]   0%
+  12/116 [==>-------------------------]  10%
+ 116/116 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 116 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:27] [21/123 Landing POS cb1 2026-02-13]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-13 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 108 baris brighter_pos...
+   0/108 [>---------------------------]   0%
+  11/108 [==>-------------------------]  10%
+ 108/108 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 108 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:29] [22/123 Landing POS cb1 2026-02-14]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-14 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 142 baris brighter_pos...
+   0/142 [>---------------------------]   0%
+  15/142 [==>-------------------------]  10%
+ 142/142 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 142 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:32] [23/123 Landing POS cb1 2026-02-15]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-15 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 146 baris brighter_pos...
+   0/146 [>---------------------------]   0%
+  15/146 [==>-------------------------]  10%
+ 146/146 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 146 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:35] [24/123 Landing POS cb1 2026-02-16]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-16 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 152 baris brighter_pos...
+   0/152 [>---------------------------]   0%
+  16/152 [==>-------------------------]  10%
+ 152/152 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 152 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:38] [25/123 Landing POS cb1 2026-02-17]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-17 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 147 baris brighter_pos...
+   0/147 [>---------------------------]   0%
+  15/147 [==>-------------------------]  10%
+ 147/147 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 147 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:41] [26/123 Landing POS cb1 2026-02-18]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-18 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 151 baris brighter_pos...
+   0/151 [>---------------------------]   0%
+  16/151 [==>-------------------------]  10%
+ 151/151 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 151 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:44] [27/123 Landing POS cb1 2026-02-19]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-19 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 113 baris brighter_pos...
+   0/113 [>---------------------------]   0%
+  12/113 [==>-------------------------]  10%
+ 113/113 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 113 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:47] [28/123 Landing POS cb1 2026-02-20]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-20 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 82 baris brighter_pos...
+  0/82 [>---------------------------]   0%
+  9/82 [===>------------------------]  10%
+ 82/82 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 82 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:50] [29/123 Landing POS cb1 2026-02-21]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-21 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 106 baris brighter_pos...
+   0/106 [>---------------------------]   0%
+  11/106 [==>-------------------------]  10%
+ 106/106 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 106 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:53] [30/123 Landing POS cb1 2026-02-22]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-22 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 121 baris brighter_pos...
+   0/121 [>---------------------------]   0%
+  13/121 [===>------------------------]  10%
+ 121/121 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 121 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:56] [31/123 Landing POS cb1 2026-02-23]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-23 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 136 baris brighter_pos...
+   0/136 [>---------------------------]   0%
+  14/136 [==>-------------------------]  10%
+ 136/136 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 136 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:03:58] [32/123 Landing POS cb1 2026-02-24]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-24 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 102 baris brighter_pos...
+   0/102 [>---------------------------]   0%
+  11/102 [===>------------------------]  10%
+ 102/102 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 102 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:01] [33/123 Landing POS cb1 2026-02-25]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-25 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 93 baris brighter_pos...
+  0/93 [>---------------------------]   0%
+ 10/93 [===>------------------------]  10%
+ 93/93 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 93 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:04] [34/123 Landing POS cb1 2026-02-26]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-26 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 88 baris brighter_pos...
+  0/88 [>---------------------------]   0%
+  9/88 [==>-------------------------]  10%
+ 88/88 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 88 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:07] [35/123 Landing POS cb1 2026-02-27]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-27 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 132 baris brighter_pos...
+   0/132 [>---------------------------]   0%
+  14/132 [==>-------------------------]  10%
+ 132/132 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 132 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:10] [36/123 Landing POS cb1 2026-02-28]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-02-28 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 116 baris brighter_pos...
+   0/116 [>---------------------------]   0%
+  12/116 [==>-------------------------]  10%
+ 116/116 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 116 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:12] [37/123 Landing POS cb2 2026-02-01]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-01 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 113 baris brighter_pos...
+   0/113 [>---------------------------]   0%
+  12/113 [==>-------------------------]  10%
+ 113/113 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 113 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:15] [38/123 Landing POS cb2 2026-02-02]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-02 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 195 baris brighter_pos...
+   0/195 [>---------------------------]   0%
+  20/195 [==>-------------------------]  10%
+ 195/195 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 195 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:18] [39/123 Landing POS cb2 2026-02-03]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-03 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 202 baris brighter_pos...
+   0/202 [>---------------------------]   0%
+  21/202 [==>-------------------------]  10%
+ 202/202 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 202 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:20] [40/123 Landing POS cb2 2026-02-04]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-04 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 208 baris brighter_pos...
+   0/208 [>---------------------------]   0%
+  21/208 [==>-------------------------]  10%
+ 208/208 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 208 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:23] [41/123 Landing POS cb2 2026-02-05]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-05 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 195 baris brighter_pos...
+   0/195 [>---------------------------]   0%
+  20/195 [==>-------------------------]  10%
+ 195/195 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 195 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:26] [42/123 Landing POS cb2 2026-02-06]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-06 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 239 baris brighter_pos...
+   0/239 [>---------------------------]   0%
+  24/239 [==>-------------------------]  10%
+ 239/239 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 239 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:28] [43/123 Landing POS cb2 2026-02-07]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-07 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 232 baris brighter_pos...
+   0/232 [>---------------------------]   0%
+  24/232 [==>-------------------------]  10%
+ 232/232 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 232 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:31] [44/123 Landing POS cb2 2026-02-08]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-08 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 239 baris brighter_pos...
+   0/239 [>---------------------------]   0%
+  24/239 [==>-------------------------]  10%
+ 239/239 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 239 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:34] [45/123 Landing POS cb2 2026-02-09]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-09 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 194 baris brighter_pos...
+   0/194 [>---------------------------]   0%
+  20/194 [==>-------------------------]  10%
+ 194/194 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 194 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:37] [46/123 Landing POS cb2 2026-02-10]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-10 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 222 baris brighter_pos...
+   0/222 [>---------------------------]   0%
+  23/222 [==>-------------------------]  10%
+ 222/222 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 222 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:40] [47/123 Landing POS cb2 2026-02-11]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-11 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 231 baris brighter_pos...
+   0/231 [>---------------------------]   0%
+  24/231 [==>-------------------------]  10%
+ 231/231 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 231 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:42] [48/123 Landing POS cb2 2026-02-12]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-12 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 287 baris brighter_pos...
+   0/287 [>---------------------------]   0%
+  29/287 [==>-------------------------]  10%
+ 287/287 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 287 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:45] [49/123 Landing POS cb2 2026-02-13]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-13 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 214 baris brighter_pos...
+   0/214 [>---------------------------]   0%
+  22/214 [==>-------------------------]  10%
+ 214/214 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 214 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:48] [50/123 Landing POS cb2 2026-02-14]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-14 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 324 baris brighter_pos...
+   0/324 [>---------------------------]   0%
+  33/324 [==>-------------------------]  10%
+ 324/324 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 324 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:50] [51/123 Landing POS cb2 2026-02-15]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-15 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 312 baris brighter_pos...
+   0/312 [>---------------------------]   0%
+  32/312 [==>-------------------------]  10%
+ 312/312 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 312 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:53] [52/123 Landing POS cb2 2026-02-16]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-16 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 300 baris brighter_pos...
+   0/300 [>---------------------------]   0%
+  30/300 [==>-------------------------]  10%
+ 300/300 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 300 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:56] [53/123 Landing POS cb2 2026-02-17]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-17 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 259 baris brighter_pos...
+   0/259 [>---------------------------]   0%
+  26/259 [==>-------------------------]  10%
+ 259/259 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 259 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:04:59] [54/123 Landing POS cb2 2026-02-18]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-18 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 233 baris brighter_pos...
+   0/233 [>---------------------------]   0%
+  24/233 [==>-------------------------]  10%
+ 233/233 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 233 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:02] [55/123 Landing POS cb2 2026-02-19]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-19 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 115 baris brighter_pos...
+   0/115 [>---------------------------]   0%
+  12/115 [==>-------------------------]  10%
+ 115/115 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 115 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:04] [56/123 Landing POS cb2 2026-02-20]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-20 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 119 baris brighter_pos...
+   0/119 [>---------------------------]   0%
+  12/119 [==>-------------------------]  10%
+ 119/119 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 119 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:07] [57/123 Landing POS cb2 2026-02-21]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-21 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 159 baris brighter_pos...
+   0/159 [>---------------------------]   0%
+  16/159 [==>-------------------------]  10%
+ 159/159 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 159 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:10] [58/123 Landing POS cb2 2026-02-22]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-22 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 137 baris brighter_pos...
+   0/137 [>---------------------------]   0%
+  14/137 [==>-------------------------]  10%
+ 137/137 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 137 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:13] [59/123 Landing POS cb2 2026-02-23]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-23 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 152 baris brighter_pos...
+   0/152 [>---------------------------]   0%
+  16/152 [==>-------------------------]  10%
+ 152/152 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 152 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:15] [60/123 Landing POS cb2 2026-02-24]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-24 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 156 baris brighter_pos...
+   0/156 [>---------------------------]   0%
+  16/156 [==>-------------------------]  10%
+ 156/156 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 156 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:19] [61/123 Landing POS cb2 2026-02-25]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-25 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 174 baris brighter_pos...
+   0/174 [>---------------------------]   0%
+  18/174 [==>-------------------------]  10%
+ 174/174 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 174 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:21] [62/123 Landing POS cb2 2026-02-26]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-26 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 149 baris brighter_pos...
+   0/149 [>---------------------------]   0%
+  15/149 [==>-------------------------]  10%
+ 149/149 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 149 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:24] [63/123 Landing POS cb2 2026-02-27]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-27 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 151 baris brighter_pos...
+   0/151 [>---------------------------]   0%
+  16/151 [==>-------------------------]  10%
+ 151/151 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 151 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:27] [64/123 Landing POS cb2 2026-02-28]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-02-28 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 197 baris brighter_pos...
+   0/197 [>---------------------------]   0%
+  20/197 [==>-------------------------]  10%
+ 197/197 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 197 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:29] [65/123 Landing POS cb4 2026-02-01]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-01 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 69 baris brighter_pos...
+  0/69 [>---------------------------]   0%
+  7/69 [==>-------------------------]  10%
+ 69/69 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 69 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:32] [66/123 Landing POS cb4 2026-02-02]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-02 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 102 baris brighter_pos...
+   0/102 [>---------------------------]   0%
+  11/102 [===>------------------------]  10%
+ 102/102 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 102 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:35] [67/123 Landing POS cb4 2026-02-03]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-03 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 94 baris brighter_pos...
+  0/94 [>---------------------------]   0%
+ 10/94 [==>-------------------------]  10%
+ 94/94 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 94 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:38] [68/123 Landing POS cb4 2026-02-04]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-04 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 84 baris brighter_pos...
+  0/84 [>---------------------------]   0%
+  9/84 [===>------------------------]  10%
+ 84/84 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 84 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:41] [69/123 Landing POS cb4 2026-02-05]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-05 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 105 baris brighter_pos...
+   0/105 [>---------------------------]   0%
+  11/105 [==>-------------------------]  10%
+ 105/105 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 105 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:43] [70/123 Landing POS cb4 2026-02-06]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-06 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 109 baris brighter_pos...
+   0/109 [>---------------------------]   0%
+  11/109 [==>-------------------------]  10%
+ 109/109 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 109 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:46] [71/123 Landing POS cb4 2026-02-07]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-07 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 86 baris brighter_pos...
+  0/86 [>---------------------------]   0%
+  9/86 [==>-------------------------]  10%
+ 86/86 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 86 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:49] [72/123 Landing POS cb4 2026-02-08]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-08 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 119 baris brighter_pos...
+   0/119 [>---------------------------]   0%
+  12/119 [==>-------------------------]  10%
+ 119/119 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 119 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:52] [73/123 Landing POS cb4 2026-02-09]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-09 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 83 baris brighter_pos...
+  0/83 [>---------------------------]   0%
+  9/83 [===>------------------------]  10%
+ 83/83 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 83 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:55] [74/123 Landing POS cb4 2026-02-10]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-10 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 118 baris brighter_pos...
+   0/118 [>---------------------------]   0%
+  12/118 [==>-------------------------]  10%
+ 118/118 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 118 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:05:58] [75/123 Landing POS cb4 2026-02-11]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-11 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 108 baris brighter_pos...
+   0/108 [>---------------------------]   0%
+  11/108 [==>-------------------------]  10%
+ 108/108 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 108 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:00] [76/123 Landing POS cb4 2026-02-12]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-12 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 96 baris brighter_pos...
+  0/96 [>---------------------------]   0%
+ 10/96 [==>-------------------------]  10%
+ 96/96 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 96 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:03] [77/123 Landing POS cb4 2026-02-13]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-13 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 112 baris brighter_pos...
+   0/112 [>---------------------------]   0%
+  12/112 [===>------------------------]  10%
+ 112/112 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 112 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:06] [78/123 Landing POS cb4 2026-02-14]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-14 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 111 baris brighter_pos...
+   0/111 [>---------------------------]   0%
+  12/111 [===>------------------------]  10%
+ 111/111 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 111 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:08] [79/123 Landing POS cb4 2026-02-15]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-15 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 156 baris brighter_pos...
+   0/156 [>---------------------------]   0%
+   1/156 [>---------------------------]   0%
+ 156/156 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 156 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:12] [80/123 Landing POS cb4 2026-02-16]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-16 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 164 baris brighter_pos...
+   0/164 [>---------------------------]   0%
+  17/164 [==>-------------------------]  10%
+ 164/164 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 164 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:15] [81/123 Landing POS cb4 2026-02-17]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-17 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 122 baris brighter_pos...
+   0/122 [>---------------------------]   0%
+  13/122 [==>-------------------------]  10%
+ 122/122 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 122 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:18] [82/123 Landing POS cb4 2026-02-18]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-18 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 126 baris brighter_pos...
+   0/126 [>---------------------------]   0%
+  13/126 [==>-------------------------]  10%
+ 126/126 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 126 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:21] [83/123 Landing POS cb4 2026-02-19]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-19 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 59 baris brighter_pos...
+  0/59 [>---------------------------]   0%
+  6/59 [==>-------------------------]  10%
+ 59/59 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 59 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:24] [84/123 Landing POS cb4 2026-02-20]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-20 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 87 baris brighter_pos...
+  0/87 [>---------------------------]   0%
+  9/87 [==>-------------------------]  10%
+ 87/87 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 87 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:27] [85/123 Landing POS cb4 2026-02-21]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-21 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 77 baris brighter_pos...
+  0/77 [>---------------------------]   0%
+  8/77 [==>-------------------------]  10%
+ 77/77 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 77 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:30] [86/123 Landing POS cb4 2026-02-22]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-22 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 73 baris brighter_pos...
+  0/73 [>---------------------------]   0%
+  8/73 [===>------------------------]  10%
+ 73/73 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 73 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:33] [87/123 Landing POS cb4 2026-02-23]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-23 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 90 baris brighter_pos...
+  0/90 [>---------------------------]   0%
+  9/90 [==>-------------------------]  10%
+ 90/90 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 90 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:36] [88/123 Landing POS cb4 2026-02-24]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-24 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 95 baris brighter_pos...
+  0/95 [>---------------------------]   0%
+ 10/95 [==>-------------------------]  10%
+ 95/95 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 95 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:39] [89/123 Landing POS cb4 2026-02-25]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-25 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 61 baris brighter_pos...
+  0/61 [>---------------------------]   0%
+  7/61 [===>------------------------]  11%
+ 61/61 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 61 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:42] [90/123 Landing POS cb4 2026-02-26]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-26 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 73 baris brighter_pos...
+  0/73 [>---------------------------]   0%
+  8/73 [===>------------------------]  10%
+ 73/73 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 73 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:45] [91/123 Landing POS cb4 2026-02-27]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-27 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 93 baris brighter_pos...
+  0/93 [>---------------------------]   0%
+ 10/93 [===>------------------------]  10%
+ 93/93 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 93 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:47] [92/123 Landing POS cb4 2026-02-28]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-02-28 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 108 baris brighter_pos...
+   0/108 [>---------------------------]   0%
+  11/108 [==>-------------------------]  10%
+ 108/108 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 108 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:50] [93/123 Landing POS cb5 2026-02-01]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-01 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 167 baris brighter_pos...
+   0/167 [>---------------------------]   0%
+  17/167 [==>-------------------------]  10%
+ 167/167 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 167 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:53] [94/123 Landing POS cb5 2026-02-02]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-02 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 279 baris brighter_pos...
+   0/279 [>---------------------------]   0%
+  28/279 [==>-------------------------]  10%
+ 279/279 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 279 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:56] [95/123 Landing POS cb5 2026-02-03]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-03 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 266 baris brighter_pos...
+   0/266 [>---------------------------]   0%
+  27/266 [==>-------------------------]  10%
+ 266/266 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 266 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:06:59] [96/123 Landing POS cb5 2026-02-04]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-04 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 248 baris brighter_pos...
+   0/248 [>---------------------------]   0%
+  25/248 [==>-------------------------]  10%
+ 248/248 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 248 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:01] [97/123 Landing POS cb5 2026-02-05]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-05 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 245 baris brighter_pos...
+   0/245 [>---------------------------]   0%
+  25/245 [==>-------------------------]  10%
+ 245/245 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 245 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:04] [98/123 Landing POS cb5 2026-02-06]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-06 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 244 baris brighter_pos...
+   0/244 [>---------------------------]   0%
+  25/244 [==>-------------------------]  10%
+ 244/244 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 244 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:07] [99/123 Landing POS cb5 2026-02-07]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-07 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 288 baris brighter_pos...
+   0/288 [>---------------------------]   0%
+  29/288 [==>-------------------------]  10%
+ 288/288 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 288 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:10] [100/123 Landing POS cb5 2026-02-08]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-08 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 174 baris brighter_pos...
+   0/174 [>---------------------------]   0%
+  18/174 [==>-------------------------]  10%
+ 174/174 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 174 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:13] [101/123 Landing POS cb5 2026-02-09]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-09 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 302 baris brighter_pos...
+   0/302 [>---------------------------]   0%
+  31/302 [==>-------------------------]  10%
+ 302/302 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 302 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:16] [102/123 Landing POS cb5 2026-02-10]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-10 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 236 baris brighter_pos...
+   0/236 [>---------------------------]   0%
+  24/236 [==>-------------------------]  10%
+ 236/236 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 236 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:18] [103/123 Landing POS cb5 2026-02-11]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-11 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 320 baris brighter_pos...
+   0/320 [>---------------------------]   0%
+  32/320 [==>-------------------------]  10%
+ 320/320 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 320 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:21] [104/123 Landing POS cb5 2026-02-12]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-12 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 287 baris brighter_pos...
+   0/287 [>---------------------------]   0%
+  29/287 [==>-------------------------]  10%
+ 287/287 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 287 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:24] [105/123 Landing POS cb5 2026-02-13]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-13 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 252 baris brighter_pos...
+   0/252 [>---------------------------]   0%
+  26/252 [==>-------------------------]  10%
+ 252/252 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 252 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:27] [106/123 Landing POS cb5 2026-02-14]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-14 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 302 baris brighter_pos...
+   0/302 [>---------------------------]   0%
+  31/302 [==>-------------------------]  10%
+ 302/302 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 302 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:30] [107/123 Landing POS cb5 2026-02-15]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-15 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 171 baris brighter_pos...
+   0/171 [>---------------------------]   0%
+  18/171 [==>-------------------------]  10%
+ 171/171 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 171 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:32] [108/123 Landing POS cb5 2026-02-16]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-16 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 342 baris brighter_pos...
+   0/342 [>---------------------------]   0%
+  35/342 [==>-------------------------]  10%
+ 342/342 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 342 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:35] [109/123 Landing POS cb5 2026-02-17]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-17 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 357 baris brighter_pos...
+   0/357 [>---------------------------]   0%
+  36/357 [==>-------------------------]  10%
+ 357/357 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 357 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:38] [110/123 Landing POS cb5 2026-02-18]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-18 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 316 baris brighter_pos...
+   0/316 [>---------------------------]   0%
+  32/316 [==>-------------------------]  10%
+ 316/316 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 316 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:40] [111/123 Landing POS cb5 2026-02-19]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-19 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 260 baris brighter_pos...
+   0/260 [>---------------------------]   0%
+  26/260 [==>-------------------------]  10%
+ 260/260 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 260 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:43] [112/123 Landing POS cb5 2026-02-20]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-20 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 289 baris brighter_pos...
+   0/289 [>---------------------------]   0%
+  29/289 [==>-------------------------]  10%
+ 289/289 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 289 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:46] [113/123 Landing POS cb5 2026-02-21]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-21 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 262 baris brighter_pos...
+   0/262 [>---------------------------]   0%
+  27/262 [==>-------------------------]  10%
+ 262/262 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 262 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:49] [114/123 Landing POS cb5 2026-02-22]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-22 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 161 baris brighter_pos...
+   0/161 [>---------------------------]   0%
+  17/161 [==>-------------------------]  10%
+ 161/161 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 161 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:51] [115/123 Landing POS cb5 2026-02-23]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-23 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 201 baris brighter_pos...
+   0/201 [>---------------------------]   0%
+  21/201 [==>-------------------------]  10%
+ 201/201 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 201 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:07:57] [116/123 Landing POS cb5 2026-02-24]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-24 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 217 baris brighter_pos...
+   0/217 [>---------------------------]   0%
+  22/217 [==>-------------------------]  10%
+ 217/217 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 217 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:08:00] [117/123 Landing POS cb5 2026-02-25]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-25 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 225 baris brighter_pos...
+   0/225 [>---------------------------]   0%
+  23/225 [==>-------------------------]  10%
+ 225/225 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 225 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:08:03] [118/123 Landing POS cb5 2026-02-26]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-26 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 189 baris brighter_pos...
+   0/189 [>---------------------------]   0%
+  19/189 [==>-------------------------]  10%
+ 189/189 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 189 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:08:05] [119/123 Landing POS cb5 2026-02-27]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-27 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 295 baris brighter_pos...
+   0/295 [>---------------------------]   0%
+  30/295 [==>-------------------------]  10%
+ 295/295 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 295 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:08:08] [120/123 Landing POS cb5 2026-02-28]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 5 --date 2026-02-28 --refresh
+Mode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.
+Memproses 266 baris brighter_pos...
+   0/266 [>---------------------------]   0%
+  27/266 [==>-------------------------]  10%
+ 266/266 [============================] 100%
+Selesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 266 | Dilewati (tanpa detail): 0
+Idempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.
+  status: OK rc=0
+
+[05:08:11] [121/123 Landing Retur -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe migrate_retur_to_app.py --yes
+  [detail] 90 baris detail dilewati (tidak ada pos_transaction/items).
+============================================================
+Rencana migrasi retur penjualan -> csb_db.retur_penjualan
+  Header : 191 retur
+  Total  : 258,963,000
+  Customer: 33
+  Detail : 137 baris (dari pos_transaction_items yang cocok)
+============================================================
+  Header baru: 1, Header sudah ada: 190
+
+Selesai. Header baru: 1, Detail ditambahkan: 137
+  status: OK rc=0
+
+[05:08:28] [122/123 Landing Piutang -> Clarify]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan migrate:legacy-piutang
+Menyiapkan migrasi: 5086 faktur, 5085 pos_transactions sudah ada.
+    0/5086 [>---------------------------]   0%
+  500/5086 [==>-------------------------]   9%
+ 1000/5086 [=====>----------------------]  19%
+ 1500/5086 [========>-------------------]  29%
+ 2000/5086 [===========>----------------]  39%
+ 2500/5086 [=============>--------------]  49%
+ 3000/5086 [================>-----------]  58%
+ 3500/5086 [===================>--------]  68%
+ 4000/5086 [======================>-----]  78%
+ 4500/5086 [========================>---]  88%
+ 5000/5086 [===========================>]  98%
+ 5086/5086 [============================] 100%
+
+=== Ringkasan migrasi piutang ===
+Faktur diproses          : 5,085
+pos_transactions dibuat  : 0
+pos_transactions diubah  : 5,085
+piutang di-upsert        : 5,085
+ledger invoice dibuat    : 0
+Skip duplikat faktur     : 0
+Skip total mendekati 0   : 1
+Tanpa customer terdaftar : 18
+Pelunasan piutang & kas bank belum dimigrasi: sumber legacy (brighter_transaksi_pelunasan_piutang) tidak memiliki tautan ke faktur dan belum ada detail per-faktur.
+  status: OK rc=0
+
+[05:33:53] [123/123 Landing Pelunasan Piutang -> Clarify]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan backfill:piutang-pelunasan
+Tidak ada piutang paid yang belum punya dokumen pelunasan.
+  status: OK rc=0
+
+================================================================================
+SELESAI OK

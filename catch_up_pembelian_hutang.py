@@ -8,6 +8,7 @@ menduplikat:
     1. Upsert master supplier ke csb_db.supplier (per server).
     2. Sync header pembelian -> brighter_persediaan_pembelian (upsert).
     3. Sync pelunasan hutang (header + detail + foto) -> brighter_transaksi_*
+       lalu reconcile ke supplier_hutang_pelunasan* (Clarify legacy, tanpa kas_bank)
     4. Refresh staging detail pembelian (brighter_persediaan_pembelian_detail)
        via cek_produk_pembelian.py (delete + data-latest per cabang).
     5. Migrasi pembelian/pembelian_detail ke app (migrate_pembelian_to_app.py),
@@ -46,6 +47,7 @@ from sync_finance import (
     load_cabang_urls,
     map_csb_supplier,
     map_record,
+    sync_clarify_hutang_pelunasan,
     sync_headers,
     upsert_batch,
     upsert_csb_supplier,
@@ -232,6 +234,19 @@ def main():
                         print(f"    error {label} fhutang {h.get('fhutang_id')}: {e}")
             totals[child] += upsert_batch(db, TABLES[child], child_rows, c_id)
             print(f"       -> {len(child_rows)} {label}")
+
+        print("       -> reconcile Clarify legacy pelunasan hutang...")
+        try:
+            clarify_counts = sync_clarify_hutang_pelunasan(db, c_id)
+            print(
+                "          Clarify upsert "
+                f"header={clarify_counts['header']}, "
+                f"items={clarify_counts['item']}, "
+                f"media={clarify_counts['media']} "
+                "(tanpa posting kas_bank)"
+            )
+        except Exception as e:
+            print(f"          ERROR reconcile Clarify pelunasan hutang: {e}")
         count_ceks += 1
 
     print(f"\nSync staging selesai. Cabang diprocess: {count_ceks}")

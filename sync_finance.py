@@ -36,6 +36,12 @@ TABLES = {
     "piutang_customer_detail": "brighter_transaksi_piutang_customer_detail",
 }
 
+CLARIFY_HUTANG_TABLES = {
+    "header": "supplier_hutang_pelunasan",
+    "item": "supplier_hutang_pelunasan_items",
+    "media": "supplier_hutang_pelunasan_media",
+}
+
 # Kolom bertipe tanggal (dengan nama setelah strip prefix) yang cukup disimpan
 # sebagai DATE tanpa komponen waktu agar data tabel pelunasan bersih.
 DATE_COLS_BY_TABLE = {
@@ -273,6 +279,254 @@ def upsert_batch(db, table, records, cabang_id):
     db.ensure_table(table, first, DATE_COLS_BY_TABLE.get(table, set()))
     db.upsert_records(table, records, cabang_id)
     return len(records)
+
+
+def ensure_clarify_hutang_tables(db):
+    """Ensure Clarify-owned legacy supplier debt payment tables exist.
+
+    These tables mirror Brighter pelunasan hutang into Clarify shape without
+    posting anything to kas_bank. Upserts are keyed by legacy ids so this can be
+    run repeatedly by the integrator without duplicating rows.
+    """
+    cur = db.conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS supplier_hutang_pelunasan (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            legacy_fhutang_id BIGINT NOT NULL,
+            cabang_id BIGINT UNSIGNED NOT NULL,
+            supplier_id BIGINT UNSIGNED NULL,
+            supplier_kode VARCHAR(50) NULL,
+            supplier_nama VARCHAR(200) NULL,
+            pelunasan_number VARCHAR(100) NOT NULL,
+            tanggal DATE NULL,
+            payment_method VARCHAR(50) NULL,
+            akun_id BIGINT NULL,
+            total_pelunasan DECIMAL(15,2) NOT NULL DEFAULT 0,
+            keterangan TEXT NULL,
+            status VARCHAR(30) NOT NULL DEFAULT 'posted',
+            source_system VARCHAR(30) NOT NULL DEFAULT 'brighter_legacy',
+            is_legacy TINYINT(1) NOT NULL DEFAULT 1,
+            legacy_stat_dok VARCHAR(50) NULL,
+            legacy_post VARCHAR(50) NULL,
+            legacy_date_post DATE NULL,
+            legacy_created_by VARCHAR(100) NULL,
+            legacy_created_at DATETIME NULL,
+            legacy_updated_by VARCHAR(100) NULL,
+            legacy_updated_at DATETIME NULL,
+            synced_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY uq_supplier_hutang_pelunasan_legacy (legacy_fhutang_id, cabang_id),
+            KEY idx_supplier_hutang_pelunasan_cabang_tanggal (cabang_id, tanggal),
+            KEY idx_supplier_hutang_pelunasan_supplier (supplier_id),
+            KEY idx_supplier_hutang_pelunasan_status (status)
+        )
+    """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS supplier_hutang_pelunasan_items (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            supplier_hutang_pelunasan_id BIGINT UNSIGNED NOT NULL,
+            legacy_detail_id BIGINT NOT NULL,
+            legacy_fhutang_id BIGINT NOT NULL,
+            cabang_id BIGINT UNSIGNED NOT NULL,
+            legacy_master_hutang_id BIGINT NULL,
+            legacy_pembelian_id BIGINT NULL,
+            pembelian_nobukti VARCHAR(100) NULL,
+            no_tagihan VARCHAR(100) NULL,
+            tanggal_hutang DATE NULL,
+            hutang_awal DECIMAL(15,2) NOT NULL DEFAULT 0,
+            terbayar_sebelumnya DECIMAL(15,2) NOT NULL DEFAULT 0,
+            nilai_pelunasan DECIMAL(15,2) NOT NULL DEFAULT 0,
+            sisa_hutang DECIMAL(15,2) NOT NULL DEFAULT 0,
+            keterangan TEXT NULL,
+            source_system VARCHAR(30) NOT NULL DEFAULT 'brighter_legacy',
+            is_legacy TINYINT(1) NOT NULL DEFAULT 1,
+            synced_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY uq_supplier_hutang_pelunasan_item_legacy (legacy_detail_id, cabang_id),
+            KEY idx_supplier_hutang_pelunasan_items_header (supplier_hutang_pelunasan_id),
+            KEY idx_supplier_hutang_pelunasan_items_legacy_header (legacy_fhutang_id, cabang_id),
+            KEY idx_supplier_hutang_pelunasan_items_pembelian (legacy_pembelian_id)
+        )
+    """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS supplier_hutang_pelunasan_media (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            supplier_hutang_pelunasan_id BIGINT UNSIGNED NOT NULL,
+            legacy_foto_id BIGINT NOT NULL,
+            legacy_fhutang_id BIGINT NOT NULL,
+            cabang_id BIGINT UNSIGNED NOT NULL,
+            file_path TEXT NULL,
+            file_url TEXT NULL,
+            file_url_medium TEXT NULL,
+            file_url_thumbnail TEXT NULL,
+            file_size BIGINT NULL,
+            file_size_medium BIGINT NULL,
+            file_size_thumbnail BIGINT NULL,
+            keterangan TEXT NULL,
+            source_system VARCHAR(30) NOT NULL DEFAULT 'brighter_legacy',
+            is_legacy TINYINT(1) NOT NULL DEFAULT 1,
+            synced_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            UNIQUE KEY uq_supplier_hutang_pelunasan_media_legacy (legacy_foto_id, cabang_id),
+            KEY idx_supplier_hutang_pelunasan_media_header (supplier_hutang_pelunasan_id),
+            KEY idx_supplier_hutang_pelunasan_media_legacy_header (legacy_fhutang_id, cabang_id)
+        )
+    """)
+    db.conn.commit()
+
+
+def _stat_to_clarify_status(stat_dok):
+    s = (stat_dok or "").strip().lower()
+    if s in ("batal", "dibatalkan", "cancelled", "canceled"):
+        return "void"
+    if s in ("tertutup", "posted", "selesai"):
+        return "posted"
+    return "draft"
+
+
+def sync_clarify_hutang_pelunasan(db, cabang_id):
+    """Reconcile Brighter pelunasan hutang staging into Clarify legacy tables."""
+    ensure_clarify_hutang_tables(db)
+    cur = db.conn.cursor()
+
+    cur.execute("""
+        INSERT INTO supplier_hutang_pelunasan (
+            legacy_fhutang_id, cabang_id, supplier_id, supplier_kode, supplier_nama,
+            pelunasan_number, tanggal, payment_method, akun_id, total_pelunasan,
+            keterangan, status, source_system, is_legacy, legacy_stat_dok,
+            legacy_post, legacy_date_post, legacy_created_by, legacy_created_at,
+            legacy_updated_by, legacy_updated_at, synced_at
+        )
+        SELECT
+            h.id, h.cabang_id, h.supp, h.supp_data_supplier_kode, h.supp_data_supplier_nama,
+            h.nobukti, h.tanggal, h.cara, h.akun, COALESCE(h.bayar, 0),
+            h.keterangan,
+            CASE
+                WHEN LOWER(COALESCE(h.stat_dok, '')) IN ('batal','dibatalkan','cancelled','canceled') THEN 'void'
+                WHEN LOWER(COALESCE(h.stat_dok, '')) IN ('tertutup','posted','selesai') THEN 'posted'
+                ELSE 'draft'
+            END,
+            'brighter_legacy', 1, h.stat_dok, h.post, h.date_post,
+            h.timestamp_data_created_by,
+            CASE
+                WHEN h.timestamp_data_created_at REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN h.timestamp_data_created_at
+                ELSE NULL
+            END,
+            h.timestamp_data_updated_by,
+            CASE
+                WHEN h.timestamp_data_updated_at REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}' THEN h.timestamp_data_updated_at
+                ELSE NULL
+            END,
+            NOW()
+        FROM brighter_transaksi_pelunasan_hutang h
+        WHERE h.cabang_id = %s
+        ON DUPLICATE KEY UPDATE
+            supplier_id = VALUES(supplier_id),
+            supplier_kode = VALUES(supplier_kode),
+            supplier_nama = VALUES(supplier_nama),
+            pelunasan_number = VALUES(pelunasan_number),
+            tanggal = VALUES(tanggal),
+            payment_method = VALUES(payment_method),
+            akun_id = VALUES(akun_id),
+            total_pelunasan = VALUES(total_pelunasan),
+            keterangan = VALUES(keterangan),
+            status = VALUES(status),
+            legacy_stat_dok = VALUES(legacy_stat_dok),
+            legacy_post = VALUES(legacy_post),
+            legacy_date_post = VALUES(legacy_date_post),
+            legacy_created_by = VALUES(legacy_created_by),
+            legacy_created_at = VALUES(legacy_created_at),
+            legacy_updated_by = VALUES(legacy_updated_by),
+            legacy_updated_at = VALUES(legacy_updated_at),
+            synced_at = VALUES(synced_at)
+    """, (cabang_id,))
+    header_rows = cur.rowcount
+
+    cur.execute("""
+        INSERT INTO supplier_hutang_pelunasan_items (
+            supplier_hutang_pelunasan_id, legacy_detail_id, legacy_fhutang_id,
+            cabang_id, legacy_master_hutang_id, legacy_pembelian_id,
+            pembelian_nobukti, no_tagihan, tanggal_hutang, hutang_awal,
+            terbayar_sebelumnya, nilai_pelunasan, sisa_hutang, keterangan,
+            source_system, is_legacy, synced_at
+        )
+        SELECT
+            p.id, d.id, d.fhutang_id, d.cabang_id, d.master_hutang_id,
+            d.master_hutang_data_pembelian_id,
+            d.master_hutang_data_pembelian_nobukti,
+            d.master_hutang_data_pembelian_no_tagihan,
+            CASE
+                WHEN d.master_hutang_data_pembelian_tanggal REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+                    THEN DATE(d.master_hutang_data_pembelian_tanggal)
+                WHEN d.tanggal REGEXP '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+                    THEN DATE(d.tanggal)
+                ELSE NULL
+            END,
+            COALESCE(d.hutang_awal, 0), COALESCE(d.terbayar, 0),
+            COALESCE(d.nilai_bayar, 0), COALESCE(d.sisa_bayar, 0),
+            d.keterangan, 'brighter_legacy', 1, NOW()
+        FROM brighter_transaksi_pelunasan_hutang_detail d
+        JOIN supplier_hutang_pelunasan p
+          ON p.legacy_fhutang_id = d.fhutang_id
+         AND p.cabang_id = d.cabang_id
+        WHERE d.cabang_id = %s
+        ON DUPLICATE KEY UPDATE
+            supplier_hutang_pelunasan_id = VALUES(supplier_hutang_pelunasan_id),
+            legacy_fhutang_id = VALUES(legacy_fhutang_id),
+            legacy_master_hutang_id = VALUES(legacy_master_hutang_id),
+            legacy_pembelian_id = VALUES(legacy_pembelian_id),
+            pembelian_nobukti = VALUES(pembelian_nobukti),
+            no_tagihan = VALUES(no_tagihan),
+            tanggal_hutang = VALUES(tanggal_hutang),
+            hutang_awal = VALUES(hutang_awal),
+            terbayar_sebelumnya = VALUES(terbayar_sebelumnya),
+            nilai_pelunasan = VALUES(nilai_pelunasan),
+            sisa_hutang = VALUES(sisa_hutang),
+            keterangan = VALUES(keterangan),
+            synced_at = VALUES(synced_at)
+    """, (cabang_id,))
+    item_rows = cur.rowcount
+
+    cur.execute("""
+        INSERT INTO supplier_hutang_pelunasan_media (
+            supplier_hutang_pelunasan_id, legacy_foto_id, legacy_fhutang_id,
+            cabang_id, file_path, file_url, file_url_medium, file_url_thumbnail,
+            file_size, file_size_medium, file_size_thumbnail, keterangan,
+            source_system, is_legacy, synced_at
+        )
+        SELECT
+            p.id, f.id, f.fhutang_id, f.cabang_id, f.foto_path, f.foto_url,
+            f.foto_url_medium, f.foto_url_thumbnail, f.foto_size,
+            f.foto_size_medium, f.foto_size_thumbnail, f.foto_keterangan,
+            'brighter_legacy', 1, NOW()
+        FROM brighter_transaksi_pelunasan_hutang_foto f
+        JOIN supplier_hutang_pelunasan p
+          ON p.legacy_fhutang_id = f.fhutang_id
+         AND p.cabang_id = f.cabang_id
+        WHERE f.cabang_id = %s
+        ON DUPLICATE KEY UPDATE
+            supplier_hutang_pelunasan_id = VALUES(supplier_hutang_pelunasan_id),
+            legacy_fhutang_id = VALUES(legacy_fhutang_id),
+            file_path = VALUES(file_path),
+            file_url = VALUES(file_url),
+            file_url_medium = VALUES(file_url_medium),
+            file_url_thumbnail = VALUES(file_url_thumbnail),
+            file_size = VALUES(file_size),
+            file_size_medium = VALUES(file_size_medium),
+            file_size_thumbnail = VALUES(file_size_thumbnail),
+            keterangan = VALUES(keterangan),
+            synced_at = VALUES(synced_at)
+    """, (cabang_id,))
+    media_rows = cur.rowcount
+
+    db.conn.commit()
+    return {"header": header_rows, "item": item_rows, "media": media_rows}
 
 
 def _count_piutang_tanpa_nama(db, cabang_id) -> int:
@@ -797,6 +1051,19 @@ def main():
             print(f"       -> {len(foto_rows)} foto records")
             totals["pelunasan_hutang_foto"] += upsert_batch(
                 db, TABLES["pelunasan_hutang_foto"], foto_rows, c_id)
+
+        print("  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...")
+        try:
+            clarify_counts = sync_clarify_hutang_pelunasan(db, c_id)
+            print(
+                "       -> Clarify upsert "
+                f"header={clarify_counts['header']}, "
+                f"items={clarify_counts['item']}, "
+                f"media={clarify_counts['media']} "
+                "(tanpa posting kas_bank)"
+            )
+        except Exception as e:
+            print(f"       -> ERROR reconcile Clarify pelunasan hutang: {e}")
 
         # 5. Header: Pelunasan Piutang
         print("  [5/7] Pelunasan Piutang (header)...")

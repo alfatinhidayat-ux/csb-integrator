@@ -1,0 +1,275 @@
+================================================================================
+MIGRASI BRIGHTER -> CLARIFY
+Mode    : APPLY
+Range   : 2026-03-01..2026-03-31
+Cabang  : [1, 2, 4, 5]
+Bulan   : ['2026-03']
+Log     : D:\CSB Project\csb-integrator\logs\migrate_2026-03-01_2026-03-31_20260813_082351.log
+================================================================================
+
+[08:23:52] [1/135 2026-03 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-03 --cabang-ids 1,2,4,5
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-03-01 .. 2026-03-31
+Cabang: [1, 2, 4, 5]
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+  cb1 2026-03 rekap_dashboard          8 baris -> dash_rekap_dashboard
+  cb1 2026-03 penerimaan_per_user      12 baris -> dash_penerimaan_per_user
+  cb1 2026-03 detail_penjualan         3557 baris -> dash_detail_penjualan
+  cb1 2026-03 detail_piutang           77 baris -> dash_detail_piutang
+  cb1 2026-03 detail_hutang            5 baris -> dash_detail_hutang
+  cb1 2026-03 detail_deposit_pelanggan 3 baris -> dash_detail_deposit_pelanggan
+  cb1 2026-03 detail_retur_penjualan   3 baris -> dash_detail_retur_penjualan
+  cb2 2026-03 rekap_dashboard          4 baris -> dash_rekap_dashboard
+  cb2 2026-03 penerimaan_per_user      4 baris -> dash_penerimaan_per_user
+  cb2 2026-03 detail_penjualan         4625 baris -> dash_detail_penjualan
+  cb2 2026-03 detail_piutang           348 baris -> dash_detail_piutang
+  cb2 2026-03 detail_hutang            9 baris -> dash_detail_hutang
+  cb4 2026-03 rekap_dashboard          7 baris -> dash_rekap_dashboard
+  cb4 2026-03 penerimaan_per_user      11 baris -> dash_penerimaan_per_user
+  cb4 2026-03 detail_penjualan         2892 baris -> dash_detail_penjualan
+  cb4 2026-03 detail_piutang           38 baris -> dash_detail_piutang
+  cb4 2026-03 detail_hutang            15 baris -> dash_detail_hutang
+  cb5 2026-03 rekap_dashboard          7 baris -> dash_rekap_dashboard
+  cb5 2026-03 penerimaan_per_user      8 baris -> dash_penerimaan_per_user
+  cb5 2026-03 detail_penjualan         7584 baris -> dash_detail_penjualan
+  cb5 2026-03 detail_piutang           30 baris -> dash_detail_piutang
+  cb5 2026-03 detail_hutang            27 baris -> dash_detail_hutang
+  cb5 2026-03 detail_deposit_pelanggan 1 baris -> dash_detail_deposit_pelanggan
+  cb5 2026-03 detail_retur_penjualan   16 baris -> dash_detail_retur_penjualan
+
+=======================================================
+COMPLETE - total baris per tabel:
+  dash_rekap_dashboard                     26
+  dash_penerimaan_per_user                 35
+  dash_detail_penjualan                18,658
+  dash_detail_piutang                     493
+  dash_detail_hutang                       56
+  dash_detail_deposit_pelanggan             4
+  dash_detail_retur_penjualan              19
+=======================================================
+  status: OK rc=0
+
+[08:24:38] [2/135 2026-03 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-03-01 --tanggal-akhir 2026-03-31 --cabang-ids 1,2,4,5 --workers 5 --force
+Rentang 2026-03-01..2026-03-31, cabang [1, 2, 4, 5]
+    Upsert brighter_pos: 113/113 rows
+    Upsert brighter_pos_detail: 243/243 rows
+  cb1 2026-03-01: 113 nota, 113 ketemu, 113 header, 243 detail, gross=51,525,980
+    Upsert brighter_pos: 110/110 rows
+    Upsert brighter_pos_detail: 228/228 rows
+  cb1 2026-03-02: 110 nota, 110 ketemu, 110 header, 228 detail, gross=46,822,300
+    Upsert brighter_pos: 117/117 rows
+    Upsert brighter_pos_detail: 207/207 rows
+  cb1 2026-03-03: 117 nota, 117 ketemu, 117 header, 207 detail, gross=41,656,900
+    Upsert brighter_pos: 125/125 rows
+    Upsert brighter_pos_detail: 239/239 rows
+  cb1 2026-03-04: 125 nota, 125 ketemu, 125 header, 239 detail, gross=79,773,500
+    Upsert brighter_pos: 87/87 rows
+    Upsert brighter_pos_detail: 166/166 rows
+  cb1 2026-03-05: 87 nota, 87 ketemu, 87 header, 166 detail, gross=49,441,650
+    Upsert brighter_pos: 153/153 rows
+    Upsert brighter_pos_detail: 316/316 rows
+  cb1 2026-03-06: 153 nota, 153 ketemu, 153 header, 316 detail, gross=100,914,750
+    Upsert brighter_pos: 125/125 rows
+    Upsert brighter_pos_detail: 227/227 rows
+  cb1 2026-03-07: 125 nota, 125 ketemu, 125 header, 227 detail, gross=56,486,500
+    Upsert brighter_pos: 194/194 rows
+    Upsert brighter_pos_detail: 401/401 rows
+  cb1 2026-03-08: 194 nota, 194 ketemu, 194 header, 401 detail, gross=98,249,700
+    Upsert brighter_pos: 117/117 rows
+    Upsert brighter_pos_detail: 221/221 rows
+  cb1 2026-03-09: 119 nota, 117 ketemu, 117 header, 221 detail, gross=78,951,000
+    Upsert brighter_pos: 161/161 rows
+    Upsert brighter_pos_detail: 319/319 rows
+  cb1 2026-03-10: 161 nota, 161 ketemu, 161 header, 319 detail, gross=45,440,700
+    Upsert brighter_pos: 138/138 rows
+    Upsert brighter_pos_detail: 327/327 rows
+  cb1 2026-03-11: 138 nota, 138 ketemu, 138 header, 327 detail, gross=83,681,000
+    Upsert brighter_pos: 151/151 rows
+    Upsert brighter_pos_detail: 290/290 rows
+  cb1 2026-03-12: 151 nota, 151 ketemu, 151 header, 290 detail, gross=48,635,100
+    Upsert brighter_pos: 172/172 rows
+    Upsert brighter_pos_detail: 325/325 rows
+  cb1 2026-03-13: 172 nota, 172 ketemu, 172 header, 325 detail, gross=48,648,000
+    Upsert brighter_pos: 185/185 rows
+    Upsert brighter_pos_detail: 392/392 rows
+  cb1 2026-03-14: 185 nota, 185 ketemu, 185 header, 392 detail, gross=134,656,000
+    Upsert brighter_pos: 116/116 rows
+    Upsert brighter_pos_detail: 278/278 rows
+  cb1 2026-03-15: 116 nota, 116 ketemu, 116 header, 278 detail, gross=78,444,500
+    Upsert brighter_pos: 252/252 rows
+    Upsert brighter_pos_detail: 479/479 rows
+  cb1 2026-03-16: 252 nota, 252 ketemu, 252 header, 479 detail, gross=65,879,500
+    Upsert brighter_pos: 186/186 rows
+    Upsert brighter_pos_detail: 366/366 rows
+  cb1 2026-03-17: 186 nota, 186 ketemu, 186 header, 366 detail, gross=77,313,550
+    Upsert brighter_pos: 271/271 rows
+    Upsert brighter_pos_detail: 500/512 rows
+    Upsert brighter_pos_detail: 512/512 rows
+  cb1 2026-03-18: 271 nota, 271 ketemu, 271 header, 512 detail, gross=82,772,500
+    Upsert brighter_pos: 218/218 rows
+    Upsert brighter_pos_detail: 358/358 rows
+  cb1 2026-03-19: 218 nota, 218 ketemu, 218 header, 358 detail, gross=31,530,150
+    Upsert brighter_pos: 148/148 rows
+    Upsert brighter_pos_detail: 252/252 rows
+  cb1 2026-03-20: 152 nota, 148 ketemu, 148 header, 252 detail, gross=25,323,000
+  cb1 2026-03-21: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb1 2026-03-22: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb1 2026-03-23: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb1 2026-03-24: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb1 2026-03-25: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb1 2026-03-26: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb1 2026-03-27: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+    Upsert brighter_pos: 105/105 rows
+    Upsert brighter_pos_detail: 200/200 rows
+  cb1 2026-03-28: 105 nota, 105 ketemu, 105 header, 200 detail, gross=83,216,400
+    Upsert brighter_pos: 96/96 rows
+    Upsert brighter_pos_detail: 206/206 rows
+  cb1 2026-03-29: 96 nota, 96 ketemu, 96 header, 206 detail, gross=76,845,500
+    Upsert brighter_pos: 120/120 rows
+    Upsert brighter_pos_detail: 220/220 rows
+  cb1 2026-03-30: 120 nota, 120 ketemu, 120 header, 220 detail, gross=80,851,500
+    Upsert brighter_pos: 91/91 rows
+    Upsert brighter_pos_detail: 190/190 rows
+  cb1 2026-03-31: 91 nota, 91 ketemu, 91 header, 190 detail, gross=55,488,300
+    Upsert brighter_pos: 169/169 rows
+    Upsert brighter_pos_detail: 272/272 rows
+  cb2 2026-03-01: 169 nota, 169 ketemu, 169 header, 272 detail, gross=104,683,550
+    Upsert brighter_pos: 156/156 rows
+    Upsert brighter_pos_detail: 245/245 rows
+  cb2 2026-03-02: 159 nota, 156 ketemu, 156 header, 245 detail, gross=63,754,500
+    Upsert brighter_pos: 138/138 rows
+    Upsert brighter_pos_detail: 229/229 rows
+  cb2 2026-03-03: 138 nota, 138 ketemu, 138 header, 229 detail, gross=109,684,500
+    Upsert brighter_pos: 168/168 rows
+    Upsert brighter_pos_detail: 303/303 rows
+  cb2 2026-03-04: 168 nota, 168 ketemu, 168 header, 303 detail, gross=147,948,500
+    Upsert brighter_pos: 164/164 rows
+    Upsert brighter_pos_detail: 299/299 rows
+  cb2 2026-03-05: 164 nota, 164 ketemu, 164 header, 299 detail, gross=93,295,000
+    Upsert brighter_pos: 180/180 rows
+    Upsert brighter_pos_detail: 339/339 rows
+  cb2 2026-03-06: 180 nota, 180 ketemu, 180 header, 339 detail, gross=154,477,000
+    Upsert brighter_pos: 226/226 rows
+    Upsert brighter_pos_detail: 380/380 rows
+  cb2 2026-03-07: 226 nota, 226 ketemu, 226 header, 380 detail, gross=127,874,000
+    Upsert brighter_pos: 166/166 rows
+    Upsert brighter_pos_detail: 308/308 rows
+  cb2 2026-03-08: 166 nota, 166 ketemu, 166 header, 308 detail, gross=138,047,000
+    Upsert brighter_pos: 176/176 rows
+    Upsert brighter_pos_detail: 329/329 rows
+  cb2 2026-03-09: 176 nota, 176 ketemu, 176 header, 329 detail, gross=99,857,500
+    Upsert brighter_pos: 206/206 rows
+    Upsert brighter_pos_detail: 362/362 rows
+  cb2 2026-03-10: 206 nota, 206 ketemu, 206 header, 362 detail, gross=160,972,700
+    Upsert brighter_pos: 237/237 rows
+    Upsert brighter_pos_detail: 397/397 rows
+  cb2 2026-03-11: 237 nota, 237 ketemu, 237 header, 397 detail, gross=157,880,700
+    Upsert brighter_pos: 270/270 rows
+    Upsert brighter_pos_detail: 499/499 rows
+  cb2 2026-03-12: 270 nota, 270 ketemu, 270 header, 499 detail, gross=146,944,500
+    Upsert brighter_pos: 250/250 rows
+    Upsert brighter_pos_detail: 445/445 rows
+  cb2 2026-03-13: 250 nota, 250 ketemu, 250 header, 445 detail, gross=131,175,250
+    Upsert brighter_pos: 316/316 rows
+    Upsert brighter_pos_detail: 500/572 rows
+    Upsert brighter_pos_detail: 572/572 rows
+  cb2 2026-03-14: 317 nota, 316 ketemu, 316 header, 572 detail, gross=118,372,000
+    Upsert brighter_pos: 190/190 rows
+    Upsert brighter_pos_detail: 355/355 rows
+  cb2 2026-03-15: 190 nota, 190 ketemu, 190 header, 355 detail, gross=236,242,500
+    Upsert brighter_pos: 283/283 rows
+    Upsert brighter_pos_detail: 500/509 rows
+    Upsert brighter_pos_detail: 509/509 rows
+  cb2 2026-03-16: 283 nota, 283 ketemu, 283 header, 509 detail, gross=111,568,400
+    Upsert brighter_pos: 246/246 rows
+    Upsert brighter_pos_detail: 451/451 rows
+  cb2 2026-03-17: 246 nota, 246 ketemu, 246 header, 451 detail, gross=111,149,500
+    Upsert brighter_pos: 236/236 rows
+    Upsert brighter_pos_detail: 398/398 rows
+  cb2 2026-03-18: 236 nota, 236 ketemu, 236 header, 398 detail, gross=121,439,000
+    Upsert brighter_pos: 132/132 rows
+    Upsert brighter_pos_detail: 241/241 rows
+  cb2 2026-03-19: 132 nota, 132 ketemu, 132 header, 241 detail, gross=194,964,000
+    Upsert brighter_pos: 94/94 rows
+    Upsert brighter_pos_detail: 142/142 rows
+  cb2 2026-03-20: 94 nota, 94 ketemu, 94 header, 142 detail, gross=25,275,500
+  cb2 2026-03-21: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb2 2026-03-22: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb2 2026-03-23: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb2 2026-03-24: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb2 2026-03-25: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb2 2026-03-26: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+  cb2 2026-03-27: 0 nota, 0 ketemu, 0 header, 0 detail, gross=0
+    Upsert brighter_pos: 191/191 rows
+    Upsert brighter_pos_detail: 398/398 rows
+  cb2 2026-03-28: 191 nota, 191 ketemu, 191 header, 398 detail, gross=373,400,400
+    Upsert brighter_pos: 123/123 rows
+    Upsert brighter_pos_detail: 214/214 rows
+  cb2 2026-03-29: 123 nota, 123 ketemu, 123 header, 214 detail, gross=166,557,000
+    Upsert brighter_pos: 153/153 rows
+    Upsert brighter_pos_detail: 327/327 rows
+  cb2 2026-03-30: 153 nota, 153 ketemu, 153 header, 327 detail, gross=170,803,500
+    Upsert brighter_pos: 151/151 rows
+    Upsert brighter_pos_detail: 270/270 rows
+  cb2 2026-03-31: 151 nota, 151 ketemu, 151 header, 270 detail, gross=122,891,000
+    Upsert brighter_pos: 117/117 rows
+    Upsert brighter_pos_detail: 231/231 rows
+  cb4 2026-03-01: 117 nota, 117 ketemu, 117 header, 231 detail, gross=101,044,000
+    Upsert brighter_pos: 91/91 rows
+    Upsert brighter_pos_detail: 166/166 rows
+  cb4 2026-03-02: 91 nota, 91 ketemu, 91 header, 166 detail, gross=51,078,500
+    Upsert brighter_pos: 72/72 rows
+    Upsert brighter_pos_detail: 143/143 rows
+  cb4 2026-03-03: 72 nota, 72 ketemu, 72 header, 143 detail, gross=35,069,500
+    Upsert brighter_pos: 99/99 rows
+    Upsert brighter_pos_detail: 193/193 rows
+  cb4 2026-03-04: 99 nota, 99 ketemu, 99 header, 193 detail, gross=83,255,000
+    Upsert brighter_pos: 100/100 rows
+    Upsert brighter_pos_detail: 224/224 rows
+  cb4 2026-03-05: 100 nota, 100 ketemu, 100 header, 224 detail, gross=65,900,900
+    Upsert brighter_pos: 116/116 rows
+    Upsert brighter_pos_detail: 219/219 rows
+  cb4 2026-03-06: 116 nota, 116 ketemu, 116 header, 219 detail, gross=132,069,400
+    Upsert brighter_pos: 102/102 rows
+    Upsert brighter_pos_detail: 208/208 rows
+  cb4 2026-03-07: 102 nota, 102 ketemu, 102 header, 208 detail, gross=73,981,500
+    Upsert brighter_pos: 125/125 rows
+    Upsert brighter_pos_detail: 264/264 rows
+  cb4 2026-03-08: 125 nota, 125 ketemu, 125 header, 264 detail, gross=87,886,000
+    Upsert brighter_pos: 76/76 rows
+    Upsert brighter_pos_detail: 139/139 rows
+  cb4 2026-03-09: 76 nota, 76 ketemu, 76 header, 139 detail, gross=46,516,000
+    Upsert brighter_pos: 106/106 rows
+    Upsert brighter_pos_detail: 198/198 rows
+  cb4 2026-03-10: 106 nota, 106 ketemu, 106 header, 198 detail, gross=32,524,000
+    Upsert brighter_pos: 90/90 rows
+    Upsert brighter_pos_detail: 196/196 rows
+  cb4 2026-03-11: 90 nota, 90 ketemu, 90 header, 196 detail, gross=44,058,500
+    Upsert brighter_pos: 138/138 rows
+    Upsert brighter_pos_detail: 286/286 rows
+  cb4 2026-03-12: 138 nota, 138 ketemu, 138 header, 286 detail, gross=49,288,749
+    Upsert brighter_pos: 136/136 rows
+    Upsert brighter_pos_detail: 260/260 rows
+  cb4 2026-03-13: 136 nota, 136 ketemu, 136 header, 260 detail, gross=58,566,500
+    Upsert brighter_pos: 183/183 rows
+    Upsert brighter_pos_detail: 386/386 rows
+  cb4 2026-03-14: 183 nota, 183 ketemu, 183 header, 386 detail, gross=83,339,900
+    Upsert brighter_pos: 104/104 rows
+    Upsert brighter_pos_detail: 238/238 rows
+  cb4 2026-03-15: 104 nota, 104 ketemu, 104 header, 238 detail, gross=51,953,150
+    Upsert brighter_pos: 200/200 rows
+    Upsert brighter_pos_detail: 428/428 rows
+  cb4 2026-03-16: 200 nota, 200 ketemu, 200 header, 428 detail, gross=94,728,300
+    Upsert brighter_pos: 196/196 rows
+    Upsert brighter_pos_detail: 385/385 rows
+  cb4 2026-03-17: 197 nota, 196 ketemu, 196 header, 385 detail, gross=57,190,000
+    Upsert brighter_pos: 207/207 rows
+    Upsert brighter_pos_detail: 373/373 rows
+  cb4 2026-03-18: 207 nota, 207 ketemu, 207 header, 373 detail, gross=66,740,500
+  status: FAIL rc=3221225786
+
+[09:45:13] [3/135 2026-03 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-03-01 --tanggal-akhir 2026-03-31 --cabang-ids 1,2,4,5 --workers 5

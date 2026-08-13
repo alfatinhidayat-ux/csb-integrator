@@ -1,0 +1,1216 @@
+================================================================================
+MIGRASI BRIGHTER -> CLARIFY
+Mode    : DRY-RUN
+Range   : 2026-01-01..2026-08-13
+Cabang  : [1, 2, 4, 5, 7]
+Bulan   : ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08']
+Log     : D:\CSB Project\csb-integrator\logs\migrate_2026-01-01_2026-08-13_20260813_132336.log
+================================================================================
+
+[13:23:36] [1/1051 2026-01 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-01 --cabang-ids 1,2,4,5 --dry-run
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-01-01 .. 2026-01-31
+Cabang: [1, 2, 4, 5]
+
+[dry-run] Tidak ada API/DB yang dipanggil.
+  status: OK rc=0
+
+[13:23:38] [2/1051 2026-01 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-01-01 --tanggal-akhir 2026-01-31 --cabang-ids 1,2,4,5 --workers 5 --force
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:23:38] [3/1051 2026-01 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-01-01 --tanggal-akhir 2026-01-31 --cabang-ids 1,2,4,5 --workers 5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:23:38] [4/1051 2026-01 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-01-01 --tanggal-akhir 2026-01-31 --cabang-ids 1,2,4,5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:23:38] [5/1051 2026-01 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-01 --cabang-ids 1,2,4,5
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-01 --cabang-ids 1,2,4,5
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-01 | cabang=1,2,4,5 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 29
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-01 --cabang-ids 1,2,4,5
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-01 | cabang=1,2,4,5 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 111
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=DRY-RUN (no commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[13:23:47] [6/1051 2026-02 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-02 --cabang-ids 1,2,4,5 --dry-run
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-02-01 .. 2026-02-28
+Cabang: [1, 2, 4, 5]
+
+[dry-run] Tidak ada API/DB yang dipanggil.
+  status: OK rc=0
+
+[13:23:48] [7/1051 2026-02 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-02-01 --tanggal-akhir 2026-02-28 --cabang-ids 1,2,4,5 --workers 5 --force
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:23:48] [8/1051 2026-02 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-02-01 --tanggal-akhir 2026-02-28 --cabang-ids 1,2,4,5 --workers 5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:23:48] [9/1051 2026-02 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-02-01 --tanggal-akhir 2026-02-28 --cabang-ids 1,2,4,5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:23:48] [10/1051 2026-02 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-02 --cabang-ids 1,2,4,5
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-02 --cabang-ids 1,2,4,5
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-02 | cabang=1,2,4,5 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 20
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-02 --cabang-ids 1,2,4,5
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-02 | cabang=1,2,4,5 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 94
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=DRY-RUN (no commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[13:23:56] [11/1051 2026-03 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-03 --cabang-ids 1,2,4,5 --dry-run
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-03-01 .. 2026-03-31
+Cabang: [1, 2, 4, 5]
+
+[dry-run] Tidak ada API/DB yang dipanggil.
+  status: OK rc=0
+
+[13:23:58] [12/1051 2026-03 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-03-01 --tanggal-akhir 2026-03-31 --cabang-ids 1,2,4,5 --workers 5 --force
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:23:58] [13/1051 2026-03 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-03-01 --tanggal-akhir 2026-03-31 --cabang-ids 1,2,4,5 --workers 5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:23:58] [14/1051 2026-03 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-03-01 --tanggal-akhir 2026-03-31 --cabang-ids 1,2,4,5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:23:58] [15/1051 2026-03 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-03 --cabang-ids 1,2,4,5
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-03 --cabang-ids 1,2,4,5
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-03 | cabang=1,2,4,5 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 32
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-03 --cabang-ids 1,2,4,5
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-03 | cabang=1,2,4,5 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 81
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=DRY-RUN (no commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[13:24:05] [16/1051 2026-04 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-04 --cabang-ids 1,2,4,5 --dry-run
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-04-01 .. 2026-04-30
+Cabang: [1, 2, 4, 5]
+
+[dry-run] Tidak ada API/DB yang dipanggil.
+  status: OK rc=0
+
+[13:24:06] [17/1051 2026-04 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-04-01 --tanggal-akhir 2026-04-30 --cabang-ids 1,2,4,5 --workers 5 --force
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:24:06] [18/1051 2026-04 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-04-01 --tanggal-akhir 2026-04-30 --cabang-ids 1,2,4,5 --workers 5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:24:06] [19/1051 2026-04 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-04-01 --tanggal-akhir 2026-04-30 --cabang-ids 1,2,4,5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:24:06] [20/1051 2026-04 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-04 --cabang-ids 1,2,4,5
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-04 --cabang-ids 1,2,4,5
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-04 | cabang=1,2,4,5 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 265
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-04 --cabang-ids 1,2,4,5
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-04 | cabang=1,2,4,5 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 269
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=DRY-RUN (no commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[13:24:27] [21/1051 2026-05 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-05 --cabang-ids 1,2,4,5,7 --dry-run
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-05-01 .. 2026-05-31
+Cabang: [1, 2, 4, 5, 7]
+
+[dry-run] Tidak ada API/DB yang dipanggil.
+  status: OK rc=0
+
+[13:24:29] [22/1051 2026-05 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7 --workers 5 --force
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:24:29] [23/1051 2026-05 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7 --workers 5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:24:29] [24/1051 2026-05 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-05-01 --tanggal-akhir 2026-05-31 --cabang-ids 1,2,4,5,7
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:24:29] [25/1051 2026-05 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-05 --cabang-ids 1,2,4,5,7
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-05 --cabang-ids 1,2,4,5,7
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-05 | cabang=1,2,4,5,7 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 376
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-05 --cabang-ids 1,2,4,5,7
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-05 | cabang=1,2,4,5,7 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 317
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=DRY-RUN (no commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[13:24:56] [26/1051 2026-06 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-06 --cabang-ids 1,2,4,5,7 --dry-run
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-06-01 .. 2026-06-30
+Cabang: [1, 2, 4, 5, 7]
+
+[dry-run] Tidak ada API/DB yang dipanggil.
+  status: OK rc=0
+
+[13:24:57] [27/1051 2026-06 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-06-01 --tanggal-akhir 2026-06-30 --cabang-ids 1,2,4,5,7 --workers 5 --force
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:24:57] [28/1051 2026-06 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-06-01 --tanggal-akhir 2026-06-30 --cabang-ids 1,2,4,5,7 --workers 5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:24:57] [29/1051 2026-06 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-06-01 --tanggal-akhir 2026-06-30 --cabang-ids 1,2,4,5,7
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:24:57] [30/1051 2026-06 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-06 --cabang-ids 1,2,4,5,7
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-06 --cabang-ids 1,2,4,5,7
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-06 | cabang=1,2,4,5,7 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 332
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-06 --cabang-ids 1,2,4,5,7
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-06 | cabang=1,2,4,5,7 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 304
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=DRY-RUN (no commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[13:25:20] [31/1051 2026-07 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-07 --cabang-ids 1,2,4,5,7 --dry-run
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-07-01 .. 2026-07-31
+Cabang: [1, 2, 4, 5, 7]
+
+[dry-run] Tidak ada API/DB yang dipanggil.
+  status: OK rc=0
+
+[13:25:22] [32/1051 2026-07 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-07-01 --tanggal-akhir 2026-07-31 --cabang-ids 1,2,4,5,7 --workers 5 --force
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:25:22] [33/1051 2026-07 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-07-01 --tanggal-akhir 2026-07-31 --cabang-ids 1,2,4,5,7 --workers 5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:25:22] [34/1051 2026-07 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-07-01 --tanggal-akhir 2026-07-31 --cabang-ids 1,2,4,5,7
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:25:22] [35/1051 2026-07 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-07 --cabang-ids 1,2,4,5,7
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-07 --cabang-ids 1,2,4,5,7
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-07 | cabang=1,2,4,5,7 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 333
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-07 --cabang-ids 1,2,4,5,7
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-07 | cabang=1,2,4,5,7 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 312
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=DRY-RUN (no commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[13:25:46] [36/1051 2026-08 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-08 --cabang-ids 1,2,4,5,7 --dry-run
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-08-01 .. 2026-08-31
+Cabang: [1, 2, 4, 5, 7]
+
+[dry-run] Tidak ada API/DB yang dipanggil.
+  status: OK rc=0
+
+[13:25:47] [37/1051 2026-08 POS staging brighter_pos]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pos_rekap.py --env --tanggal-awal 2026-08-01 --tanggal-akhir 2026-08-13 --cabang-ids 1,2,4,5,7 --workers 5 --force
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:25:47] [38/1051 2026-08 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-08-01 --tanggal-akhir 2026-08-13 --cabang-ids 1,2,4,5,7 --workers 5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:25:47] [39/1051 2026-08 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-08-01 --tanggal-akhir 2026-08-13 --cabang-ids 1,2,4,5,7
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:25:47] [40/1051 2026-08 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-08 --cabang-ids 1,2,4,5,7
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-08 --cabang-ids 1,2,4,5,7
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-08 | cabang=1,2,4,5,7 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 140
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-08 --cabang-ids 1,2,4,5,7
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-08 | cabang=1,2,4,5,7 | mode=DRY-RUN (no commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 96
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=DRY-RUN (no commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+DRY-RUN selesai — tidak ada perubahan. Jalankan dengan --apply untuk eksekusi.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[13:25:59] [41/1051 Pelunasan piutang staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pelunasan.py --env --cabang-ids 1,2,4,5,7
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:25:59] [42/1051 Finance Brighter pembelian/hutang/piutang]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_finance.py --env --cabang-ids 1,2,4,5,7 --workers 5
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:25:59] [43/1051 Upsert brighter_rekap_bulanan_dashboard dari dash_*]
+  range=2026-01-01..2026-08-13 cabang_aktif={'2026-01': [1, 2, 4, 5], '2026-02': [1, 2, 4, 5], '2026-03': [1, 2, 4, 5], '2026-04': [1, 2, 4, 5], '2026-05': [1, 2, 4, 5, 7], '2026-06': [1, 2, 4, 5, 7], '2026-07': [1, 2, 4, 5, 7], '2026-08': [1, 2, 4, 5, 7]}
+  status: SKIP eksekusi (dry-run rencana)
+
+[13:25:59] [44/1051 Landing POS cb1 2026-01-01]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-01 --refresh --dry-run
+[32mTidak ada baris brighter_pos untuk diproses.[39m
+  status: OK rc=0
+
+[13:26:02] [45/1051 Landing POS cb1 2026-01-02]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-02 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 84 baris brighter_pos...[39m
+  0/84 [>---------------------------]   0%[1G[2K  9/84 [===>------------------------]  10%[1G[2K 84/84 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 84 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:06] [46/1051 Landing POS cb1 2026-01-03]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-03 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 115 baris brighter_pos...[39m
+   0/115 [>---------------------------]   0%[1G[2K  12/115 [==>-------------------------]  10%[1G[2K 115/115 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 115 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:09] [47/1051 Landing POS cb1 2026-01-04]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-04 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 99 baris brighter_pos...[39m
+  0/99 [>---------------------------]   0%[1G[2K 10/99 [==>-------------------------]  10%[1G[2K 99/99 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 99 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:12] [48/1051 Landing POS cb1 2026-01-05]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-05 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 97 baris brighter_pos...[39m
+  0/97 [>---------------------------]   0%[1G[2K 10/97 [==>-------------------------]  10%[1G[2K 97/97 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 97 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:16] [49/1051 Landing POS cb1 2026-01-06]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-06 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 84 baris brighter_pos...[39m
+  0/84 [>---------------------------]   0%[1G[2K  9/84 [===>------------------------]  10%[1G[2K 84/84 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 84 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:18] [50/1051 Landing POS cb1 2026-01-07]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-07 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 71 baris brighter_pos...[39m
+  0/71 [>---------------------------]   0%[1G[2K  8/71 [===>------------------------]  11%[1G[2K 71/71 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 71 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:21] [51/1051 Landing POS cb1 2026-01-08]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-08 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 88 baris brighter_pos...[39m
+  0/88 [>---------------------------]   0%[1G[2K  1/88 [>---------------------------]   1%[1G[2K 88/88 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 88 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:26] [52/1051 Landing POS cb1 2026-01-09]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-09 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 86 baris brighter_pos...[39m
+  0/86 [>---------------------------]   0%[1G[2K  9/86 [==>-------------------------]  10%[1G[2K 86/86 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 86 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:29] [53/1051 Landing POS cb1 2026-01-10]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-10 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 82 baris brighter_pos...[39m
+  0/82 [>---------------------------]   0%[1G[2K  9/82 [===>------------------------]  10%[1G[2K 82/82 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 82 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:32] [54/1051 Landing POS cb1 2026-01-11]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-11 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 113 baris brighter_pos...[39m
+   0/113 [>---------------------------]   0%[1G[2K  12/113 [==>-------------------------]  10%[1G[2K 113/113 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 113 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:35] [55/1051 Landing POS cb1 2026-01-12]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-12 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 107 baris brighter_pos...[39m
+   0/107 [>---------------------------]   0%[1G[2K  11/107 [==>-------------------------]  10%[1G[2K 107/107 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 107 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:39] [56/1051 Landing POS cb1 2026-01-13]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-13 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 108 baris brighter_pos...[39m
+   0/108 [>---------------------------]   0%[1G[2K  11/108 [==>-------------------------]  10%[1G[2K 108/108 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 108 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:42] [57/1051 Landing POS cb1 2026-01-14]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-14 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 80 baris brighter_pos...[39m
+  0/80 [>---------------------------]   0%[1G[2K  8/80 [==>-------------------------]  10%[1G[2K 80/80 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 80 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:46] [58/1051 Landing POS cb1 2026-01-15]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-15 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 78 baris brighter_pos...[39m
+  0/78 [>---------------------------]   0%[1G[2K  8/78 [==>-------------------------]  10%[1G[2K 78/78 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 78 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:48] [59/1051 Landing POS cb1 2026-01-16]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-16 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 104 baris brighter_pos...[39m
+   0/104 [>---------------------------]   0%[1G[2K  11/104 [==>-------------------------]  10%[1G[2K 104/104 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 104 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:51] [60/1051 Landing POS cb1 2026-01-17]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-17 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 114 baris brighter_pos...[39m
+   0/114 [>---------------------------]   0%[1G[2K  12/114 [==>-------------------------]  10%[1G[2K 114/114 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 114 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:54] [61/1051 Landing POS cb1 2026-01-18]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-18 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 111 baris brighter_pos...[39m
+   0/111 [>---------------------------]   0%[1G[2K  12/111 [===>------------------------]  10%[1G[2K 111/111 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 111 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:26:57] [62/1051 Landing POS cb1 2026-01-19]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-19 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 101 baris brighter_pos...[39m
+   0/101 [>---------------------------]   0%[1G[2K  11/101 [===>------------------------]  10%[1G[2K 101/101 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 101 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:00] [63/1051 Landing POS cb1 2026-01-20]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-20 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 97 baris brighter_pos...[39m
+  0/97 [>---------------------------]   0%[1G[2K 10/97 [==>-------------------------]  10%[1G[2K 97/97 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 97 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:03] [64/1051 Landing POS cb1 2026-01-21]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-21 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 71 baris brighter_pos...[39m
+  0/71 [>---------------------------]   0%[1G[2K  8/71 [===>------------------------]  11%[1G[2K 71/71 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 71 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:06] [65/1051 Landing POS cb1 2026-01-22]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-22 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 105 baris brighter_pos...[39m
+   0/105 [>---------------------------]   0%[1G[2K  11/105 [==>-------------------------]  10%[1G[2K 105/105 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 105 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:09] [66/1051 Landing POS cb1 2026-01-23]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-23 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 102 baris brighter_pos...[39m
+   0/102 [>---------------------------]   0%[1G[2K  11/102 [===>------------------------]  10%[1G[2K 102/102 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 102 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:13] [67/1051 Landing POS cb1 2026-01-24]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-24 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 88 baris brighter_pos...[39m
+  0/88 [>---------------------------]   0%[1G[2K  9/88 [==>-------------------------]  10%[1G[2K 88/88 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 88 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:16] [68/1051 Landing POS cb1 2026-01-25]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-25 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 102 baris brighter_pos...[39m
+   0/102 [>---------------------------]   0%[1G[2K  11/102 [===>------------------------]  10%[1G[2K 102/102 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 102 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:19] [69/1051 Landing POS cb1 2026-01-26]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-26 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 100 baris brighter_pos...[39m
+   0/100 [>---------------------------]   0%[1G[2K  10/100 [==>-------------------------]  10%[1G[2K 100/100 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 100 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:22] [70/1051 Landing POS cb1 2026-01-27]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-27 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 103 baris brighter_pos...[39m
+   0/103 [>---------------------------]   0%[1G[2K  11/103 [==>-------------------------]  10%[1G[2K 103/103 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 103 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:25] [71/1051 Landing POS cb1 2026-01-28]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-28 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 94 baris brighter_pos...[39m
+  0/94 [>---------------------------]   0%[1G[2K 10/94 [==>-------------------------]  10%[1G[2K 94/94 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 94 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:29] [72/1051 Landing POS cb1 2026-01-29]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-29 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 90 baris brighter_pos...[39m
+  0/90 [>---------------------------]   0%[1G[2K  9/90 [==>-------------------------]  10%[1G[2K 90/90 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 90 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:32] [73/1051 Landing POS cb1 2026-01-30]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-30 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 77 baris brighter_pos...[39m
+  0/77 [>---------------------------]   0%[1G[2K  8/77 [==>-------------------------]  10%[1G[2K 77/77 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 77 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:35] [74/1051 Landing POS cb1 2026-01-31]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 1 --date 2026-01-31 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 91 baris brighter_pos...[39m
+  0/91 [>---------------------------]   0%[1G[2K 10/91 [===>------------------------]  10%[1G[2K 91/91 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 91 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:38] [75/1051 Landing POS cb2 2026-01-01]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-01 --refresh --dry-run
+[32mTidak ada baris brighter_pos untuk diproses.[39m
+  status: OK rc=0
+
+[13:27:41] [76/1051 Landing POS cb2 2026-01-02]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-02 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 187 baris brighter_pos...[39m
+   0/187 [>---------------------------]   0%[1G[2K  19/187 [==>-------------------------]  10%[1G[2K 187/187 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 187 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:44] [77/1051 Landing POS cb2 2026-01-03]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-03 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 242 baris brighter_pos...[39m
+   0/242 [>---------------------------]   0%[1G[2K  25/242 [==>-------------------------]  10%[1G[2K 242/242 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 242 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:47] [78/1051 Landing POS cb2 2026-01-04]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-04 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 171 baris brighter_pos...[39m
+   0/171 [>---------------------------]   0%[1G[2K  18/171 [==>-------------------------]  10%[1G[2K 171/171 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 171 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:51] [79/1051 Landing POS cb2 2026-01-05]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-05 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 197 baris brighter_pos...[39m
+   0/197 [>---------------------------]   0%[1G[2K  20/197 [==>-------------------------]  10%[1G[2K 197/197 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 197 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:54] [80/1051 Landing POS cb2 2026-01-06]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-06 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 148 baris brighter_pos...[39m
+   0/148 [>---------------------------]   0%[1G[2K  15/148 [==>-------------------------]  10%[1G[2K 148/148 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 148 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:27:56] [81/1051 Landing POS cb2 2026-01-07]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-07 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 165 baris brighter_pos...[39m
+   0/165 [>---------------------------]   0%[1G[2K  17/165 [==>-------------------------]  10%[1G[2K 165/165 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 165 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:00] [82/1051 Landing POS cb2 2026-01-08]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-08 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 149 baris brighter_pos...[39m
+   0/149 [>---------------------------]   0%[1G[2K  15/149 [==>-------------------------]  10%[1G[2K 149/149 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 149 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:03] [83/1051 Landing POS cb2 2026-01-09]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-09 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 160 baris brighter_pos...[39m
+   0/160 [>---------------------------]   0%[1G[2K  16/160 [==>-------------------------]  10%[1G[2K 160/160 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 160 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:06] [84/1051 Landing POS cb2 2026-01-10]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-10 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 202 baris brighter_pos...[39m
+   0/202 [>---------------------------]   0%[1G[2K  21/202 [==>-------------------------]  10%[1G[2K 202/202 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 202 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:10] [85/1051 Landing POS cb2 2026-01-11]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-11 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 153 baris brighter_pos...[39m
+   0/153 [>---------------------------]   0%[1G[2K  16/153 [==>-------------------------]  10%[1G[2K 153/153 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 153 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:13] [86/1051 Landing POS cb2 2026-01-12]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-12 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 151 baris brighter_pos...[39m
+   0/151 [>---------------------------]   0%[1G[2K  16/151 [==>-------------------------]  10%[1G[2K 151/151 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 151 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:16] [87/1051 Landing POS cb2 2026-01-13]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-13 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 162 baris brighter_pos...[39m
+   0/162 [>---------------------------]   0%[1G[2K  17/162 [==>-------------------------]  10%[1G[2K 162/162 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 162 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:19] [88/1051 Landing POS cb2 2026-01-14]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-14 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 231 baris brighter_pos...[39m
+   0/231 [>---------------------------]   0%[1G[2K  24/231 [==>-------------------------]  10%[1G[2K 231/231 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 231 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:22] [89/1051 Landing POS cb2 2026-01-15]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-15 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 191 baris brighter_pos...[39m
+   0/191 [>---------------------------]   0%[1G[2K  20/191 [==>-------------------------]  10%[1G[2K 191/191 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 191 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:25] [90/1051 Landing POS cb2 2026-01-16]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-16 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 215 baris brighter_pos...[39m
+   0/215 [>---------------------------]   0%[1G[2K  22/215 [==>-------------------------]  10%[1G[2K 215/215 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 215 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:28] [91/1051 Landing POS cb2 2026-01-17]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-17 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 218 baris brighter_pos...[39m
+   0/218 [>---------------------------]   0%[1G[2K  22/218 [==>-------------------------]  10%[1G[2K 218/218 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 218 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:31] [92/1051 Landing POS cb2 2026-01-18]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-18 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 190 baris brighter_pos...[39m
+   0/190 [>---------------------------]   0%[1G[2K  19/190 [==>-------------------------]  10%[1G[2K 190/190 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 190 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:34] [93/1051 Landing POS cb2 2026-01-19]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-19 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 207 baris brighter_pos...[39m
+   0/207 [>---------------------------]   0%[1G[2K  21/207 [==>-------------------------]  10%[1G[2K 207/207 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 207 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:37] [94/1051 Landing POS cb2 2026-01-20]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-20 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 216 baris brighter_pos...[39m
+   0/216 [>---------------------------]   0%[1G[2K  22/216 [==>-------------------------]  10%[1G[2K 216/216 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 216 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:41] [95/1051 Landing POS cb2 2026-01-21]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-21 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 155 baris brighter_pos...[39m
+   0/155 [>---------------------------]   0%[1G[2K  16/155 [==>-------------------------]  10%[1G[2K 155/155 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 155 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:43] [96/1051 Landing POS cb2 2026-01-22]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-22 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 195 baris brighter_pos...[39m
+   0/195 [>---------------------------]   0%[1G[2K  20/195 [==>-------------------------]  10%[1G[2K 195/195 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 195 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:47] [97/1051 Landing POS cb2 2026-01-23]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-23 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 180 baris brighter_pos...[39m
+   0/180 [>---------------------------]   0%[1G[2K  18/180 [==>-------------------------]  10%[1G[2K 180/180 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 180 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:49] [98/1051 Landing POS cb2 2026-01-24]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-24 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 201 baris brighter_pos...[39m
+   0/201 [>---------------------------]   0%[1G[2K   1/201 [>---------------------------]   0%[1G[2K 201/201 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 201 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:54] [99/1051 Landing POS cb2 2026-01-25]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-25 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 177 baris brighter_pos...[39m
+   0/177 [>---------------------------]   0%[1G[2K  18/177 [==>-------------------------]  10%[1G[2K 177/177 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 177 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:28:57] [100/1051 Landing POS cb2 2026-01-26]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-26 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 164 baris brighter_pos...[39m
+   0/164 [>---------------------------]   0%[1G[2K  17/164 [==>-------------------------]  10%[1G[2K 164/164 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 164 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:00] [101/1051 Landing POS cb2 2026-01-27]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-27 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 178 baris brighter_pos...[39m
+   0/178 [>---------------------------]   0%[1G[2K  18/178 [==>-------------------------]  10%[1G[2K 178/178 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 178 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:03] [102/1051 Landing POS cb2 2026-01-28]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-28 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 177 baris brighter_pos...[39m
+   0/177 [>---------------------------]   0%[1G[2K  18/177 [==>-------------------------]  10%[1G[2K 177/177 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 177 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:06] [103/1051 Landing POS cb2 2026-01-29]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-29 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 187 baris brighter_pos...[39m
+   0/187 [>---------------------------]   0%[1G[2K  19/187 [==>-------------------------]  10%[1G[2K 187/187 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 187 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:09] [104/1051 Landing POS cb2 2026-01-30]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-30 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 158 baris brighter_pos...[39m
+   0/158 [>---------------------------]   0%[1G[2K  16/158 [==>-------------------------]  10%[1G[2K 158/158 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 158 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:13] [105/1051 Landing POS cb2 2026-01-31]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 2 --date 2026-01-31 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 259 baris brighter_pos...[39m
+   0/259 [>---------------------------]   0%[1G[2K  26/259 [==>-------------------------]  10%[1G[2K 259/259 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 259 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:15] [106/1051 Landing POS cb4 2026-01-01]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-01-01 --refresh --dry-run
+[32mTidak ada baris brighter_pos untuk diproses.[39m
+  status: OK rc=0
+
+[13:29:18] [107/1051 Landing POS cb4 2026-01-02]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-01-02 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 81 baris brighter_pos...[39m
+  0/81 [>---------------------------]   0%[1G[2K  9/81 [===>------------------------]  11%[1G[2K 81/81 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 81 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:21] [108/1051 Landing POS cb4 2026-01-03]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-01-03 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 95 baris brighter_pos...[39m
+  0/95 [>---------------------------]   0%[1G[2K 10/95 [==>-------------------------]  10%[1G[2K 95/95 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 95 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:24] [109/1051 Landing POS cb4 2026-01-04]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-01-04 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 81 baris brighter_pos...[39m
+  0/81 [>---------------------------]   0%[1G[2K  9/81 [===>------------------------]  11%[1G[2K 81/81 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 81 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:27] [110/1051 Landing POS cb4 2026-01-05]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-01-05 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 107 baris brighter_pos...[39m
+   0/107 [>---------------------------]   0%[1G[2K  11/107 [==>-------------------------]  10%[1G[2K 107/107 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 107 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:30] [111/1051 Landing POS cb4 2026-01-06]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-01-06 --refresh --dry-run
+[33mMode --dry-run: tidak ada perubahan yang disimpan ke database.[39m
+[33mMode --refresh: pos yang total_amount-nya stale (beda dgn brighter_pos.total_biaya) akan diperbaiki header + items-nya.[39m
+[32mMemproses 65 baris brighter_pos...[39m
+  0/65 [>---------------------------]   0%[1G[2K  7/65 [===>------------------------]  10%[1G[2K 65/65 [============================] 100%
+[32mSelesai. Dibuat: 0 | Isi items: 0 | Refresh stale: 0 | Dilewati (sudah punya items): 65 | Dilewati (tanpa detail): 0[39m
+[32mIdempotent: proses ulang hanya akan menyentuh pos yang belum punya items / belum ada.[39m
+  status: OK rc=0
+
+[13:29:33] [112/1051 Landing POS cb4 2026-01-07]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan pos:reconcile-missing --cabang 4 --date 2026-01-07 --refresh --dry-run

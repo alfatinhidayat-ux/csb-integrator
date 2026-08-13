@@ -8,7 +8,11 @@ Alur (incremental + isi gap):
   3. Sync retur penjualan   -> sync_retur_penjualan.py
   4. Sync penerimaan rekap  -> sync_saldo_kas_harian.py
   5. Sync pelunasan piutang -> sync_pelunasan.py (opsional: sync_finance.py via --full-finance)
-  6. Reconcile pos_transactions -> php artisan pos:reconcile-missing --refresh
+  6. Reconcile/apply ke tabel Clarify:
+     - POS -> pos_transactions
+     - Retur -> retur_penjualan
+     - Piutang -> piutang + piutang_pelunasan
+     - Supplier hutang -> supplier_hutang_pelunasan* lewat sync_finance.py
   7. Audit SEMUA jenis dashboard -> audit_dashboard.py (exit != 0 bila ada selisih)
 
 Contoh:
@@ -76,6 +80,7 @@ def main():
     parser.add_argument("--skip-retur", action="store_true")
     parser.add_argument("--skip-penerimaan", action="store_true")
     parser.add_argument("--skip-pelunasan", action="store_true")
+    parser.add_argument("--skip-clarify", action="store_true", help="Lewati landing/reconcile ke tabel aplikasi Clarify")
     parser.add_argument("--skip-reconcile", action="store_true")
     parser.add_argument("--skip-audit", action="store_true")
     parser.add_argument("--full-finance", action="store_true", help="Jalankan sync_finance.py (pelunasan piutang, full & lambat)")
@@ -173,6 +178,28 @@ def main():
                   "--cabang-ids", ",".join(map(str, cabang_ids))])
     else:
         print("\n[3c/6] SKIP sync finance (gunakan --full-finance bila mau segarkan tabel finance lain).")
+
+    # ── 3d. Landing data staging ke tabel aplikasi Clarify ──
+    # Data migrasi harus tetap bisa dibaca lewat alur Clarify. Langkah ini data-only:
+    # tidak posting kas_bank untuk retur/piutang/supplier hutang legacy.
+    if not args.skip_clarify:
+        if not args.skip_pelunasan:
+            rc = run_step("3d/6 Clarify piutang penjualan",
+                          ["php", "artisan", "migrate:legacy-piutang"],
+                          cwd=args.backend_dir)
+            artifacts.append(("clarify piutang", rc))
+            if rc == 0:
+                rc = run_step("3d/6 Clarify pelunasan piutang",
+                              ["php", "artisan", "backfill:piutang-pelunasan"],
+                              cwd=args.backend_dir)
+                artifacts.append(("clarify pelunasan piutang", rc))
+
+        if not args.skip_retur:
+            rc = run_step("3d/6 Clarify retur penjualan",
+                          [py, "migrate_retur_to_app.py", "--yes"])
+            artifacts.append(("clarify retur", rc))
+    else:
+        print("\n[3d/6] SKIP landing Clarify.")
 
     # ── 4. Reconcile pos_transactions ──
     if not args.skip_reconcile:

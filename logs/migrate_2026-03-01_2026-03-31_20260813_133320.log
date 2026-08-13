@@ -1,0 +1,414 @@
+================================================================================
+MIGRASI BRIGHTER -> CLARIFY
+Mode    : APPLY
+Range   : 2026-03-01..2026-03-31
+Cabang  : [1, 2, 4, 5, 7]
+Bulan   : ['2026-03']
+Log     : D:\CSB Project\csb-integrator\logs\migrate_2026-03-01_2026-03-31_20260813_133320.log
+================================================================================
+
+[13:33:21] [1/10 2026-03 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-03 --cabang-ids 1,2,4,5
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-03-01 .. 2026-03-31
+Cabang: [1, 2, 4, 5]
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+  cb1 2026-03 rekap_dashboard          8 baris -> dash_rekap_dashboard
+  cb1 2026-03 penerimaan_per_user      12 baris -> dash_penerimaan_per_user
+  cb1 2026-03 detail_penjualan         3557 baris -> dash_detail_penjualan
+  cb1 2026-03 detail_piutang           77 baris -> dash_detail_piutang
+  cb1 2026-03 detail_hutang            5 baris -> dash_detail_hutang
+  cb1 2026-03 detail_deposit_pelanggan 3 baris -> dash_detail_deposit_pelanggan
+  cb1 2026-03 detail_retur_penjualan   3 baris -> dash_detail_retur_penjualan
+  cb2 2026-03 rekap_dashboard          4 baris -> dash_rekap_dashboard
+  cb2 2026-03 penerimaan_per_user      4 baris -> dash_penerimaan_per_user
+  cb2 2026-03 detail_penjualan         4625 baris -> dash_detail_penjualan
+  cb2 2026-03 detail_piutang           348 baris -> dash_detail_piutang
+  cb2 2026-03 detail_hutang            9 baris -> dash_detail_hutang
+  cb4 2026-03 rekap_dashboard          7 baris -> dash_rekap_dashboard
+  cb4 2026-03 penerimaan_per_user      11 baris -> dash_penerimaan_per_user
+  cb4 2026-03 detail_penjualan         2892 baris -> dash_detail_penjualan
+  cb4 2026-03 detail_piutang           38 baris -> dash_detail_piutang
+  cb4 2026-03 detail_hutang            15 baris -> dash_detail_hutang
+  cb5 2026-03 rekap_dashboard          7 baris -> dash_rekap_dashboard
+  cb5 2026-03 penerimaan_per_user      8 baris -> dash_penerimaan_per_user
+  cb5 2026-03 detail_penjualan         7584 baris -> dash_detail_penjualan
+  cb5 2026-03 detail_piutang           30 baris -> dash_detail_piutang
+  cb5 2026-03 detail_hutang            27 baris -> dash_detail_hutang
+  cb5 2026-03 detail_deposit_pelanggan 1 baris -> dash_detail_deposit_pelanggan
+  cb5 2026-03 detail_retur_penjualan   16 baris -> dash_detail_retur_penjualan
+
+=======================================================
+COMPLETE - total baris per tabel:
+  dash_rekap_dashboard                     26
+  dash_penerimaan_per_user                 35
+  dash_detail_penjualan                18,658
+  dash_detail_piutang                     493
+  dash_detail_hutang                       56
+  dash_detail_deposit_pelanggan             4
+  dash_detail_retur_penjualan              19
+=======================================================
+  status: OK rc=0
+
+[13:34:21] [2/10 2026-03 Retur staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_retur_penjualan.py --env --tanggal-awal 2026-03-01 --tanggal-akhir 2026-03-31 --cabang-ids 1,2,4,5 --workers 5
+Date range filter: 2026-03-01 -> 2026-03-31
+Ensuring tables exist (brighter_retur_penjualan, brighter_retur_penjualan_detail)...
+Tables ready.
+Cabangs to sync: [1, 2, 4, 5]
+
+--- Cabang 1 | 2026-03-01 -> 2026-03-31 ---
+ -> Fetching retur headers for Cabang 1, page 1...
+ -> Found 3 retur headers in range.
+ -> Fetching details for 3 transactions...
+    Detail fetch progress: 3/3
+ -> Upserting 3 headers...
+    Upsert brighter_retur_penjualan: 3/3 rows
+ -> Upserting 7 items...
+    Upsert brighter_retur_penjualan_detail: 7/7 rows
+Done Cabang 1
+
+--- Cabang 2 | 2026-03-01 -> 2026-03-31 ---
+ -> Fetching retur headers for Cabang 2, page 1...
+ -> Found 0 retur headers in range.
+
+--- Cabang 4 | 2026-03-01 -> 2026-03-31 ---
+ -> Fetching retur headers for Cabang 4, page 1...
+ -> Found 0 retur headers in range.
+
+--- Cabang 5 | 2026-03-01 -> 2026-03-31 ---
+ -> Fetching retur headers for Cabang 5, page 1...
+ -> Fetching retur headers for Cabang 5, page 2...
+ -> Found 16 retur headers in range.
+ -> Fetching details for 16 transactions...
+    Detail fetch progress: 16/16
+ -> Upserting 16 headers...
+    Upsert brighter_retur_penjualan: 16/16 rows
+ -> Upserting 16 items...
+    Upsert brighter_retur_penjualan_detail: 16/16 rows
+Done Cabang 5
+
+==================================================
+ALL RETUR PENJUALAN SYNC COMPLETE
+Total Retur Headers synced: 19
+Total Retur Details synced: 23
+==================================================
+  status: OK rc=0
+
+[13:34:37] [3/10 2026-03 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-03-01 --tanggal-akhir 2026-03-31 --cabang-ids 1,2,4,5
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+Rentang: 2026-03-01 .. 2026-03-31
+Cabang: [1, 2, 4, 5]
+
+--- Cabang 1 ---
+       -> 13 hari saldo di-fetch, 13 di-upsert ke `brighter_saldo_kas_harian`
+       -> 27 hari rekap di-fetch, 27 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 2 ---
+       -> tidak ada data di rentang ini (API mengembalikan kosong/404)
+       -> 26 hari rekap di-fetch, 26 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 4 ---
+       -> 4 hari saldo di-fetch, 4 di-upsert ke `brighter_saldo_kas_harian`
+       -> 26 hari rekap di-fetch, 26 di-upsert ke `brighter_penerimaan_rekap`
+
+--- Cabang 5 ---
+       -> 1 hari saldo di-fetch, 1 di-upsert ke `brighter_saldo_kas_harian`
+       -> 24 hari rekap di-fetch, 24 di-upsert ke `brighter_penerimaan_rekap`
+
+==================================================
+COMPLETE: 18 baris saldo -> `brighter_saldo_kas_harian`
+          103 baris rekap penerimaan -> `brighter_penerimaan_rekap`
+==================================================
+  status: OK rc=0
+
+[13:38:03] [4/10 2026-03 KasBank -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_all.py --env --bulan 2026-03 --cabang-ids 1,2,4,5 --apply
+
+============================================================
+[1. KAS MASUK -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_masuk.py --env --bulan 2026-03 --cabang-ids 1,2,4,5 --apply
+============================================================
+========================================================================================================================
+BACKFILL KAS MASUK 2026-03 | cabang=1,2,4,5 | mode=APPLY (commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 32
+APPLY selesai — data telah di-commit ke DB.
+
+============================================================
+[2. KAS KELUAR -> kas_bank] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_keluar.py --env --bulan 2026-03 --cabang-ids 1,2,4,5 --apply
+============================================================
+========================================================================================================================
+BACKFILL KAS KELUAR 2026-03 | cabang=1,2,4,5 | mode=APPLY (commit)
+========================================================================================================================
+------------------------------------------------------------------------------------------------------------------------
+RINGKASAN: 0 header baru, 0 detail, Rp 0 total
+SKIP (sudah dimigrasi): 81
+APPLY selesai — data telah di-commit ke DB.
+
+============================================================
+[3. TIMESTAMP created/approved] python C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe backfill_kasbank_timestamp.py --apply
+============================================================
+====================================================================================================
+BACKFILL TIMESTAMP KAS_BANK | mode=APPLY (commit)
+  kas_bank migrated : 3096
+  sudah terisi      : 3096
+  pakai mirror      : 0
+  perlu fetch API   : 0
+====================================================================================================
+----------------------------------------------------------------------------------------------------
+PLAN: 0 baris akan di-update; 0 tanpa timestamp (skip); username unmapped: -
+APPLY selesai — 0 baris di-update, commit OK.
+
+======================================================================
+SELESAI. Cek ulang dengan dry-run jika belum --apply.
+======================================================================
+  status: OK rc=0
+
+[13:38:10] [5/10 Pelunasan piutang staging]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_pelunasan.py --env --cabang-ids 1,2,4,5
+--- Cabang 1 ---
+       -> 983 records (upsert 983, orphan deleted 0)
+--- Cabang 2 ---
+       -> 1186 records (upsert 1186, orphan deleted 0)
+--- Cabang 4 ---
+       -> 322 records (upsert 322, orphan deleted 0)
+--- Cabang 5 ---
+       -> 472 records (upsert 472, orphan deleted 0)
+==================================================
+PELUNASAN PIUTANG SYNC COMPLETE: 2963 records
+==================================================
+  status: OK rc=0
+
+[13:38:41] [6/10 Finance Brighter pembelian/hutang/piutang]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_finance.py --env --cabang-ids 1,2,4,5 --workers 5
+API OK (https://brighter-kairatu-api.koffiesoft.com)
+Cabangs to sync: [1, 2, 4, 5]
+   cabang 1 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 2 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 4 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+   cabang 5 -> base_url: https://brighter-kairatu-api.koffiesoft.com
+
+[0/7] Master Supplier (upsert per server, ke tabel `supplier`)...
+       -> https://brighter-kairatu-api.koffiesoft.com : 425 supplier (upsert 425)
+
+--- Cabang 1 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 209 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 49 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 204 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 25 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=98, items=408, media=50 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 983 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 1363 records
+       -> semua piutang sudah punya nama
+Done Cabang 1
+
+--- Cabang 2 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 536 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 90 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 568 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 39 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=180, items=1136, media=78 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 1186 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 2314 records
+       -> 2 record tanpa nama - jalankan backfill nama...
+Login API berhasil
+
+Ditemukan 2 record tanpa nama (2 cust_id unik)
+
+  cust_id 8814 ... Traceback (most recent call last):
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 282, in <module>
+    main()
+    ~~~~^^
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 246, in main
+    cols = fallback_from_master_customer(cur, cust_id)
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 105, in fallback_from_master_customer
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<8 lines>...
+        (cust_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 847, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+pymysql.err.OperationalError: (1054, "Unknown column 'cust_notelp' in 'field list'")
+       -> backfill nama gagal: Command '['C:\\Users\\alfat\\AppData\\Local\\Programs\\Python\\Python314\\python.exe', 'backfill_piutang_cust_nama.py', '--env', '--cabang-ids', '2']' returned non-zero exit status 1.
+Done Cabang 2
+
+--- Cabang 4 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 354 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 106 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 344 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 37 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=212, items=688, media=74 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 322 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 564 records
+       -> semua piutang sudah punya nama
+Done Cabang 4
+
+--- Cabang 5 ---
+  [1/7] Faktur Pembelian (header)...
+       -> 1500 records
+  [2/7] Pelunasan Hutang (header)...
+       -> 342 records
+  [3/7] Detail Pelunasan Hutang (concurrent)...
+       -> 1281 detail records
+  [4/7] Foto Pelunasan Hutang (concurrent)...
+       -> 150 foto records
+  [4b/7] Reconcile Pelunasan Hutang -> Clarify legacy tables...
+       -> Clarify upsert header=684, items=2562, media=300 (tanpa posting kas_bank)
+  [5/7] Pelunasan Piutang (header)...
+       -> 472 records
+  [6/7] Piutang Customer Detail (per cabang, stat_dok=Tertutup, semua periode)...
+       -> 668 records
+       -> 2 record tanpa nama - jalankan backfill nama...
+Login API berhasil
+
+Ditemukan 1 record tanpa nama (1 cust_id unik)
+
+  cust_id 9321 ... Traceback (most recent call last):
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 282, in <module>
+    main()
+    ~~~~^^
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 246, in main
+    cols = fallback_from_master_customer(cur, cust_id)
+  File "D:\CSB Project\csb-integrator\backfill_piutang_cust_nama.py", line 105, in fallback_from_master_customer
+    cur.execute(
+    ~~~~~~~~~~~^
+        """
+        ^^^
+    ...<8 lines>...
+        (cust_id,),
+        ^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+    ~~~~~~~~~~^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 847, in _read_query_result
+    result.read()
+    ~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 803, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\alfat\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 154, in raise_mysql_exception
+    raise errorclass(errno, errval, sqlstate=sqlstate)
+pymysql.err.OperationalError: (1054, "Unknown column 'cust_notelp' in 'field list'")
+       -> backfill nama gagal: Command '['C:\\Users\\alfat\\AppData\\Local\\Programs\\Python\\Python314\\python.exe', 'backfill_piutang_cust_nama.py', '--env', '--cabang-ids', '5']' returned non-zero exit status 1.
+Done Cabang 5
+
+==================================================
+FINANCE SYNC COMPLETE
+  supplier                       -> 425 records (upsert per server)
+  pembelian                      -> 2599 records
+  pelunasan_hutang               -> 587 records
+  pelunasan_hutang_detail        -> 2397 records
+  pelunasan_hutang_foto          -> 251 records
+  pelunasan_piutang              -> 2963 records
+  piutang_customer_detail        -> 4909 records
+==================================================
+  status: OK rc=0
+
+[13:45:29] [7/10 Upsert brighter_rekap_bulanan_dashboard dari dash_*]
+  range=2026-03-01..2026-03-31 cabang_aktif={'2026-03': [1, 2, 4, 5]}
+  upsert cb1 2026-03: penjualan=1,622,547,980 retur=3,320,000 cash_in=1,637,451,597
+  upsert cb2 2026-03: penjualan=3,389,257,500 retur=0 cash_in=1,843,214,531
+  upsert cb4 2026-03: penjualan=1,705,525,699 retur=0 cash_in=-1,416,036,132
+  upsert cb5 2026-03: penjualan=3,839,170,120 retur=11,805,000 cash_in=210,304,913
+  status: OK
+
+[13:45:29] [8/10 Landing Retur -> Clarify]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe migrate_retur_to_app.py --yes
+  [detail] 90 baris detail dilewati (tidak ada pos_transaction/items).
+============================================================
+Rencana migrasi retur penjualan -> csb_db.retur_penjualan
+  Header : 191 retur
+  Total  : 258,963,000
+  Customer: 33
+  Detail : 137 baris (dari pos_transaction_items yang cocok)
+============================================================
+  Header baru: 0, Header sudah ada: 191
+
+Selesai. Header baru: 0, Detail ditambahkan: 137
+  status: OK rc=0
+
+[13:45:47] [9/10 Landing Piutang -> Clarify]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan migrate:legacy-piutang
+
+  [37;41m ERROR [39;49m Command "migrate:legacy-piutang" is not defined. Did you mean one of these?  
+
+  [90m⇂ migrate[39m  
+  [90m⇂ migrate:fresh[39m  
+  [90m⇂ migrate:install[39m  
+  [90m⇂ migrate:legacy-pos[39m  
+  [90m⇂ migrate:refresh[39m  
+  [90m⇂ migrate:reset[39m  
+  [90m⇂ migrate:rollback[39m  
+  [90m⇂ migrate:status[39m  
+
+  status: FAIL rc=1
+
+[13:45:49] [10/10 Landing Pelunasan Piutang -> Clarify]
+  $ D:\laragon\bin\php\php-8.3.26-Win32-vs16-x64\php.exe artisan backfill:piutang-pelunasan
+[32mTidak ada piutang paid yang belum punya dokumen pelunasan.[39m
+  status: OK rc=0
+
+================================================================================
+SELESAI DENGAN PERINGATAN
+  landing piutang: rc=1

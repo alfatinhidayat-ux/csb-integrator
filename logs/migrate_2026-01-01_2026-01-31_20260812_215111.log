@@ -1,0 +1,29 @@
+================================================================================
+MIGRASI BRIGHTER -> CLARIFY
+Mode    : DRY-RUN
+Range   : 2026-01-01..2026-01-31
+Cabang  : [1, 2, 4, 5, 7]
+Bulan   : ['2026-01']
+Log     : D:\CSB Project\csb-integrator\logs\migrate_2026-01-01_2026-01-31_20260812_215111.log
+================================================================================
+
+[21:51:11] [1/3 2026-01 dash_* dan rekap dashboard]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_dash_api.py --env --bulan 2026-01 --cabang-ids 1,2,4,5 --dry-run
+Sinkron ke: csb_db
+Endpoint: ['rekap_dashboard', 'penerimaan_per_user', 'detail_penjualan', 'detail_piutang', 'detail_hutang', 'detail_deposit_pelanggan', 'detail_retur_penjualan']
+Rentang: 2026-01-01 .. 2026-01-31
+Cabang: [1, 2, 4, 5]
+
+[dry-run] Tidak ada API/DB yang dipanggil.
+  status: OK rc=0
+
+[21:51:13] [2/3 2026-01 Rekap penerimaan harian]
+  $ C:\Users\alfat\AppData\Local\Programs\Python\Python314\python.exe sync_saldo_kas_harian.py --env --tanggal-awal 2026-01-01 --tanggal-akhir 2026-01-31 --cabang-ids 1,2,4,5
+  status: SKIP eksekusi (dry-run rencana)
+
+[21:51:13] [3/3 Upsert brighter_rekap_bulanan_dashboard dari dash_*]
+  range=2026-01-01..2026-01-31 cabang_aktif={'2026-01': [1, 2, 4, 5]}
+  status: SKIP eksekusi (dry-run rencana)
+
+================================================================================
+SELESAI OK

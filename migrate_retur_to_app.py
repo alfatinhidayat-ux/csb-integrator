@@ -233,19 +233,23 @@ def main():
         users_by_cabang = load_active_users_by_cabang(conn)
         pos_link = load_pos_link(conn)
         headers = load_retur_headers(conn)
+        with conn.cursor() as cur:
+            cur.execute("SELECT id FROM customer")
+            valid_customer_ids = {int(r["id"]) for r in cur.fetchall()}
 
         detail_rows = {} if args.skip_details else build_detail_rows(conn, pos_link, args.fill_details_without_pos)
 
         plan = []
         for h in headers:
             kasir_id = pick_kasir(users_by_cabang, h["cabang_id"], h.get("created_by"))
+            customer_id = int(h["customer_id"]) if h["customer_id"] is not None else None
             # created_by is a username stored in brighter table? we don't have it here
             plan.append({
                 "no_retur": h["no_bukti"],
                 "tanggal": str(h["tanggal"]),
                 "cabang_id": h["cabang_id"],
                 "kasir_id": kasir_id,
-                "customer_id": h["customer_id"],
+                "customer_id": customer_id if customer_id in valid_customer_ids else None,
                 "customer_kode": h["cust_no"],
                 "customer_nama": h["cust_nama"],
                 "faktur_ppn": 1,

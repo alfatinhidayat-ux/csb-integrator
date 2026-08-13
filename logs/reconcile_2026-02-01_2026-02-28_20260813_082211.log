@@ -1,0 +1,18 @@
+==============================================================================================================
+REKONSILIASI BRIGHTER VS CLARIFY 2026-02-01..2026-02-28 cabang=[1, 2, 4, 5]
+Log: D:\CSB Project\csb-integrator\logs\reconcile_2026-02-01_2026-02-28_20260813_082211.log
+==============================================================================================================
+[1/4] cb1  2026-02 ref=  2,455,401,661 api_user=  2,730,401,661 system=  2,455,401,661 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [DIFF]
+     pos=1,240,584,849 pel_piut=1,587,060,300 kas_masuk=158,843,000 retur=2,430,000 kas_keluar=389,985,000 hut_sup=138,671,488
+     - dash_penerimaan_per_user tidak sama dengan brighter_penerimaan_rekap
+[2/4] cb2  2026-02 ref=  3,430,701,408 api_user=  3,430,701,408 system=  3,430,701,408 d_sys=            -0 miss(pos/ret/piu)=0/0/0 [DIFF]
+     pos=2,701,484,650 pel_piut=1,964,942,225 kas_masuk=0 retur=2,395,000 kas_keluar=0 hut_sup=1,233,330,467
+     - dash_penerimaan_per_user tidak sama dengan brighter_penerimaan_rekap
+     - Clarify cash-in belum sama dengan rekap Brighter
+[3/4] cb4  2026-02 ref=    395,447,098 api_user=    395,447,098 system=    395,447,098 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=1,584,334,900 pel_piut=274,893,050 kas_masuk=0 retur=16,000 kas_keluar=34,650,000 hut_sup=1,429,114,852
+[4/4] cb5  2026-02 ref=  1,404,706,272 api_user=  1,404,706,272 system=  1,404,706,272 d_sys=            +0 miss(pos/ret/piu)=0/0/0 [OK]
+     pos=3,764,215,600 pel_piut=606,541,740 kas_masuk=0 retur=15,673,500 kas_keluar=10,000,000 hut_sup=2,940,377,568
+
+==============================================================================================================
+SELESAI: 2 cabang/bulan perlu perhatian.
